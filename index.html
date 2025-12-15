@@ -1,11 +1,260 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Ваше Имя - Full Stack Разработчик</title>
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body bgcolor="grey">
-    <h1>Abdugoffor</h1>
+<body id="home">
+    <!-- Header with Menu and Language Controls -->
+    <header class="header">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a class="navbar-brand" href="#home" data-translate="nav_name">Ваше Имя</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item"><a class="nav-link" href="#about" data-translate="nav_about">Обо Мне</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#experience" data-translate="nav_experience">Опыт</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#skills" data-translate="nav_skills">Навыки</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#projects" data-translate="nav_projects">Проекты</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#contact" data-translate="nav_contact">Контакты</a></li>
+                    </ul>
+                    <div class="header-controls">
+                        <div class="language-switcher">
+                            <select id="languageSelect" onchange="changeLanguage()">
+                                <option value="ru" selected>Русский</option>
+                                <option value="en">English</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container hero-content">
+            <img src="https://storage.kun.uz/source/7/_3e2YPCYOmhE_zr4Arr4R4EVBAXq-EZ-.jpg" class="profile-img mb-4" alt="Профильное фото">
+            <h1 class="display-4 fw-bold" id="home" data-translate="hero_name">Ваше Имя</h1>
+            <p class="lead fs-3" data-translate="hero_title">Full Stack Разработчик | PHP, Go, Laravel, Vue.js</p>
+            <p class="fs-5" data-translate="hero_desc">6+ лет опыта | CRM, ERP, маркетплейсы и инновационные проекты</p>
+            <a href="#contact" class="btn btn-custom btn-lg mt-4" data-translate="hero_contact">Связаться</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-5">
+        <div class="container">
+            <h2 class="section-title text-center" data-translate="about_title">Обо Мне</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-10 col-md-12">
+                    <div class="card p-4 animate__animated animate__fadeIn">
+                        <p class="lead text-center" data-translate="about_desc">
+                            Я Full Stack разработчик с опытом работы более 6 лет. В 2016-2020 годах получил степень бакалавра и с 2018 года работал в 6 компаниях, успешно реализовав CRM, ERP, маркетплейсы и множество других проектов. Моя цель – создавать высококачественные, современные и эффективные решения для клиентов.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Education & Experience Section -->
+    <section id="experience" class="py-5 bg-light">
+        <div class="container">
+            <h2 class="section-title text-center" data-translate="experience_title">Образование и Опыт</h2>
+            <div class="row">
+                <div class="col-lg-6 col-md-12">
+                    <h4 class="mb-4" data-translate="education_title">Образование</h4>
+                    <div class="education-item animate__animated animate__fadeIn">
+                        <img src="https://adu.uz/rasmlar/news/2021/main_photo-2021-06-12_06-43-48-aduphoto1.jpg" class="img-fluid mb-3" alt="Университет">
+                        <h5 data-translate="edu_degree">Степень бакалавра</h5>
+                        <p><strong>2016-2020</strong> | <span data-translate="edu_university">Название университета (добавьте свое)</span></p>
+                        <p data-translate="edu_desc">Завершил обучение по специальности компьютерные науки или смежной области. Получил обширные знания в программировании, управлении базами данных и управлении проектами.</p>
+                    </div>
+                    <div class="education-item animate__animated animate__fadeIn">
+                        <img src="https://udemy-certificate.s3.amazonaws.com/image/UC-64ef4318-1156-4b9f-96ce-d5bc7267505f.jpg" class="img-fluid mb-3" alt="Сертификаты">
+                        <h5 data-translate="edu_additional">Дополнительное образование</h5>
+                        <p><strong>2017-2019</strong> | <span data-translate="edu_courses">Онлайн-курсы и сертификаты</span></p>
+                        <p data-translate="edu_courses_desc">Получил сертификаты по PHP, Go и DevOps на платформах Coursera, Udemy и других, укрепив свои навыки практическими проектами.</p>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                    <h4 class="mb-4" data-translate="work_title">Опыт работы</h4>
+                    <div class="experience-item animate__animated animate__fadeIn">
+                        <h5 data-translate="job_1_title">Full Stack Разработчик | Компания 1</h5>
+                        <p><strong>2018-2019</strong></p>
+                        <p data-translate="job_1_desc">Участвовал в разработке CRM и ERP систем, а также внутренних инструментов управления.</p>
+                    </div>
+                    <div class="experience-item animate__animated animate__fadeIn">
+                        <h5 data-translate="job_2_title">Backend Разработчик | Компания 2</h5>
+                        <p><strong>2019-2020</strong></p>
+                        <p data-translate="job_2_desc">Работал над проектами маркетплейсов и интеграцией API.</p>
+                    </div>
+                    <div class="experience-item animate__animated animate__fadeIn">
+                        <h5 data-translate="job_3_title">Старший разработчик | Компания 3</h5>
+                        <p><strong>2020-2021</strong></p>
+                        <p data-translate="job_3_desc">Внедрил микросервисы и процессы CI/CD.</p>
+                    </div>
+                    <div class="experience-item animate__animated animate__fadeIn">
+                        <h5 data-translate="job_4_title">Full Stack Разработчик | Компания 4</h5>
+                        <p><strong>2021-2022</strong></p>
+                        <p data-translate="job_4_desc">Разработал пользовательские интерфейсы и серверные системы с использованием Laravel и Vue.js.</p>
+                    </div>
+                    <div class="experience-item animate__animated animate__fadeIn">
+                        <h5 data-translate="job_5_title">Ведущий разработчик | Компания 5</h5>
+                        <p><strong>2022-2023</strong></p>
+                        <p data-translate="job_5_desc">Проектировал высоконагруженные системы с использованием Go и Docker.</p>
+                    </div>
+                    <div class="experience-item animate__animated animate__fadeIn">
+                        <h5 data-translate="job_6_title">Фриланс-разработчик | Компания 6</h5>
+                        <p><strong>2023-Ныне</strong></p>
+                        <p data-translate="job_6_desc">Реализовал Telegram-боты и проекты маркетплейсов для различных клиентов.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-5">
+        <div class="container">
+            <h2 class="section-title text-center" data-translate="skills_title">Навыки</h2>
+            <div class="row">
+                <div class="col-md-4 col-sm-6 col-12">
+                    <div class="skill-card animate__animated animate__fadeIn">
+                        <h5 data-translate="frontend_title">Frontend</h5>
+                        <div class="skill-badge">HTML</div>
+                        <div class="skill-badge">CSS</div>
+                        <div class="skill-badge">Bootstrap</div>
+                        <div class="skill-badge">JavaScript</div>
+                        <div class="skill-badge">jQuery</div>
+                        <div class="skill-badge">Ajax</div>
+                        <div class="skill-badge">Vue.js</div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 col-12">
+                    <div class="skill-card animate__animated animate__fadeIn">
+                        <h5 data-translate="backend_title">Backend</h5>
+                        <div class="skill-badge">PHP</div>
+                        <div class="skill-badge">Go</div>
+                        <div class="skill-badge">Laravel</div>
+                        <div class="skill-badge">Yii2</div>
+                        <div class="skill-badge">Fiber</div>
+                        <div class="skill-badge">Gin</div>
+                        <div class="skill-badge">Echo</div>
+                        <div class="skill-badge">GORM</div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 col-12">
+                    <div class="skill-card animate__animated animate__fadeIn">
+                        <h5 data-translate="tools_title">Tools & Principles</h5>
+                        <div class="skill-badge">Microservices</div>
+                        <div class="skill-badge">RabbitMQ</div>
+                        <div class="skill-badge">Kafka</div>
+                        <div class="skill-badge">Docker</div>
+                        <div class="skill-badge">CI/CD</div>
+                        <div class="skill-badge">Redis</div>
+                        <div class="skill-badge">OOP</div>
+                        <div class="skill-badge">SOLID</div>
+                        <div class="skill-badge">Livewire</div>
+                        <div class="skill-badge">Telegram Bot</div>
+                        <div class="skill-badge">SQL</div>
+                        <div class="skill-badge">Git</div>
+                        <div class="skill-badge">PostgreSQL</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-5 bg-light">
+        <div class="container">
+            <h2 class="section-title text-center" data-translate="projects_title">Проекты</h2>
+            <div class="row">
+                <div class="col-md-4 col-sm-6 col-12 mb-4">
+                    <div class="card project-card animate__animated animate__fadeIn">
+                        <img src="https://storage.kun.uz/source/7/_3e2YPCYOmhE_zr4Arr4R4EVBAXq-EZ-.jpg" class="card-img-top" alt="CRM Система">
+                        <div class="card-body">
+                            <h5 class="card-title" data-translate="project_1_title">CRM Система</h5>
+                            <p class="card-text" data-translate="project_1_desc">CRM-система, разработанная с использованием Laravel и Vue.js, включающая управление пользователями, задачи и аналитику. Оптимизирована с PostgreSQL и Redis.</p>
+                            <a href="#" class="btn btn-custom" data-translate="project_details">Подробнее</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 col-12 mb-4">
+                    <div class="card project-card animate__animated animate__fadeIn">
+                        <img src="https://storage.kun.uz/source/7/_3e2YPCYOmhE_zr4Arr4R4EVBAXq-EZ-.jpg" class="card-img-top" alt="ERP Платформа">
+                        <div class="card-body">
+                            <h5 class="card-title" data-translate="project_2_title">ERP Платформа</h5>
+                            <p class="card-text" data-translate="project_2_desc">ERP-система, разработанная с использованием Go (Echo, GORM) в архитектуре микросервисов. Эффективное управление данными с помощью Docker и RabbitMQ.</p>
+                            <a href="#" class="btn btn-custom" data-translate="project_details">Подробнее</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 col-12 mb-4">
+                    <div class="card project-card animate__animated animate__fadeIn">
+                        <img src="https://storage.kun.uz/source/7/_3e2YPCYOmhE_zr4Arr4R4EVBAXq-EZ-.jpg" class="card-img-top" alt="Маркетплейс">
+                        <div class="card-body">
+                            <h5 class="card-title" data-translate="project_3_title">Электронная коммерция (Маркетплейс)</h5>
+                            <p class="card-text" data-translate="project_3_desc">Маркетплейс, разработанный на PHP (Yii2), с интеграцией платежей и интерактивностью через Livewire. Внедрены процессы CI/CD.</p>
+                            <a href="#" class="btn btn-custom" data-translate="project_details">Подробнее</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-5">
+        <div class="container">
+            <h2 class="section-title text-center" data-translate="contact_title">Контакты</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-8 col-md-10 col-12">
+                    <div class="card p-4 animate__animated animate__fadeIn">
+                        <p class="text-center lead mb-4" data-translate="contact_desc">Хотите работать вместе? Я готов к сотрудничеству!</p>
+                        <div class="text-center">
+                            <p><i class="fas fa-envelope contact-icon"></i> abdugofforqodirov19@gmail.com</p>
+                            <p><i class="fas fa-phone contact-icon"></i>
+                                <span data-translate="contact_phone_ru">+998 94 105 04 05</span>
+                            </p>
+                            <p>
+                                <i class="fab fa-linkedin contact-icon"></i>
+                                <a href="https://www.linkedin.com/in/abdug%CA%BBoffor-qodirov-458113233/?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" data-translate="contact_linkedin">Профиль LinkedIn</a>
+                            </p>
+                            <p>
+                                <i class="fab fa-github contact-icon"></i>
+                                <a href="https://github.com/Abdugoffor" target="_blank" data-translate="contact_github">Профиль GitHub</a>
+                            </p>
+                            <p>
+                                <i class="fab fa-telegram contact-icon"></i>
+                                <a href="https://t.me/Qodirov_Abdugoffor" target="_blank" data-translate="contact_telegram">Профиль Telegram</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container position-relative">
+            <p data-translate="footer_text">&copy; 2025 Ваше Имя. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/main.js"></script>
 </body>
 </html>
