@@ -1,2 +1,2 @@
 # Abdugoffor.github.io 
-<a href="https://abdugoffor.github.io/" target="_blank">Saytim</a>
+<a href="https://abdugoffor.github.io/index.html/" target="_blank">Saytim</a>
