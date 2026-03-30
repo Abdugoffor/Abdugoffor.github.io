@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PostgreSQL & SQL — To'liq Pro Kurs</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Epilogue:wght@400;500;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #06070d;
+            --surface: #0c0f1a;
+            --card: #111827;
+            --border: #1e2d45;
+            --border2: #253550;
+            --go: #00d4ff;
+            --go-dim: #0099bb;
+            --amber: #f59e0b;
+            --green: #10b981;
+            --red: #ef4444;
+            --purple: #a855f7;
+            --text: #e2e8f0;
+            --muted: #64748b;
+            --muted2: #94a3b8;
+            --code-bg: #080b14;
+            --mono: 'IBM Plex Mono', monospace;
+            --sans: 'Epilogue', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            font-family: var(--sans);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+            opacity: .4;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            background: rgba(6, 7, 13, .92);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .hdr {
+            max-width: 1500px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 20px;
+        }
+
+        .logo {
+            font-family: var(--mono);
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--go);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .logo-gopher {
+            font-size: 1.3rem;
+            animation: spin 4s linear infinite;
+        }
+
+        @keyframes spin {
+
+            0%,
+            100% {
+                transform: rotateY(0deg)
+            }
+
+            50% {
+                transform: rotateY(180deg)
+            }
+        }
+
+        .level-badge {
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            color: #000;
+            font-size: .6rem;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 3px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .pbar-wrap {
+            flex: 1;
+            background: var(--border);
+            border-radius: 99px;
+            height: 5px;
+            overflow: hidden;
+        }
+
+        .pbar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--go-dim), var(--go), #7dd3fc);
+            border-radius: 99px;
+            transition: width .6s cubic-bezier(.4, 0, .2, 1);
+            width: 0%;
+        }
+
+        .prog-info {
+            font-family: var(--mono);
+            font-size: .7rem;
+            color: var(--muted);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .prog-pct {
+            color: var(--go);
+            font-weight: 700;
+        }
+
+        .app {
+            display: flex;
+            max-width: 1500px;
+            margin: 0 auto;
+            min-height: calc(100vh - 53px);
+        }
+
+        .sidebar {
+            width: 270px;
+            flex-shrink: 0;
+            border-right: 1px solid var(--border);
+            padding: 16px 0;
+            position: sticky;
+            top: 53px;
+            height: calc(100vh-53px);
+            overflow-y: auto;
+            background: var(--surface);
+        }
+
+        .cat-label {
+            font-size: .58rem;
+            font-weight: 700;
+            color: var(--muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 12px 16px 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .cat-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 16px;
+            cursor: pointer;
+            font-size: .78rem;
+            color: var(--muted2);
+            transition: all .15s;
+            border-left: 2px solid transparent;
+        }
+
+        .nav-item:hover {
+            color: var(--text);
+            background: rgba(0, 212, 255, .04);
+        }
+
+        .nav-item.active {
+            color: var(--go);
+            border-left-color: var(--go);
+            background: rgba(0, 212, 255, .07);
+        }
+
+        .nav-item.done {
+            color: var(--green);
+        }
+
+        .nav-item.done .ni-check {
+            opacity: 1;
+        }
+
+        .ni-num {
+            font-family: var(--mono);
+            font-size: .65rem;
+            color: var(--border2);
+            width: 18px;
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .ni-check {
+            margin-left: auto;
+            opacity: 0;
+            font-size: .7rem;
+            transition: opacity .3s;
+        }
+
+        .main {
+            flex: 1;
+            padding: 36px 44px;
+            overflow-y: auto;
+        }
+
+        .lesson {
+            display: none;
+            animation: fadeUp .4s ease;
+        }
+
+        .lesson.active {
+            display: block;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .lh {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 8px;
+        }
+
+        .lbadge {
+            font-family: var(--mono);
+            font-size: .65rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 4px;
+            background: rgba(0, 212, 255, .1);
+            color: var(--go);
+            border: 1px solid rgba(0, 212, 255, .2);
+            white-space: nowrap;
+            margin-top: 6px;
+        }
+
+        .ltitle {
+            font-size: 2rem;
+            font-weight: 900;
+            line-height: 1.15;
+            letter-spacing: -1px;
+        }
+
+        .ltitle em {
+            font-style: normal;
+            color: var(--go);
+        }
+
+        .ldesc {
+            font-size: .9rem;
+            color: var(--muted2);
+            line-height: 1.75;
+            max-width: 720px;
+            margin-bottom: 24px;
+        }
+
+        .sh {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 28px 0 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .sh::before {
+            content: '';
+            width: 3px;
+            height: 18px;
+            background: linear-gradient(var(--go), var(--go-dim));
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        .cb {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 14px 0;
+        }
+
+        .cb-hdr {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 14px;
+            background: rgba(255, 255, 255, .02);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .cpbtn {
+            background: none;
+            border: 1px solid var(--border2);
+            color: var(--muted);
+            font-family: var(--mono);
+            font-size: .65rem;
+            padding: 3px 9px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .cpbtn:hover {
+            color: var(--go);
+            border-color: var(--go);
+        }
+
+        pre {
+            padding: 18px;
+            overflow-x: auto;
+            font-family: var(--mono);
+            font-size: .8rem;
+            line-height: 1.75;
+        }
+
+        .note,
+        .warn,
+        .tip,
+        .danger {
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 14px 0;
+            font-size: .83rem;
+            line-height: 1.65;
+            display: flex;
+            gap: 10px;
+        }
+
+        .note {
+            background: rgba(0, 212, 255, .05);
+            border: 1px solid rgba(0, 212, 255, .15);
+        }
+
+        .note::before {
+            content: 'ℹ';
+            color: var(--go);
+        }
+
+        .warn {
+            background: rgba(245, 158, 11, .05);
+            border: 1px solid rgba(245, 158, 11, .15);
+        }
+
+        .warn::before {
+            content: '⚠';
+            color: var(--amber);
+        }
+
+        .tip {
+            background: rgba(16, 185, 129, .05);
+            border: 1px solid rgba(16, 185, 129, .15);
+        }
+
+        .tip::before {
+            content: '✦';
+            color: var(--green);
+        }
+
+        .danger {
+            background: rgba(239, 68, 68, .05);
+            border: 1px solid rgba(239, 68, 68, .15);
+        }
+
+        .danger::before {
+            content: '✕';
+            color: var(--red);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 12px;
+            margin: 14px 0;
+        }
+
+        .gc {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            border-top: 2px solid var(--go);
+        }
+
+        .gc h4 {
+            font-size: .72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            margin-bottom: 6px;
+            color: var(--go);
+        }
+
+        .navbtns {
+            display: flex;
+            gap: 10px;
+            margin-top: 44px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 11px 26px;
+            border-radius: 8px;
+            font-family: var(--sans);
+            font-weight: 700;
+            font-size: .85rem;
+            cursor: pointer;
+            transition: all .2s;
+            border: none;
+        }
+
+        .btn-p {
+            background: linear-gradient(135deg, var(--go-dim), var(--go));
+            color: #000;
+        }
+
+        .btn-p:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 212, 255, .25);
+        }
+
+        .btn-s {
+            background: var(--card);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-s:hover {
+            border-color: var(--go);
+            color: var(--go);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="hdr">
+            <div class="logo"><span class="logo-gopher">🐘</span> PostgreSQL <span style="color:var(--muted)">Pro</span>
+            </div>
+            <div class="level-badge">PRO LEVEL</div>
+            <div class="pbar-wrap">
+                <div class="pbar-fill" id="pb"></div>
+            </div>
+            <div class="prog-info"><span class="prog-pct" id="pct">0%</span><span id="ptxt">0 / 28</span></div>
+        </div>
+    </header>
+
+    <div class="app">
+        <nav class="sidebar">
+            <div class="cat-label">Asoslar (Chuqur)</div>
+            <div class="nav-item active" onclick="goTo(0)"><span class="ni-num">01</span>SQL Asoslari & SELECT<span
+                    class="ni-check">✓</span></div>
+            <div class="nav-item" onclick="goTo(1)"><span class="ni-num">02</span>Data Types & DDL<span
+                    class="ni-check">✓</span></div>
+            <div class="nav-item" onclick="goTo(2)"><span class="ni-num">03</span>Constraints & Keys<span
+                    class="ni-check">✓</span></div>
+            <div class="nav-item" onclick="goTo(3)"><span class="ni-num">04</span>DML: INSERT, UPDATE, DELETE<span
+                    class="ni-check">✓</span></div>
+
+            <div class="cat-label">Querying</div>
+            <div class="nav-item" onclick="goTo(4)"><span class="ni-num">05</span>JOINlar & Subqueries<span
+                    class="ni-tag tag-adv">ADV</span><span class="ni-check">✓</span></div>
+            <div class="nav-item" onclick="goTo(5)"><span class="ni-num">06</span>GROUP BY & Aggregations<span
+                    class="ni-check">✓</span></div>
+            <div class="nav-item" onclick="goTo(6)"><span class="ni-num">07</span>Window Functions<span
+                    class="ni-tag tag-adv">ADV</span><span class="ni-check">✓</span></div>
+            <div class="nav-item" onclick="goTo(7)"><span class="ni-num">08</span>CTE & Recursive Queries<span
+                    class="ni-check">✓</span></div>
+
+            <div class="cat-label">Performance</div>
+            <div class="nav-item" onclick="goTo(8)"><span class="ni-num">09</span>Indexes & EXPLAIN<span
+                    class="ni-tag tag-adv">ADV</span><span class="ni-check">✓</span></div>
+            <div class="nav-item" onclick="goTo(9)"><span class="ni-num">10</span>Query Optimization<span
+                    class="ni-tag tag-pro">PRO</span><span class="ni-check">✓</span></div>
+            <div class="nav-item" onclick="goTo(10)"><span class="ni-num">11</span>Transactions & ACID<span
+                    class="ni-check">✓</span></div>
+            <div class="nav-item" onclick="goTo(11)"><span class="ni-num">12</span>Locking & Concurrency<span
+                    class="ni-tag tag-pro">PRO</span><span class="ni-check">✓</span></div>
+
+            <div class="cat-label">PostgreSQL Advanced</div>
+            <div class="nav-item" onclick="goTo(12)"><span class="ni-num">13</span>JSON & JSONB<span
+                    class="ni-check">✓</span></div>
+            <div class="nav-item" onclick="goTo(13)"><span class="ni-num">14</span>Full-Text Search<span
+                    class="ni-tag tag-adv">ADV</span><span class="ni-check">✓</span></div>
+            <div class="nav-item" onclick="goTo(14)"><span class="ni-num">15</span>PL/pgSQL Functions<span
+                    class="ni-check">✓</span></div>
+            <div class="nav-item" onclick="goTo(15)"><span class="ni-num">16</span>Triggers & Events<span
+                    class="ni-tag tag-pro">PRO</span><span class="ni-check">✓</span></div>
+
+            <div class="cat-label">Architecture</div>
+            <div class="nav-item" onclick="goTo(16)"><span class="ni-num">17</span>Views & Materialized Views<span
+                    class="ni-check">✓</span></div>
+            <div class="nav-item" onclick="goTo(17)"><span class="ni-num">18</span>Stored Procedures<span
+                    class="ni-check">✓</span></div>
+            <div class="nav-item" onclick="goTo(18)"><span class="ni-num">19</span>Extensions & Custom Types<span
+                    class="ni-tag tag-adv">ADV</span><span class="ni-check">✓</span></div>
+
+            <div class="cat-label">Production</div>
+            <div class="nav-item" onclick="goTo(19)"><span class="ni-num">20</span>Backup & Restore<span
+                    class="ni-check">✓</span></div>
+            <div class="nav-item" onclick="goTo(20)"><span class="ni-num">21</span>Replication & HA<span
+                    class="ni-check">✓</span></div>
+            <div class="nav-item" onclick="goTo(21)"><span class="ni-num">22</span>Monitoring & pg_stat<span
+                    class="ni-tag tag-adv">ADV</span><span class="ni-check">✓</span></div>
+            <div class="nav-item" onclick="goTo(22)"><span class="ni-num">23</span>Security & Row Level Security<span
+                    class="ni-tag tag-pro">PRO</span><span class="ni-check">✓</span></div>
+
+            <div class="cat-label">Expert Level</div>
+            <div class="nav-item" onclick="goTo(23)"><span class="ni-num">24</span>Advanced Indexing<span
+                    class="ni-tag tag-pro">PRO</span><span class="ni-check">✓</span></div>
+            <div class="nav-item" onclick="goTo(24)"><span class="ni-num">25</span>Logical Replication & CDC<span
+                    class="ni-tag tag-pro">PRO</span><span class="ni-check">✓</span></div>
+            <div class="nav-item" onclick="goTo(25)"><span class="ni-num">26</span>VACUUM & Maintenance<span
+                    class="ni-check">✓</span></div>
+            <div class="nav-item" onclick="goTo(26)"><span class="ni-num">27</span>Performance Tuning<span
+                    class="ni-tag tag-pro">PRO</span><span class="ni-check">✓</span></div>
+            <div class="nav-item" onclick="goTo(27)"><span class="ni-num">28</span>Pro Tips & Best Practices<span
+                    class="ni-tag tag-pro">PRO</span><span class="ni-check">✓</span></div>
+        </nav>
+
+        <main class="main">
+            <!-- ==================== DARS 01 ==================== -->
+            <div class="lesson active" id="l0">
+                <div class="lh">
+                    <div class="lbadge">01 / 28</div>
+                    <h1 class="ltitle">SQL <em>Asoslari</em> & SELECT</h1>
+                </div>
+                <p class="ldesc">PostgreSQL bilan 0 dan professional darajagacha: SELECT sintaksisi, filtrlar,
+                    tartiblash, cheklash va real loyihalarda qo'llaniladigan eng muhim usullar.</p>
+
+                <div class="sh">Asosiy SELECT sintaksisi</div>
+                <div class="cb">
+                    <div class="cb-hdr"><span class="cb-file"><b>select_basics.sql</b></span><button class="cpbtn"
+                            onclick="cp(this)">copy</button></div>
+                    <pre><span class="kw">SELECT</span> id, email, full_name, age, created_at
+<span class="kw">FROM</span> users
+<span class="kw">WHERE</span> age &gt;= 18 
+  <span class="kw">AND</span> status = 'active'
+  <span class="kw">AND</span> created_at &gt;= '2025-01-01'
+<span class="kw">ORDER BY</span> created_at <span class="kw">DESC</span>, full_name <span class="kw">ASC</span>
+<span class="kw">LIMIT</span> 20 
+<span class="kw">OFFSET</span> 0;</pre>
+                </div>
+
+                <div class="tip"><strong>Eng muhim qoida:</strong> Hech qachon <code>SELECT *</code> ishlatmang. Faqat
+                    kerakli ustunlarni tanlang — bu tarmoq yuklamasini va xotira sarfini kamaytiradi.</div>
+
+                <div class="sh">WHERE shartlarida yaxshi amaliyotlar</div>
+                <div class="cb">
+                    <div class="cb-hdr"><span class="cb-file"><b>where_best_practices.sql</b></span><button
+                            class="cpbtn" onclick="cp(this)">copy</button></div>
+                    <pre><span class="kw">SELECT</span> * <span class="kw">FROM</span> orders 
+<span class="kw">WHERE</span> created_at BETWEEN '2025-03-01' <span class="kw">AND</span> '2025-03-31'
+  <span class="kw">AND</span> amount &gt; 50000
+  <span class="kw">AND</span> status <span class="kw">IN</span> ('paid', 'shipped');</pre>
+                </div>
+
+                <div class="note"><strong>Production maslahati:</strong> Sana va vaqt bilan ishlashda doim
+                    <code>BETWEEN</code> yoki <code>&gt;=</code> + <code>&lt;</code> ishlatish tavsiya etiladi.
+                </div>
+
+                <div class="navbtns">
+                    <button class="btn btn-s" disabled>← Oldingi</button>
+                    <button class="btn btn-p" onclick="next()">Keyingi →</button>
+                </div>
+            </div>
+
+            <!-- ==================== DARS 02 ==================== -->
+            <div class="lesson" id="l1">
+                <div class="lh">
+                    <div class="lbadge">02 / 28</div>
+                    <h1 class="ltitle">Data Types & <em>DDL</em></h1>
+                </div>
+                <p class="ldesc">PostgreSQL’da mavjud bo‘lgan barcha muhim ma’lumot turlari, ularning afzalliklari va
+                    real loyihalarda qanday tanlash kerakligi.</p>
+
+                <div class="sh">Eng muhim Data Types taqqoslash</div>
+                <div class="grid">
+                    <div class="gc green">
+                        <h4>TEXT</h4>
+                        <p>Eng tavsiya etiladigan matn turi. Uzunlik cheklovi yo‘q.</p>
+                    </div>
+                    <div class="gc amber">
+                        <h4>NUMERIC / DECIMAL</h4>
+                        <p>Pul va aniq hisoblar uchun majburiy. FLOAT ishlatmang!</p>
+                    </div>
+                    <div class="gc purple">
+                        <h4>TIMESTAMPTZ</h4>
+                        <p>Vaqt mintaqasi bilan saqlaydi. Har doim shuni ishlating.</p>
+                    </div>
+                    <div class="gc">
+                        <h4>JSONB</h4>
+                        <p>NoSQL uslubidagi ma’lumotlar uchun eng kuchli va tez turi.</p>
+                    </div>
+                </div>
+
+                <div class="cb">
+                    <div class="cb-hdr"><span class="cb-file"><b>ddl_best_practice.sql</b></span><button class="cpbtn"
+                            onclick="cp(this)">copy</button></div>
+                    <pre><span class="kw">CREATE TABLE</span> orders (
+    id              <span class="typ">BIGSERIAL</span> <span class="kw">PRIMARY KEY</span>,
+    user_id         <span class="typ">BIGINT</span> <span class="kw">NOT NULL</span>,
+    total_amount    <span class="typ">NUMERIC</span>(12,2) <span class="kw">CHECK</span> (total_amount &gt; 0),
+    status          <span class="typ">VARCHAR</span>(20) <span class="kw">DEFAULT</span> 'pending',
+    created_at      <span class="typ">TIMESTAMPTZ</span> <span class="kw">DEFAULT</span> <span class="kw">NOW</span>(),
+    metadata        <span class="typ">JSONB</span>,
+    <span class="kw">CONSTRAINT</span> fk_user <span class="kw">FOREIGN KEY</span> (user_id) <span class="kw">REFERENCES</span> users(id) <span class="kw">ON DELETE</span> CASCADE
+);</pre>
+                </div>
+
+                <div class="warn"><strong>Muhim:</strong> Pul miqdorlari uchun <code>FLOAT</code> yoki
+                    <code>DOUBLE PRECISION</code> ishlatish katta xatolarga olib keladi. Doim <code>NUMERIC</code>
+                    ishlating.
+                </div>
+
+                <div class="navbtns"><button class="btn btn-s" onclick="prev()">← Oldingi</button><button
+                        class="btn btn-p" onclick="next()">Keyingi →</button></div>
+            </div>
+            <!-- ==================== DARS 03 ==================== -->
+            <div class="lesson" id="l2">
+                <div class="lh">
+                    <div class="lbadge">03 / 28</div>
+                    <h1 class="ltitle">Constraints & <em>Keys</em></h1>
+                </div>
+                <p class="ldesc">Ma'lumotlar yaxlitligini ta'minlash: Primary Key, Foreign Key, Unique, Check va NOT
+                    NULL. Real loyihalarda qanday to'g'ri qo'llash kerak.</p>
+
+                <div class="sh">Asosiy Constraints turlari</div>
+                <div class="grid">
+                    <div class="gc">
+                        <h4>PRIMARY KEY</h4>
+                        <p>Har bir qatorni noyob identifikatsiya qiladi. Avtomatik index yaratadi.</p>
+                    </div>
+                    <div class="gc amber">
+                        <h4>FOREIGN KEY</h4>
+                        <p>Boshqa jadval bilan bog'lanish. Ma'lumotlar yaxlitligini saqlaydi.</p>
+                    </div>
+                    <div class="gc purple">
+                        <h4>UNIQUE + NOT NULL</h4>
+                        <p>Email, username kabi noyob maydonlar uchun majburiy.</p>
+                    </div>
+                    <div class="gc green">
+                        <h4>CHECK</h4>
+                        <p>Qo'shimcha biznes qoidalarini majburlash (masalan, age >= 16).</p>
+                    </div>
+                </div>
+
+                <div class="cb">
+                    <div class="cb-hdr"><span class="cb-file"><b>constraints.sql</b></span><button class="cpbtn"
+                            onclick="cp(this)">copy</button></div>
+                    <pre><span class="kw">CREATE TABLE</span> orders (
+    id              <span class="typ">BIGSERIAL</span> <span class="kw">PRIMARY KEY</span>,
+    user_id         <span class="typ">BIGINT</span> <span class="kw">NOT NULL</span>,
+    total_amount    <span class="typ">NUMERIC</span>(12,2) <span class="kw">CHECK</span> (total_amount &gt; 0),
+    status          <span class="typ">VARCHAR</span>(20) <span class="kw">DEFAULT</span> 'pending',
+    created_at      <span class="typ">TIMESTAMPTZ</span> <span class="kw">DEFAULT</span> <span class="kw">NOW</span>(),
+
+    <span class="kw">CONSTRAINT</span> fk_user 
+        <span class="kw">FOREIGN KEY</span> (user_id) 
+        <span class="kw">REFERENCES</span> users(id) 
+        <span class="kw">ON DELETE</span> CASCADE 
+        <span class="kw">ON UPDATE</span> RESTRICT,
+
+    <span class="kw">CONSTRAINT</span> check_status 
+        <span class="kw">CHECK</span> (status <span class="kw">IN</span> ('pending', 'paid', 'shipped', 'cancelled'))
+);</pre>
+                </div>
+
+                <div class="warn"><strong>Production maslahati:</strong> <code>ON DELETE CASCADE</code> ni ehtiyotkorlik
+                    bilan ishlating. Ba'zida <code>ON DELETE SET NULL</code> yoki <code>RESTRICT</code> xavfsizroq
+                    bo'ladi.</div>
+
+                <div class="navbtns"><button class="btn btn-s" onclick="prev()">← Oldingi</button><button
+                        class="btn btn-p" onclick="next()">Keyingi →</button></div>
+            </div>
+
+            <!-- ==================== DARS 04 ==================== -->
+            <div class="lesson" id="l3">
+                <div class="lh">
+                    <div class="lbadge">04 / 28</div>
+                    <h1 class="ltitle">DML: <em>INSERT, UPDATE, DELETE</em></h1>
+                </div>
+                <p class="ldesc">Ma'lumot qo'shish, yangilash va o'chirish. <code>RETURNING</code>, bulk insert va
+                    xavfsiz update/delete usullari.</p>
+
+                <div class="sh">INSERT va RETURNING</div>
+                <div class="cb">
+                    <div class="cb-hdr"><span class="cb-file"><b>insert.sql</b></span><button class="cpbtn"
+                            onclick="cp(this)">copy</button></div>
+                    <pre><span class="kw">INSERT INTO</span> users (email, full_name, age)
+<span class="kw">VALUES</span> ('ali@example.com', 'Ali Qodirov', 28)
+<span class="kw">RETURNING</span> id, created_at;</pre>
+                </div>
+
+                <div class="sh">Bulk Insert (tezroq)</div>
+                <div class="cb">
+                    <div class="cb-hdr"><span class="cb-file"><b>bulk_insert.sql</b></span><button class="cpbtn"
+                            onclick="cp(this)">copy</button></div>
+                    <pre><span class="kw">INSERT INTO</span> products (name, price, category)
+<span class="kw">VALUES</span> 
+    ('Laptop', 1299.99, 'electronics'),
+    ('Mouse', 29.99, 'accessories')
+<span class="kw">RETURNING</span> id;</pre>
+                </div>
+
+                <div class="danger"><strong>Xavf:</strong> <code>UPDATE</code> yoki <code>DELETE</code> da
+                    <code>WHERE</code> shartini unutish butun jadvalni o'zgartirishi mumkin!
+                </div>
+
+                <div class="navbtns"><button class="btn btn-s" onclick="prev()">← Oldingi</button><button
+                        class="btn btn-p" onclick="next()">Keyingi →</button></div>
+            </div>
+
+            <!-- ==================== DARS 05 ==================== -->
+            <div class="lesson" id="l4">
+                <div class="lh">
+                    <div class="lbadge">05 / 28</div>
+                    <h1 class="ltitle">JOINlar & <em>Subqueries</em></h1>
+                </div>
+                <p class="ldesc">INNER, LEFT, RIGHT, FULL JOIN, CROSS JOIN va subquery'lardan foydalanish. Real
+                    loyihalarda qaysi JOINni qachon ishlatish kerak.</p>
+
+                <div class="sh">Eng ko'p ishlatiladigan JOINlar</div>
+                <div class="cb">
+                    <div class="cb-hdr"><span class="cb-file"><b>joins.sql</b></span><button class="cpbtn"
+                            onclick="cp(this)">copy</button></div>
+                    <pre><span class="kw">SELECT</span> 
+    u.full_name, 
+    o.total_amount, 
+    o.status
+<span class="kw">FROM</span> users u
+<span class="kw">LEFT JOIN</span> orders o <span class="kw">ON</span> u.id = o.user_id
+<span class="kw">WHERE</span> u.created_at &gt; '2024-01-01'
+<span class="kw">ORDER BY</span> o.total_amount <span class="kw">DESC</span>;</pre>
+                </div>
+
+                <div class="tip"><strong>LEFT JOIN</strong> — eng xavfsiz va ko'p ishlatiladigan. Foydalanuvchi bo'lsa
+                    ham, buyurtma bo'lmasa ham natija chiqadi.</div>
+
+                <div class="sh">Subquery misoli</div>
+                <div class="cb">
+                    <div class="cb-hdr"><span class="cb-file"><b>subquery.sql</b></span><button class="cpbtn"
+                            onclick="cp(this)">copy</button></div>
+                    <pre><span class="kw">SELECT</span> full_name 
+<span class="kw">FROM</span> users 
+<span class="kw">WHERE</span> id <span class="kw">IN</span> (
+    <span class="kw">SELECT</span> user_id 
+    <span class="kw">FROM</span> orders 
+    <span class="kw">WHERE</span> total_amount &gt; 1000000
+);</pre>
+                </div>
+
+                <div class="navbtns"><button class="btn btn-s" onclick="prev()">← Oldingi</button><button
+                        class="btn btn-p" onclick="next()">Keyingi →</button></div>
+            </div>
+
+            <!-- ==================== DARS 06 ==================== -->
+            <div class="lesson" id="l5">
+                <div class="lh">
+                    <div class="lbadge">06 / 28</div>
+                    <h1 class="ltitle">GROUP BY & <em>Aggregations</em></h1>
+                </div>
+                <p class="ldesc">COUNT, SUM, AVG, MIN, MAX va HAVING filtri. Guruhlash va statistika chiqarishning
+                    professional usullari.</p>
+
+                <div class="cb">
+                    <div class="cb-hdr"><span class="cb-file"><b>group_by.sql</b></span><button class="cpbtn"
+                            onclick="cp(this)">copy</button></div>
+                    <pre><span class="kw">SELECT</span> 
+    category,
+    <span class="kw">COUNT</span>(*) as product_count,
+    <span class="kw">AVG</span>(price) as avg_price,
+    <span class="kw">SUM</span>(stock) as total_stock
+<span class="kw">FROM</span> products
+<span class="kw">GROUP BY</span> category
+<span class="kw">HAVING</span> <span class="kw">COUNT</span>(*) &gt; 5 
+   <span class="kw">AND</span> <span class="kw">AVG</span>(price) &gt; 50
+<span class="kw">ORDER BY</span> avg_price <span class="kw">DESC</span>;</pre>
+                </div>
+
+                <div class="note"><strong>HAVING</strong> — guruhlangandan keyin filtrlaydi. <code>WHERE</code> esa
+                    guruhlashdan oldin ishlaydi.</div>
+
+                <div class="navbtns"><button class="btn btn-s" onclick="prev()">← Oldingi</button><button
+                        class="btn btn-p" onclick="next()">Keyingi →</button></div>
+            </div>
+
+            <!-- ==================== DARS 07 ==================== -->
+            <div class="lesson" id="l6">
+                <div class="lh">
+                    <div class="lbadge">07 / 28</div>
+                    <h1 class="ltitle">Window <em>Functions</em></h1>
+                </div>
+                <p class="ldesc">ROW_NUMBER, RANK, DENSE_RANK, LAG, LEAD, running total va PARTITION BY orqali kuchli
+                    tahlillar.</p>
+
+                <div class="cb">
+                    <div class="cb-hdr"><span class="cb-file"><b>window_functions.sql</b></span><button class="cpbtn"
+                            onclick="cp(this)">copy</button></div>
+                    <pre><span class="kw">SELECT</span> 
+    full_name,
+    salary,
+    <span class="kw">ROW_NUMBER()</span> <span class="kw">OVER</span> (<span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>) as rank_all,
+    <span class="kw">RANK()</span> <span class="kw">OVER</span> (<span class="kw">PARTITION BY</span> department <span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>) as rank_in_dept,
+    <span class="kw">SUM</span>(salary) <span class="kw">OVER</span> (<span class="kw">PARTITION BY</span> department) as dept_total
+<span class="kw">FROM</span> employees;</pre>
+                </div>
+
+                <div class="tip">Window funksiyalari qatorlarni guruhlamaydi, lekin har bir qator uchun hisoblash
+                    imkonini beradi. Bu juda kuchli vosita.</div>
+
+                <div class="navbtns"><button class="btn btn-s" onclick="prev()">← Oldingi</button><button
+                        class="btn btn-p" onclick="next()">Keyingi →</button></div>
+            </div>
+
+            <!-- ==================== DARS 08 ==================== -->
+            <div class="lesson" id="l7">
+                <div class="lh">
+                    <div class="lbadge">08 / 28</div>
+                    <h1 class="ltitle">CTE & <em>Recursive Queries</em></h1>
+                </div>
+                <p class="ldesc">WITH operatori, murakkab so'rovlarni o'qiladigan qilish va rekursiv CTE (daraxt,
+                    ierarxiya).</p>
+
+                <div class="cb">
+                    <div class="cb-hdr"><span class="cb-file"><b>cte_example.sql</b></span><button class="cpbtn"
+                            onclick="cp(this)">copy</button></div>
+                    <pre><span class="kw">WITH</span> active_users <span class="kw">AS</span> (
+    <span class="kw">SELECT</span> * <span class="kw">FROM</span> users 
+    <span class="kw">WHERE</span> status = 'active'
+),
+high_value_orders <span class="kw">AS</span> (
+    <span class="kw">SELECT</span> user_id, <span class="kw">SUM</span>(amount) as total 
+    <span class="kw">FROM</span> orders 
+    <span class="kw">GROUP BY</span> user_id 
+    <span class="kw">HAVING</span> <span class="kw">SUM</span>(amount) &gt; 500000
+)
+<span class="kw">SELECT</span> au.full_name, hvo.total
+<span class="kw">FROM</span> active_users au
+<span class="kw">JOIN</span> high_value_orders hvo <span class="kw">ON</span> au.id = hvo.user_id;</pre>
+                </div>
+
+                <div class="navbtns"><button class="btn btn-s" onclick="prev()">← Oldingi</button><button
+                        class="btn btn-p" onclick="next()">Keyingi →</button></div>
+            </div>
+
+            <!-- ==================== DARS 09 ==================== -->
+            <div class="lesson" id="l8">
+                <div class="lh">
+                    <div class="lbadge">09 / 28</div>
+                    <h1 class="ltitle">Indexes & <em>EXPLAIN</em></h1>
+                </div>
+                <p class="ldesc">Indeks turlari (B-Tree, Hash, GIN, GiST), qachon yaratish kerakligi va so'rov rejasini
+                    tahlil qilish.</p>
+
+                <div class="cb">
+                    <div class="cb-hdr"><span class="cb-file"><b>explain.sql</b></span><button class="cpbtn"
+                            onclick="cp(this)">copy</button></div>
+                    <pre><span class="kw">EXPLAIN ANALYZE</span> 
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> users 
+<span class="kw">WHERE</span> email = 'test@example.com';</pre>
+                </div>
+
+                <div class="tip">Indeks yaratishdan oldin har doim <code>EXPLAIN ANALYZE</code> ishlatib, haqiqiy
+                    tezlikni ko'ring.</div>
+
+                <div class="navbtns"><button class="btn btn-s" onclick="prev()">← Oldingi</button><button
+                        class="btn btn-p" onclick="next()">Keyingi →</button></div>
+            </div>
+
+            <!-- ==================== DARS 10 ==================== -->
+            <div class="lesson" id="l9">
+                <div class="lh">
+                    <div class="lbadge">10 / 28</div>
+                    <h1 class="ltitle">Query <em>Optimization</em></h1>
+                </div>
+                <p class="ldesc">Seq Scan, Index Scan, Bitmap Scan, join strategiyalari va so'rovlarni tezlashtirishning
+                    professional usullari.</p>
+
+                <div class="sh">Tezlashtirish bo'yicha maslahatlar</div>
+                <ul>
+                    <li>Keraksiz <code>SELECT *</code> dan voz keching</li>
+                    <li>Filtrlarni indekslangan ustunlarga qo'ying</li>
+                    <li><code>LIMIT</code> va <code>OFFSET</code> ni ehtiyotkorlik bilan ishlating (katta OFFSET sekin)
+                    </li>
+                    <li>Complex join'larni CTE yoki Materialized View bilan almashtiring</li>
+                </ul>
+
+                <div class="navbtns"><button class="btn btn-s" onclick="prev()">← Oldingi</button><button
+                        class="btn btn-p" onclick="next()">Keyingi →</button></div>
+            </div>
+            <!-- ==================== DARS 11 ==================== -->
+            <div class="lesson" id="l10">
+                <div class="lh">
+                    <div class="lbadge">11 / 28</div>
+                    <h1 class="ltitle">Transactions & <em>ACID</em></h1>
+                </div>
+                <p class="ldesc">ACID tamoyillari (Atomicity, Consistency, Isolation, Durability) va PostgreSQL’da
+                    tranzaksiyalarni to‘g‘ri boshqarish. Real loyihalarda tranzaksiya muhimligi.</p>
+
+                <div class="sh">ACID nima va nima uchun kerak?</div>
+                <div class="grid">
+                    <div class="gc green">
+                        <h4>Atomicity</h4>
+                        <p>Tranzaksiya butunlay bajariladi yoki umuman bajarilmaydi.</p>
+                    </div>
+                    <div class="gc amber">
+                        <h4>Consistency</h4>
+                        <p>Tranzaksiya oldin va keyin bazani yaxlit holatda saqlaydi.</p>
+                    </div>
+                    <div class="gc purple">
+                        <h4>Isolation</h4>
+                        <p>Bir tranzaksiya boshqasiga aralashmaydi (Isolation levels).</p>
+                    </div>
+                    <div class="gc">
+                        <h4>Durability</h4>
+                        <p>Tranzaksiya muvaffaqiyatli tugagach, natija doimiy saqlanadi.</p>
+                    </div>
+                </div>
+
+                <div class="sh">Oddiy tranzaksiya misoli</div>
+                <div class="cb">
+                    <div class="cb-hdr"><span class="cb-file"><b>transaction_basic.sql</b></span><button class="cpbtn"
+                            onclick="cp(this)">copy</button></div>
+                    <pre><span class="kw">BEGIN</span>;
+
+<span class="kw">UPDATE</span> accounts 
+<span class="kw">SET</span> balance = balance - 500 
+<span class="kw">WHERE</span> id = 1;
+
+<span class="kw">UPDATE</span> accounts 
+<span class="kw">SET</span> balance = balance + 500 
+<span class="kw">WHERE</span> id = 2;
+
+<span class="kw">COMMIT</span>;</pre>
+                </div>
+
+                <div class="danger">Agar ikkinchi <code>UPDATE</code> muvaffaqiyatsiz bo‘lsa, birinchi o‘zgartirish ham
+                    bekor qilinadi (<code>ROLLBACK</code> avtomatik amalga oshiriladi).</div>
+
+                <div class="sh">SAVEPOINT bilan murakkab tranzaksiya</div>
+                <div class="cb">
+                    <div class="cb-hdr"><span class="cb-file"><b>savepoint.sql</b></span><button class="cpbtn"
+                            onclick="cp(this)">copy</button></div>
+                    <pre><span class="kw">BEGIN</span>;
+
+<span class="kw">UPDATE</span> accounts <span class="kw">SET</span> balance = balance - 1000 <span class="kw">WHERE</span> id = 1;
+<span class="kw">SAVEPOINT</span> after_first_transfer;
+
+<span class="kw">UPDATE</span> accounts <span class="kw">SET</span> balance = balance + 1000 <span class="kw">WHERE</span> id = 2;
+
+-- Agar ikkinchi operatsiya muvaffaqiyatsiz bo‘lsa:
+<span class="kw">ROLLBACK TO</span> after_first_transfer;
+
+<span class="kw">COMMIT</span>;</pre>
+                </div>
+
+                <div class="tip"><strong>Production maslahati:</strong> Har doim muhim operatsiyalarni (pul o‘tkazish,
+                    buyurtma yaratish) tranzaksiya ichida bajaring.</div>
+
+                <div class="navbtns"><button class="btn btn-s" onclick="prev()">← Oldingi</button><button
+                        class="btn btn-p" onclick="next()">Keyingi →</button></div>
+            </div>
+
+            <!-- ==================== DARS 12 ==================== -->
+            <div class="lesson" id="l11">
+                <div class="lh">
+                    <div class="lbadge">12 / 28</div>
+                    <h1 class="ltitle">Locking & <em>Concurrency</em></h1>
+                </div>
+                <p class="ldesc">PostgreSQL’da row-level locking, deadlocks, SELECT FOR UPDATE va yuqori yuklama ostida
+                    to‘g‘ri ishlash usullari.</p>
+
+                <div class="sh">Eng muhim locking turlari</div>
+                <div class="cb">
+                    <div class="cb-hdr"><span class="cb-file"><b>locking.sql</b></span><button class="cpbtn"
+                            onclick="cp(this)">copy</button></div>
+                    <pre><span class="kw">SELECT</span> * 
+<span class="kw">FROM</span> accounts 
+<span class="kw">WHERE</span> id = 1 
+<span class="kw">FOR UPDATE</span>;   <span class="cmt">-- Row ni qulflaydi</span>
+
+<span class="kw">SELECT</span> * 
+<span class="kw">FROM</span> accounts 
+<span class="kw">WHERE</span> id = 1 
+<span class="kw">FOR UPDATE SKIP LOCKED</span>; <span class="cmt">-- Boshqa tranzaksiya qulflaganini o‘tkazib yuboradi</span></pre>
+                </div>
+
+                <div class="warn">Deadlock yuzaga kelganda PostgreSQL avtomatik bir tranzaksiyani o‘ldiradi. Har doim
+                    bir xil tartibda qulflashga harakat qiling.</div>
+
+                <div class="navbtns"><button class="btn btn-s" onclick="prev()">← Oldingi</button><button
+                        class="btn btn-p" onclick="next()">Keyingi →</button></div>
+            </div>
+
+            <!-- ==================== DARS 13 ==================== -->
+            <div class="lesson" id="l12">
+                <div class="lh">
+                    <div class="lbadge">13 / 28</div>
+                    <h1 class="ltitle">JSON & <em>JSONB</em></h1>
+                </div>
+                <p class="ldesc">PostgreSQL’da JSON va JSONB farqlari, JSONB ning afzalliklari, operatorlar (@>, ?, ->,
+                    #>>) va GIN indekslari.</p>
+
+                <div class="sh">JSON vs JSONB</div>
+                <div class="compare">
+                    <div class="cb cmp-bad">
+                        <div class="cb-hdr"><span class="cmp-label">JSON</span></div>
+                        <pre>Matn sifatida saqlanadi. Har safar parse qilinadi. Sekin.</pre>
+                    </div>
+                    <div class="cb cmp-good">
+                        <div class="cb-hdr"><span class="cmp-label">JSONB</span></div>
+                        <pre>Binar formatda saqlanadi. Tez qidirish va indekslash mumkin.</pre>
+                    </div>
+                </div>
+
+                <div class="cb">
+                    <div class="cb-hdr"><span class="cb-file"><b>jsonb_examples.sql</b></span><button class="cpbtn"
+                            onclick="cp(this)">copy</button></div>
+                    <pre><span class="kw">SELECT</span> 
+    id, 
+    metadata->>'city' AS city,
+    metadata->'address'->>'street' AS street
+<span class="kw">FROM</span> users
+<span class="kw">WHERE</span> metadata @> '{"status": "active", "verified": true}';</pre>
+                </div>
+
+                <div class="tip"><strong>Eng muhim operatorlar:</strong> <code>@></code> (contains), <code>?</code> (key
+                    exists), <code>-></code> (object), <code>#>></code> (text).</div>
+
+                <div class="navbtns"><button class="btn btn-s" onclick="prev()">← Oldingi</button><button
+                        class="btn btn-p" onclick="next()">Keyingi →</button></div>
+            </div>
+
+            <!-- ==================== DARS 14 ==================== -->
+            <div class="lesson" id="l13">
+                <div class="lh">
+                    <div class="lbadge">14 / 28</div>
+                    <h1 class="ltitle">Full-Text <em>Search</em></h1>
+                </div>
+                <p class="ldesc">tsvector va tsquery yordamida Google kabi qidiruv tizimini yaratish. to_tsvector,
+                    to_tsquery va GIN indekslari.</p>
+
+                <div class="cb">
+                    <div class="cb-hdr"><span class="cb-file"><b>full_text_search.sql</b></span><button class="cpbtn"
+                            onclick="cp(this)">copy</button></div>
+                    <pre><span class="kw">SELECT</span> title, body 
+<span class="kw">FROM</span> articles
+<span class="kw">WHERE</span> to_tsvector('english', body) @@ to_tsquery('english', 'postgresql & performance');
+
+<span class="kw">CREATE INDEX</span> idx_articles_fts 
+    <span class="kw">ON</span> articles <span class="kw">USING</span> GIN (to_tsvector('english', body));</pre>
+                </div>
+
+                <div class="navbtns"><button class="btn btn-s" onclick="prev()">← Oldingi</button><button
+                        class="btn btn-p" onclick="next()">Keyingi →</button></div>
+            </div>
+
+            <!-- ==================== DARS 15 ==================== -->
+            <div class="lesson" id="l14">
+                <div class="lh">
+                    <div class="lbadge">15 / 28</div>
+                    <h1 class="ltitle">PL/pgSQL <em>Functions</em></h1>
+                </div>
+                <p class="ldesc">PostgreSQL’da server tomonida dasturlash: funksiyalar, parametrlar, shartli
+                    operatorlar, tsikllar va xatolarni boshqarish.</p>
+
+                <div class="cb">
+                    <div class="cb-hdr"><span class="cb-file"><b>plpgsql_function.sql</b></span><button class="cpbtn"
+                            onclick="cp(this)">copy</button></div>
+                    <pre><span class="kw">CREATE OR REPLACE FUNCTION</span> calculate_discount(
+    p_amount NUMERIC,
+    p_customer_type VARCHAR
+) <span class="kw">RETURNS</span> NUMERIC <span class="kw">AS</span> $$
+<span class="kw">DECLARE</span>
+    discount_rate NUMERIC := 0;
+<span class="kw">BEGIN</span>
+    <span class="kw">IF</span> p_customer_type = 'VIP' <span class="kw">THEN</span>
+        discount_rate := 0.20;
+    <span class="kw">ELSIF</span> p_amount > 1000 <span class="kw">THEN</span>
+        discount_rate := 0.15;
+    <span class="kw">END IF</span>;
+
+    <span class="kw">RETURN</span> p_amount * (1 - discount_rate);
+<span class="kw">END</span>;
+$$ <span class="kw">LANGUAGE</span> plpgsql;</pre>
+                </div>
+
+                <div class="navbtns"><button class="btn btn-s" onclick="prev()">← Oldingi</button><button
+                        class="btn btn-p" onclick="next()">Keyingi →</button></div>
+            </div>
+
+            <!-- ==================== DARS 16 ==================== -->
+            <div class="lesson" id="l15">
+                <div class="lh">
+                    <div class="lbadge">16 / 28</div>
+                    <h1 class="ltitle">Triggers & <em>Events</em></h1>
+                </div>
+                <p class="ldesc">Ma'lumot o‘zgarganda avtomatik ishlaydigan triggerlar. Auditing, log yozish va biznes
+                    qoidalarini majburlash.</p>
+
+                <div class="cb">
+                    <div class="cb-hdr"><span class="cb-file"><b>trigger_example.sql</b></span><button class="cpbtn"
+                            onclick="cp(this)">copy</button></div>
+                    <pre><span class="kw">CREATE OR REPLACE FUNCTION</span> log_user_changes()
+<span class="kw">RETURNS</span> TRIGGER <span class="kw">AS</span> $$
+<span class="kw">BEGIN</span>
+    <span class="kw">INSERT INTO</span> user_audit (user_id, action, old_data, new_data, changed_at)
+    <span class="kw">VALUES</span> (
+        NEW.id, 
+        TG_OP, 
+        row_to_json(OLD), 
+        row_to_json(NEW), 
+        NOW()
+    );
+    <span class="kw">RETURN</span> NEW;
+<span class="kw">END</span>;
+$$ <span class="kw">LANGUAGE</span> plpgsql;
+
+<span class="kw">CREATE TRIGGER</span> trg_user_audit
+    <span class="kw">AFTER</span> INSERT OR UPDATE OR DELETE <span class="kw">ON</span> users
+    <span class="kw">FOR EACH ROW EXECUTE FUNCTION</span> log_user_changes();</pre>
+                </div>
+
+                <div class="navbtns"><button class="btn btn-s" onclick="prev()">← Oldingi</button><button
+                        class="btn btn-p" onclick="next()">Keyingi →</button></div>
+            </div>
+
+            <!-- ==================== DARS 17 ==================== -->
+            <div class="lesson" id="l16">
+                <div class="lh">
+                    <div class="lbadge">17 / 28</div>
+                    <h1 class="ltitle">Views & <em>Materialized Views</em></h1>
+                </div>
+                <p class="ldesc">Oddiy View va Materialized View farqlari, qachon qaysisini ishlatish va yangilash
+                    strategiyalari.</p>
+
+                <div class="cb">
+                    <div class="cb-hdr"><span class="cb-file"><b>materialized_view.sql</b></span><button class="cpbtn"
+                            onclick="cp(this)">copy</button></div>
+                    <pre><span class="kw">CREATE MATERIALIZED VIEW</span> sales_summary <span class="kw">AS</span>
+<span class="kw">SELECT</span> 
+    date_trunc('month', created_at) AS month,
+    <span class="kw">SUM</span>(total_amount) AS total_sales,
+    <span class="kw">COUNT</span>(*) AS order_count
+<span class="kw">FROM</span> orders
+<span class="kw">GROUP BY</span> 1;
+
+<span class="kw">REFRESH MATERIALIZED VIEW</span> CONCURRENTLY sales_summary;</pre>
+                </div>
+
+                <div class="tip"><code>CONCURRENTLY</code> kalit so‘zi bilan Materialized View ni yangilashda jadval
+                    qulflanmaydi.</div>
+
+                <div class="navbtns"><button class="btn btn-s" onclick="prev()">← Oldingi</button><button
+                        class="btn btn-p" onclick="next()">Keyingi →</button></div>
+            </div>
+
+            <!-- ==================== DARS 18 ==================== -->
+            <div class="lesson" id="l17">
+                <div class="lh">
+                    <div class="lbadge">18 / 28</div>
+                    <h1 class="ltitle">Stored <em>Procedures</em></h1>
+                </div>
+                <p class="ldesc">Funksiyalardan farqli ravishda tranzaksiyalarni ichida boshqarish imkoniyati
+                    (COMMIT/ROLLBACK).</p>
+
+                <div class="cb">
+                    <div class="cb-hdr"><span class="cb-file"><b>stored_procedure.sql</b></span><button class="cpbtn"
+                            onclick="cp(this)">copy</button></div>
+                    <pre><span class="kw">CREATE OR REPLACE PROCEDURE</span> transfer_money(
+    from_account INT, 
+    to_account INT, 
+    amount NUMERIC
+)
+<span class="kw">LANGUAGE</span> plpgsql
+<span class="kw">AS</span> $$
+<span class="kw">BEGIN</span>
+    <span class="kw">UPDATE</span> accounts <span class="kw">SET</span> balance = balance - amount 
+    <span class="kw">WHERE</span> id = from_account;
+
+    <span class="kw">UPDATE</span> accounts <span class="kw">SET</span> balance = balance + amount 
+    <span class="kw">WHERE</span> id = to_account;
+
+    <span class="kw">COMMIT</span>;
+<span class="kw">EXCEPTION</span>
+    <span class="kw">WHEN OTHERS THEN</span>
+        <span class="kw">ROLLBACK</span>;
+        <span class="kw">RAISE</span>;
+<span class="kw">END</span>;
+$$;</pre>
+                </div>
+
+                <div class="navbtns"><button class="btn btn-s" onclick="prev()">← Oldingi</button><button
+                        class="btn btn-p" onclick="next()">Keyingi →</button></div>
+            </div>
+
+            <!-- ==================== DARS 19 ==================== -->
+            <div class="lesson" id="l18">
+                <div class="lh">
+                    <div class="lbadge">19 / 28</div>
+                    <h1 class="ltitle">Extensions & <em>Custom Types</em></h1>
+                </div>
+                <p class="ldesc">PostgreSQL kengaytmalari (uuid-ossp, pg_trgm, PostGIS) va o‘z ma’lumot turlarini
+                    yaratish.</p>
+
+                <div class="cb">
+                    <div class="cb-hdr"><span class="cb-file"><b>extensions.sql</b></span><button class="cpbtn"
+                            onclick="cp(this)">copy</button></div>
+                    <pre><span class="kw">CREATE EXTENSION</span> IF NOT EXISTS "uuid-ossp";
+<span class="kw">CREATE EXTENSION</span> IF NOT EXISTS pg_trgm;
+
+<span class="kw">SELECT</span> uuid_generate_v4();
+
+<span class="kw">CREATE TYPE</span> user_status <span class="kw">AS ENUM</span> ('active', 'inactive', 'banned');</pre>
+                </div>
+
+                <div class="navbtns"><button class="btn btn-s" onclick="prev()">← Oldingi</button><button
+                        class="btn btn-p" onclick="next()">Keyingi →</button></div>
+            </div>
+
+            <!-- ==================== DARS 20 ==================== -->
+            <div class="lesson" id="l19">
+                <div class="lh">
+                    <div class="lbadge">20 / 28</div>
+                    <h1 class="ltitle">Backup & <em>Restore</em></h1>
+                </div>
+                <p class="ldesc">pg_dump, pg_restore, point-in-time recovery va productionda ma’lumotlarni xavfsiz
+                    saqlash strategiyalari.</p>
+
+                <div class="cb">
+                    <div class="cb-hdr"><span class="cb-file"><b>backup_commands.sh</b></span><button class="cpbtn"
+                            onclick="cp(this)">copy</button></div>
+                    <pre><span class="cmt"># To'liq backup</span>
+pg_dump -U postgres -d mydb -F c > backup_$(date +%Y%m%d).dump
+
+<span class="cmt"># Restore</span>
+pg_restore -U postgres -d mydb -c backup_20250326.dump
+
+<span class="cmt"># Faqat schema</span>
+pg_dump -U postgres -d mydb --schema-only > schema.sql</pre>
+                </div>
+
+                <div class="tip">Har kuni to‘liq backup + har soatda WAL arxivlash (Point-in-Time Recovery) qilish
+                    tavsiya etiladi.</div>
+
+                <div class="navbtns"><button class="btn btn-s" onclick="prev()">← Oldingi</button><button
+                        class="btn btn-p" onclick="next()">Keyingi →</button></div>
+            </div>
+            <!-- ==================== DARS 21 ==================== -->
+            <div class="lesson" id="l20">
+                <div class="lh">
+                    <div class="lbadge">21 / 28</div>
+                    <h1 class="ltitle">Replication & <em>HA</em></h1>
+                </div>
+                <p class="ldesc">PostgreSQL’da yuqori mavjudlik (High Availability) va ma’lumotlar sinxronizatsiyasi.
+                    Streaming Replication, Failover va Load Balancing.</p>
+
+                <div class="sh">Streaming Replication asoslari</div>
+                <div class="cb">
+                    <div class="cb-hdr"><span class="cb-file"><b>replication_setup.sql</b></span><button class="cpbtn"
+                            onclick="cp(this)">copy</button></div>
+                    <pre><span class="cmt">-- Primary serverda (postgresql.conf)</span>
+wal_level = replica
+max_wal_senders = 10
+wal_keep_size = 1GB
+
+<span class="cmt">-- Replica serverda recovery.conf yoki postgresql.conf</span>
+primary_conninfo = 'host=primary_ip port=5432 user=repl_user password=strongpass'
+restore_command = 'cp /archive/%f %p'</pre>
+                </div>
+
+                <div class="tip"><strong>Hot Standby</strong> — Replica serverda o‘qish mumkin. Bu o‘qish yukini
+                    primarydan yengillashtiradi.</div>
+
+                <div class="warn">Replica serverda <code>hot_standby = on</code> bo‘lishi shart, aks holda faqat
+                    recovery holatida ishlaydi.</div>
+
+                <div class="navbtns"><button class="btn btn-s" onclick="prev()">← Oldingi</button><button
+                        class="btn btn-p" onclick="next()">Keyingi →</button></div>
+            </div>
+
+            <!-- ==================== DARS 22 ==================== -->
+            <div class="lesson" id="l21">
+                <div class="lh">
+                    <div class="lbadge">22 / 28</div>
+                    <h1 class="ltitle">Monitoring & <em>pg_stat</em></h1>
+                </div>
+                <p class="ldesc">PostgreSQL monitoringi: pg_stat_activity, pg_stat_statements, pg_stat_database va real
+                    vaqtda tizim kuzatuv usullari.</p>
+
+                <div class="cb">
+                    <div class="cb-hdr"><span class="cb-file"><b>monitoring.sql</b></span><button class="cpbtn"
+                            onclick="cp(this)">copy</button></div>
+                    <pre><span class="kw">SELECT</span> 
+    pid, 
+    datname, 
+    usename, 
+    application_name,
+    state,
+    query,
+    wait_event,
+    now() - query_start as duration
+<span class="kw">FROM</span> pg_stat_activity 
+<span class="kw">WHERE</span> state = 'active' 
+  <span class="kw">AND</span> pid &lt;&gt; pg_backend_pid()
+<span class="kw">ORDER BY</span> duration <span class="kw">DESC</span>;
+
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> pg_stat_statements 
+<span class="kw">ORDER BY</span> total_exec_time <span class="kw">DESC</span> 
+<span class="kw">LIMIT</span> 10;</pre>
+                </div>
+
+                <div class="tip"><code>pg_stat_statements</code> ni yoqish uchun extension o‘rnating:
+                    <code>CREATE EXTENSION pg_stat_statements;</code></div>
+
+                <div class="navbtns"><button class="btn btn-s" onclick="prev()">← Oldingi</button><button
+                        class="btn btn-p" onclick="next()">Keyingi →</button></div>
+            </div>
+
+            <!-- ==================== DARS 23 ==================== -->
+            <div class="lesson" id="l22">
+                <div class="lh">
+                    <div class="lbadge">23 / 28</div>
+                    <h1 class="ltitle">Security & <em>Row Level Security</em></h1>
+                </div>
+                <p class="ldesc">PostgreSQL xavfsizligi: Role, Privilege, RLS (Row Level Security) va ma’lumotni
+                    foydalanuvchiga qarab cheklash.</p>
+
+                <div class="cb">
+                    <div class="cb-hdr"><span class="cb-file"><b>row_level_security.sql</b></span><button class="cpbtn"
+                            onclick="cp(this)">copy</button></div>
+                    <pre><span class="kw">ALTER TABLE</span> employees <span class="kw">ENABLE ROW LEVEL SECURITY</span>;
+
+<span class="kw">CREATE POLICY</span> employee_self_policy <span class="kw">ON</span> employees
+    <span class="kw">USING</span> (id = current_setting('app.current_user_id')::bigint);
+
+<span class="kw">CREATE POLICY</span> manager_policy <span class="kw">ON</span> employees
+    <span class="kw">USING</span> (department = current_setting('app.current_department'));</pre>
+                </div>
+
+                <div class="warn">RLS yoqilganda avvalgi GRANT lar yetarli bo‘lmaydi. Har doim policy yaratishni
+                    unutmang.</div>
+
+                <div class="navbtns"><button class="btn btn-s" onclick="prev()">← Oldingi</button><button
+                        class="btn btn-p" onclick="next()">Keyingi →</button></div>
+            </div>
+
+            <!-- ==================== DARS 24 ==================== -->
+            <div class="lesson" id="l23">
+                <div class="lh">
+                    <div class="lbadge">24 / 28</div>
+                    <h1 class="ltitle">Advanced <em>Indexing</em></h1>
+                </div>
+                <p class="ldesc">Partial Index, Expression Index, BRIN, GIN, GiST va murakkab indekslash strategiyalari.
+                </p>
+
+                <div class="cb">
+                    <div class="cb-hdr"><span class="cb-file"><b>advanced_index.sql</b></span><button class="cpbtn"
+                            onclick="cp(this)">copy</button></div>
+                    <pre><span class="kw">CREATE INDEX</span> idx_active_users 
+    <span class="kw">ON</span> users(id) 
+    <span class="kw">WHERE</span> status = 'active';
+
+<span class="kw">CREATE INDEX</span> idx_lower_email 
+    <span class="kw">ON</span> users (lower(email));
+
+<span class="kw">CREATE INDEX</span> idx_orders_brin 
+    <span class="kw">ON</span> orders USING BRIN (created_at);</pre>
+                </div>
+
+                <div class="tip">Partial Index — juda samarali. Faqat tez-tez ishlatiladigan qatorlarni indekslaydi va
+                    joy tejaydi.</div>
+
+                <div class="navbtns"><button class="btn btn-s" onclick="prev()">← Oldingi</button><button
+                        class="btn btn-p" onclick="next()">Keyingi →</button></div>
+            </div>
+
+            <!-- ==================== DARS 25 ==================== -->
+            <div class="lesson" id="l24">
+                <div class="lh">
+                    <div class="lbadge">25 / 28</div>
+                    <h1 class="ltitle">Logical Replication & <em>CDC</em></h1>
+                </div>
+                <p class="ldesc">Logical Replication, Publication/Subscription va Change Data Capture (CDC) orqali real
+                    vaqtda ma’lumot sinxronizatsiyasi.</p>
+
+                <div class="cb">
+                    <div class="cb-hdr"><span class="cb-file"><b>logical_replication.sql</b></span><button class="cpbtn"
+                            onclick="cp(this)">copy</button></div>
+                    <pre><span class="kw">CREATE PUBLICATION</span> sales_pub <span class="kw">FOR TABLE</span> orders, customers;
+
+<span class="kw">CREATE SUBSCRIPTION</span> sales_sub 
+    <span class="kw">CONNECTION</span> 'host=primary port=5432 user=repl password=pass dbname=mydb'
+    <span class="kw">PUBLICATION</span> sales_pub;</pre>
+                </div>
+
+                <div class="navbtns"><button class="btn btn-s" onclick="prev()">← Oldingi</button><button
+                        class="btn btn-p" onclick="next()">Keyingi →</button></div>
+            </div>
+
+            <!-- ==================== DARS 26 ==================== -->
+            <div class="lesson" id="l25">
+                <div class="lh">
+                    <div class="lbadge">26 / 28</div>
+                    <h1 class="ltitle">VACUUM & <em>Maintenance</em></h1>
+                </div>
+                <p class="ldesc">Bloat muammosi, Autovacuum sozlamalari, VACUUM FULL, ANALYZE va bazani sog‘lom saqlash
+                    strategiyalari.</p>
+
+                <div class="cb">
+                    <div class="cb-hdr"><span class="cb-file"><b>vacuum.sql</b></span><button class="cpbtn"
+                            onclick="cp(this)">copy</button></div>
+                    <pre><span class="kw">VACUUM</span> ANALYZE orders;                    <span class="cmt">-- oddiy tozalash</span>
+<span class="kw">VACUUM</span> FULL orders;                      <span class="cmt">-- jadvalni qayta yozadi (qimmat)</span>
+
+<span class="kw">SELECT</span> relname, last_vacuum, last_analyze 
+<span class="kw">FROM</span> pg_stat_user_tables 
+<span class="kw">WHERE</span> relname = 'orders';</pre>
+                </div>
+
+                <div class="warn"><code>VACUUM FULL</code> jadvalni butunlay qulflaydi. Productionda ish vaqtida
+                    ishlatmang.</div>
+
+                <div class="navbtns"><button class="btn btn-s" onclick="prev()">← Oldingi</button><button
+                        class="btn btn-p" onclick="next()">Keyingi →</button></div>
+            </div>
+
+            <!-- ==================== DARS 27 ==================== -->
+            <div class="lesson" id="l26">
+                <div class="lh">
+                    <div class="lbadge">27 / 28</div>
+                    <h1 class="ltitle">Performance <em>Tuning</em></h1>
+                </div>
+                <p class="ldesc">postgresql.conf ning eng muhim parametrlarini sozlash: shared_buffers, work_mem,
+                    max_connections, effective_cache_size va boshqalar.</p>
+
+                <div class="cb">
+                    <div class="cb-hdr"><span class="cb-file"><b>postgresql.conf_tuning</b></span><button class="cpbtn"
+                            onclick="cp(this)">copy</button></div>
+                    <pre>shared_buffers = 25% of RAM          <span class="cmt">-- katta serverlarda 8-16GB</span>
+work_mem = 64MB                     <span class="cmt">-- sort va hash join uchun</span>
+maintenance_work_mem = 1GB
+effective_cache_size = 75% of RAM
+max_connections = 200
+random_page_cost = 1.1              <span class="cmt">-- SSD uchun</span></pre>
+                </div>
+
+                <div class="tip">Har bir server uchun tuning individual bo‘ladi. Hech qachon “copy-paste” konfiguratsiya
+                    ishlatmang.</div>
+
+                <div class="navbtns"><button class="btn btn-s" onclick="prev()">← Oldingi</button><button
+                        class="btn btn-p" onclick="next()">Keyingi →</button></div>
+            </div>
+
+            <!-- ==================== DARS 28 ==================== -->
+            <div class="lesson" id="l27">
+                <div class="lh">
+                    <div class="lbadge">28 / 28</div>
+                    <h1 class="ltitle">Pro Tips & <em>Best Practices</em></h1>
+                </div>
+                <p class="ldesc">Senior va Lead darajasida PostgreSQL loyihalarida qo‘llaniladigan eng muhim
+                    maslahatlar, anti-patternlar va 2026 yil uchun tavsiyalar.</p>
+
+                <div class="sh">Eng muhim Pro Tips</div>
+                <ul>
+                    <li>Har doim <code>TIMESTAMPTZ</code> va <code>NUMERIC</code> ishlating</li>
+                    <li><code>SELECT *</code> dan butunlay voz keching</li>
+                    <li>Murakkab hisobotlarni Materialized View yoki Cache orqali qiling</li>
+                    <li>Har bir muhim operatsiyani tranzaksiya ichida bajaring</li>
+                    <li>Indeks yaratishdan oldin <code>EXPLAIN ANALYZE</code> ishlatib tekshiring</li>
+                    <li>RLS + Policy bilan xavfsizlikni kuchaytiring</li>
+                    <li>Monitoringni doimiy ravishda sozlang (Prometheus + Grafana)</li>
+                </ul>
+
+                <div class="ch-done">
+                    <h3>🏆 PostgreSQL Pro Kursi Yakunlandi!</h3>
+                    <p>Siz endi PostgreSQL bo‘yicha chuqur bilim egasisiz. Real production loyihalarda bu bilimlarni
+                        qo‘llashingiz mumkin.</p>
+                    <p><strong>Keyingi qadam:</strong> O‘z loyihangizda bu texnikalarni sinab ko‘ring va monitoring
+                        tizimini sozlang.</p>
+                </div>
+
+                <div class="navbtns">
+                    <button class="btn btn-s" onclick="prev()">← Oldingi</button>
+                    <button class="btn btn-p" disabled>✓ Kurs Yakunlandi!</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let cur = 0;
+        const total = 28;
+        const done = new Set();
+
+        function goTo(n) {
+            document.querySelectorAll('.lesson').forEach(l => l.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            done.add(cur);
+            document.querySelectorAll('.nav-item')[cur].classList.add('done');
+
+            cur = n;
+            document.getElementById('l' + cur).classList.add('active');
+            document.querySelectorAll('.nav-item')[cur].classList.add('active');
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function next() { if (cur < total - 1) goTo(cur + 1); }
+        function prev() { if (cur > 0) goTo(cur - 1); }
+
+        function updateProgress() {
+            const pct = Math.round(done.size / total * 100);
+            document.getElementById('pb').style.width = pct + '%';
+            document.getElementById('pct').textContent = pct + '%';
+            document.getElementById('ptxt').textContent = done.size + ' / ' + total;
+        }
+
+        function cp(btn) {
+            const pre = btn.closest('.cb').querySelector('pre');
+            navigator.clipboard.writeText(pre.innerText);
+            const orig = btn.textContent;
+            btn.textContent = '✓ copied';
+            setTimeout(() => btn.textContent = orig, 2000);
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowRight') next();
+            if (e.key === 'ArrowLeft') prev();
+        });
+
+        window.onload = () => updateProgress();
+    </script>
+</body>
+
+</html>

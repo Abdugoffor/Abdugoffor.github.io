@@ -1,0 +1,1769 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go Tili — 0 dan Pro gacha</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0e1a;
+            --surface: #111827;
+            --card: #1a2235;
+            --border: #2a3a55;
+            --go: #00ADD8;
+            --go2: #00d4ff;
+            --accent: #f4c430;
+            --green: #4ade80;
+            --red: #f87171;
+            --text: #e2e8f0;
+            --muted: #7a8fa6;
+            --code-bg: #0d1117;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Syne', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* HEADER */
+        header {
+            background: linear-gradient(135deg, #0a0e1a 0%, #0d1a2e 50%, #071525 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+
+        .header-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 24px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--go);
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .progress-bar-wrap {
+            flex: 1;
+            background: var(--border);
+            border-radius: 99px;
+            height: 6px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--go), var(--go2));
+            border-radius: 99px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .progress-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--muted);
+            white-space: nowrap;
+        }
+
+        /* LAYOUT */
+        .app {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: calc(100vh - 57px);
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 280px;
+            flex-shrink: 0;
+            border-right: 1px solid var(--border);
+            padding: 20px 0;
+            position: sticky;
+            top: 57px;
+            height: calc(100vh - 57px);
+            overflow-y: auto;
+            background: var(--surface);
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 2px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--muted);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 8px 20px 4px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: var(--muted);
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+            position: relative;
+        }
+
+        .sidebar-item:hover {
+            color: var(--text);
+            background: rgba(0, 173, 216, 0.06);
+        }
+
+        .sidebar-item.active {
+            color: var(--go);
+            border-left-color: var(--go);
+            background: rgba(0, 173, 216, 0.08);
+        }
+
+        .sidebar-item.done {
+            color: var(--green);
+        }
+
+        .sidebar-item.done::after {
+            content: '✓';
+            margin-left: auto;
+            font-size: 0.75rem;
+        }
+
+        .sidebar-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--border);
+            width: 20px;
+            text-align: right;
+        }
+
+        /* MAIN CONTENT */
+        .main {
+            flex: 1;
+            padding: 32px 40px;
+            overflow-y: auto;
+            max-width: calc(1400px - 280px);
+        }
+
+        .lesson {
+            display: none;
+        }
+
+        .lesson.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .lesson-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .lesson-badge {
+            background: linear-gradient(135deg, var(--go), var(--go2));
+            color: #000;
+            font-weight: 800;
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 4px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            white-space: nowrap;
+            margin-top: 4px;
+        }
+
+        .lesson-title {
+            font-size: 1.9rem;
+            font-weight: 800;
+            color: var(--text);
+            line-height: 1.2;
+        }
+
+        .lesson-title span {
+            color: var(--go);
+        }
+
+        .lesson-desc {
+            font-size: 1rem;
+            color: var(--muted);
+            line-height: 1.7;
+            margin-bottom: 28px;
+            max-width: 700px;
+        }
+
+        /* CODE BLOCKS */
+        .code-block {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .code-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-filename {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+
+        .code-filename .dot {
+            color: var(--go);
+        }
+
+        .copy-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            padding: 3px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            color: var(--go);
+            border-color: var(--go);
+        }
+
+        pre {
+            padding: 20px;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.7;
+        }
+
+        pre::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        pre::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 2px;
+        }
+
+        .kw {
+            color: #ff79c6;
+        }
+
+        .fn {
+            color: #50fa7b;
+        }
+
+        .str {
+            color: #f1fa8c;
+        }
+
+        .num {
+            color: #bd93f9;
+        }
+
+        .cmt {
+            color: #6272a4;
+            font-style: italic;
+        }
+
+        .typ {
+            color: var(--go);
+        }
+
+        .pkg {
+            color: #ffb86c;
+        }
+
+        /* OUTPUT BOX */
+        .output-box {
+            background: #050810;
+            border: 1px solid var(--go);
+            border-radius: 8px;
+            padding: 14px 18px;
+            margin: 12px 0 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            color: var(--green);
+            line-height: 1.6;
+        }
+
+        .output-label {
+            font-size: 0.65rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--go);
+            margin-bottom: 6px;
+            font-family: 'Syne', sans-serif;
+            font-weight: 600;
+        }
+
+        /* INFO CARDS */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+            margin: 20px 0;
+        }
+
+        .info-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            border-left: 3px solid var(--go);
+        }
+
+        .info-card h4 {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--go);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-card p {
+            font-size: 0.82rem;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .info-card code {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--code-bg);
+            padding: 1px 5px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            color: var(--accent);
+        }
+
+        /* NOTE */
+        .note {
+            background: rgba(244, 196, 48, 0.06);
+            border: 1px solid rgba(244, 196, 48, 0.25);
+            border-radius: 8px;
+            padding: 14px 16px;
+            margin: 16px 0;
+            font-size: 0.85rem;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .note::before {
+            content: '💡 ';
+        }
+
+        .tip {
+            background: rgba(0, 173, 216, 0.06);
+            border: 1px solid rgba(0, 173, 216, 0.2);
+            border-radius: 8px;
+            padding: 14px 16px;
+            margin: 16px 0;
+            font-size: 0.85rem;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .tip::before {
+            content: '🔷 ';
+        }
+
+        /* TABLE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.83rem;
+        }
+
+        th {
+            background: var(--card);
+            color: var(--go);
+            padding: 10px 14px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid var(--go);
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 9px 14px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        td:first-child {
+            color: var(--accent);
+        }
+
+        /* NAVIGATION */
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 40px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-family: 'Syne', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--go), #0090b8);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(0, 173, 216, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--card);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--go);
+            color: var(--go);
+        }
+
+        .btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text);
+            margin: 24px 0 10px;
+        }
+
+        h3::before {
+            content: '// ';
+            color: var(--go);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+        }
+
+        p {
+            font-size: 0.9rem;
+            color: var(--muted);
+            line-height: 1.7;
+            margin-bottom: 10px;
+        }
+
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 10px 0;
+        }
+
+        ul li {
+            padding: 4px 0;
+            font-size: 0.87rem;
+            color: var(--muted);
+            padding-left: 20px;
+            position: relative;
+        }
+
+        ul li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--go);
+        }
+
+        .highlight {
+            color: var(--go);
+            font-weight: 600;
+        }
+
+        /* GOPHER */
+        .gopher-welcome {
+            font-size: 3rem;
+            text-align: center;
+            margin: 10px 0 20px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        /* QUIZ */
+        .quiz-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .quiz-q {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 14px;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .quiz-opt {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            padding: 10px 14px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text);
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .quiz-opt:hover {
+            border-color: var(--go);
+            color: var(--go);
+        }
+
+        .quiz-opt.correct {
+            border-color: var(--green);
+            color: var(--green);
+            background: rgba(74, 222, 128, 0.08);
+        }
+
+        .quiz-opt.wrong {
+            border-color: var(--red);
+            color: var(--red);
+            background: rgba(248, 113, 113, 0.08);
+        }
+
+        .quiz-result {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: none;
+        }
+
+        @media (max-width: 900px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                padding: 20px;
+                max-width: 100%;
+            }
+
+            .lesson-title {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="header-inner">
+            <div class="logo">
+                <span>Go</span> Tili Kursi
+            </div>
+            <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">0 / 12</div>
+        </div>
+    </header>
+
+    <div class="app">
+        <nav class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-label">Asoslar</div>
+                <div class="sidebar-item active" onclick="goTo(0)"><span class="sidebar-num">01</span> Kirish &
+                    O'rnatish</div>
+                <div class="sidebar-item" onclick="goTo(1)"><span class="sidebar-num">02</span> Hello World</div>
+                <div class="sidebar-item" onclick="goTo(2)"><span class="sidebar-num">03</span> O'zgaruvchilar</div>
+                <div class="sidebar-item" onclick="goTo(3)"><span class="sidebar-num">04</span> Ma'lumot Turlari</div>
+                <div class="sidebar-item" onclick="goTo(4)"><span class="sidebar-num">05</span> Operatorlar</div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-label">Oqim Boshqaruvi</div>
+                <div class="sidebar-item" onclick="goTo(5)"><span class="sidebar-num">06</span> if / else</div>
+                <div class="sidebar-item" onclick="goTo(6)"><span class="sidebar-num">07</span> Sikllar (for)</div>
+                <div class="sidebar-item" onclick="goTo(7)"><span class="sidebar-num">08</span> switch</div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-label">Murakkab Mavzular</div>
+                <div class="sidebar-item" onclick="goTo(8)"><span class="sidebar-num">09</span> Funksiyalar</div>
+                <div class="sidebar-item" onclick="goTo(9)"><span class="sidebar-num">10</span> Array, Slice, Map</div>
+                <div class="sidebar-item" onclick="goTo(10)"><span class="sidebar-num">11</span> Struct & Methods</div>
+                <div class="sidebar-item" onclick="goTo(11)"><span class="sidebar-num">12</span> Goroutine & Channel
+                </div>
+            </div>
+        </nav>
+
+        <main class="main">
+
+            <!-- LESSON 0: Kirish -->
+            <div class="lesson active" id="lesson-0">
+                <div class="gopher-welcome">🐹</div>
+                <div class="lesson-header">
+                    <div class="lesson-badge">Dars 01</div>
+                    <h1 class="lesson-title">Go tiliga <span>Kirish</span></h1>
+                </div>
+                <p class="lesson-desc">Go (yoki Golang) — Google tomonidan 2009-yilda yaratilgan, tezkor, sodda va
+                    samarali dasturlash tili. Server, cloud, va microservice ilovalar uchun juda mashhur.</p>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h4>⚡ Tezlik</h4>
+                        <p>C/C++ ga yaqin tezlikda ishlaydi, lekin Python kabi yozish oson.</p>
+                    </div>
+                    <div class="info-card">
+                        <h4>🔒 Xavfsiz</h4>
+                        <p>Statik typli, garbage collection bor — memory muammolari kam.</p>
+                    </div>
+                    <div class="info-card">
+                        <h4>🔀 Concurrency</h4>
+                        <p>Goroutine orqali bir vaqtda minglab operatsiyalar bajarish mumkin.</p>
+                    </div>
+                    <div class="info-card">
+                        <h4>📦 Sodda</h4>
+                        <p>Faqat 25 ta kalit so'z — o'rganish juda oson!</p>
+                    </div>
+                </div>
+
+                <h3>O'rnatish</h3>
+                <p>Go ni rasmiy saytdan yuklab oling: <strong>go.dev/dl</strong></p>
+                <div class="code-block">
+                    <div class="code-header"><span class="code-filename"><span class="dot">$</span> terminal</span>
+                    </div>
+                    <pre><span class="cmt"># Versiyani tekshirish</span>
+go version
+<span class="cmt"># Natija: go version go1.22.0 linux/amd64</span>
+
+<span class="cmt"># Yangi proyekt yaratish</span>
+mkdir mening-loyiham
+cd mening-loyiham
+go mod init mening-loyiham</pre>
+                </div>
+
+                <h3>Go fayl tuzilmasi</h3>
+                <div class="code-block">
+                    <div class="code-header"><span class="code-filename">main<span class="dot">.go</span></span><button
+                            class="copy-btn" onclick="copyCode(this)">nusxa</button></div>
+                    <pre><span class="kw">package</span> <span class="pkg">main</span>   <span class="cmt">// har bir dastur main packagedan boshlanadi</span>
+
+<span class="kw">import</span> <span class="str">"fmt"</span>   <span class="cmt">// fmt — formatlash kutubxonasi</span>
+
+<span class="kw">func</span> <span class="fn">main</span>() {  <span class="cmt">// dastur shu yerdan boshlanadi</span>
+    fmt.<span class="fn">Println</span>(<span class="str">"Salom, Dunyo!"</span>)
+}</pre>
+                </div>
+
+                <div class="output-box">
+                    <div class="output-label">Natija</div>Salom, Dunyo!
+                </div>
+
+                <div class="note">Go'da har bir fayl <code>package</code> nomi bilan boshlanadi. Bajariladigan dasturlar
+                    uchun albatta <code>package main</code> bo'lishi kerak.</div>
+
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" disabled>← Oldingi</button>
+                    <button class="btn btn-primary" onclick="next()">Keyingi →</button>
+                </div>
+            </div>
+
+            <!-- LESSON 1: Hello World -->
+            <div class="lesson" id="lesson-1">
+                <div class="lesson-header">
+                    <div class="lesson-badge">Dars 02</div>
+                    <h1 class="lesson-title"><span>Hello World</span> va Dastur Ishlatish</h1>
+                </div>
+                <p class="lesson-desc">Go dasturini yozish, kompilyatsiya qilish va ishga tushirishni o'rganamiz.</p>
+
+                <h3>Dasturni ishga tushirish</h3>
+                <div class="code-block">
+                    <div class="code-header"><span class="code-filename"><span class="dot">$</span> terminal</span>
+                    </div>
+                    <pre><span class="cmt"># To'g'ridan to'g'ri ishga tushirish</span>
+go run main.go
+
+<span class="cmt"># Kompilyatsiya qilib binary yaratish</span>
+go build -o dastur main.go
+./dastur</pre>
+                </div>
+
+                <h3>fmt paketi bilan ishlash</h3>
+                <div class="code-block">
+                    <div class="code-header"><span class="code-filename">main<span class="dot">.go</span></span><button
+                            class="copy-btn" onclick="copyCode(this)">nusxa</button></div>
+                    <pre><span class="kw">package</span> <span class="pkg">main</span>
+
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    <span class="cmt">// Println — yangi satr bilan chiqaradi</span>
+    fmt.<span class="fn">Println</span>(<span class="str">"Salom, Go!"</span>)
+
+    <span class="cmt">// Printf — formatlangan chiqarish</span>
+    fmt.<span class="fn">Printf</span>(<span class="str">"Yosh: %d, Ism: %s\n"</span>, <span class="num">25</span>, <span class="str">"Ali"</span>)
+
+    <span class="cmt">// Sprintf — string hosil qiladi</span>
+    xabar := fmt.<span class="fn">Sprintf</span>(<span class="str">"Harorat: %.1f°C"</span>, <span class="num">36.6</span>)
+    fmt.<span class="fn">Println</span>(xabar)
+}</pre>
+                </div>
+
+                <div class="output-box">
+                    <div class="output-label">Natija</div>Salom, Go!
+                    Yosh: 25, Ism: Ali
+                    Harorat: 36.6°C
+                </div>
+
+                <h3>Format belgilari (Verbs)</h3>
+                <table>
+                    <tr>
+                        <th>Verb</th>
+                        <th>Ma'nosi</th>
+                        <th>Misol</th>
+                    </tr>
+                    <tr>
+                        <td>%d</td>
+                        <td>Butun son</td>
+                        <td>fmt.Printf("%d", 42) → 42</td>
+                    </tr>
+                    <tr>
+                        <td>%f</td>
+                        <td>Float son</td>
+                        <td>fmt.Printf("%.2f", 3.14) → 3.14</td>
+                    </tr>
+                    <tr>
+                        <td>%s</td>
+                        <td>String</td>
+                        <td>fmt.Printf("%s", "salom") → salom</td>
+                    </tr>
+                    <tr>
+                        <td>%v</td>
+                        <td>Har qanday qiymat</td>
+                        <td>fmt.Printf("%v", true) → true</td>
+                    </tr>
+                    <tr>
+                        <td>%T</td>
+                        <td>Tur nomi</td>
+                        <td>fmt.Printf("%T", 5) → int</td>
+                    </tr>
+                    <tr>
+                        <td>%t</td>
+                        <td>Boolean</td>
+                        <td>fmt.Printf("%t", false) → false</td>
+                    </tr>
+                </table>
+
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" onclick="prev()">← Oldingi</button>
+                    <button class="btn btn-primary" onclick="next()">Keyingi →</button>
+                </div>
+            </div>
+
+            <!-- LESSON 2: O'zgaruvchilar -->
+            <div class="lesson" id="lesson-2">
+                <div class="lesson-header">
+                    <div class="lesson-badge">Dars 03</div>
+                    <h1 class="lesson-title"><span>O'zgaruvchilar</span> (Variables)</h1>
+                </div>
+                <p class="lesson-desc">Go'da o'zgaruvchi e'lon qilishning bir necha usuli bor. Har birini misollar bilan
+                    ko'ramiz.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-filename">variables<span
+                                class="dot">.go</span></span><button class="copy-btn"
+                            onclick="copyCode(this)">nusxa</button></div>
+                    <pre><span class="kw">package</span> <span class="pkg">main</span>
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    <span class="cmt">// 1-usul: var kalit so'zi bilan</span>
+    <span class="kw">var</span> ism <span class="typ">string</span> = <span class="str">"Kamol"</span>
+    <span class="kw">var</span> yosh <span class="typ">int</span> = <span class="num">22</span>
+
+    <span class="cmt">// 2-usul: turni avtomatik aniqlash</span>
+    <span class="kw">var</span> shahar = <span class="str">"Toshkent"</span>
+
+    <span class="cmt">// 3-usul: qisqa e'lon (:=) — eng ko'p ishlatiladigan</span>
+    narx := <span class="num">150000.50</span>
+    aktiv := <span class="kw">true</span>
+
+    <span class="cmt">// Bir nechta o'zgaruvchi bir vaqtda</span>
+    x, y, z := <span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>
+
+    <span class="cmt">// Konstantalar (o'zgarmaydigan)</span>
+    <span class="kw">const</span> PI = <span class="num">3.14159</span>
+    <span class="kw">const</span> SAYT = <span class="str">"golang.org"</span>
+
+    fmt.<span class="fn">Println</span>(ism, yosh, shahar)
+    fmt.<span class="fn">Println</span>(narx, aktiv)
+    fmt.<span class="fn">Println</span>(x, y, z)
+    fmt.<span class="fn">Println</span>(PI, SAYT)
+}</pre>
+                </div>
+
+                <div class="output-box">
+                    <div class="output-label">Natija</div>Kamol 22 Toshkent
+                    150000.5 true
+                    1 2 3
+                    3.14159 golang.org
+                </div>
+
+                <div class="note">Go'da e'lon qilingan o'zgaruvchi ishlatilmasa, <strong>kompilyatsiya xatosi</strong>
+                    beradi! Bu tilning muhim xususiyatlaridan biri.</div>
+
+                <h3>Nol qiymatlar (Zero Values)</h3>
+                <div class="code-block">
+                    <div class="code-header"><span class="code-filename">zero<span class="dot">.go</span></span><button
+                            class="copy-btn" onclick="copyCode(this)">nusxa</button></div>
+                    <pre><span class="kw">var</span> a <span class="typ">int</span>     <span class="cmt">// 0</span>
+<span class="kw">var</span> b <span class="typ">float64</span> <span class="cmt">// 0.0</span>
+<span class="kw">var</span> c <span class="typ">string</span>  <span class="cmt">// "" (bo'sh string)</span>
+<span class="kw">var</span> d <span class="typ">bool</span>    <span class="cmt">// false</span></pre>
+                </div>
+
+                <div class="quiz-card">
+                    <div class="quiz-q">❓ Go'da qisqa o'zgaruvchi e'lon qilish uchun qaysi operator ishlatiladi?</div>
+                    <div class="quiz-options">
+                        <button class="quiz-opt" onclick="checkQuiz(this, false)">=</button>
+                        <button class="quiz-opt" onclick="checkQuiz(this, true)">:=</button>
+                        <button class="quiz-opt" onclick="checkQuiz(this, false)">var</button>
+                        <button class="quiz-opt" onclick="checkQuiz(this, false)">let</button>
+                    </div>
+                    <div class="quiz-result" id="qr"></div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" onclick="prev()">← Oldingi</button>
+                    <button class="btn btn-primary" onclick="next()">Keyingi →</button>
+                </div>
+            </div>
+
+            <!-- LESSON 3: Ma'lumot Turlari -->
+            <div class="lesson" id="lesson-3">
+                <div class="lesson-header">
+                    <div class="lesson-badge">Dars 04</div>
+                    <h1 class="lesson-title">Ma'lumot <span>Turlari</span></h1>
+                </div>
+                <p class="lesson-desc">Go statik tipli til — har bir o'zgaruvchining turi kompilyatsiya vaqtida aniq
+                    bo'lishi kerak.</p>
+
+                <h3>Asosiy turlar</h3>
+                <table>
+                    <tr>
+                        <th>Tur</th>
+                        <th>O'lcham</th>
+                        <th>Diapazon / Misol</th>
+                    </tr>
+                    <tr>
+                        <td>int</td>
+                        <td>32/64-bit</td>
+                        <td>-2^63 dan 2^63-1 gacha</td>
+                    </tr>
+                    <tr>
+                        <td>int8</td>
+                        <td>8-bit</td>
+                        <td>-128 dan 127</td>
+                    </tr>
+                    <tr>
+                        <td>int16</td>
+                        <td>16-bit</td>
+                        <td>-32768 dan 32767</td>
+                    </tr>
+                    <tr>
+                        <td>int32 (rune)</td>
+                        <td>32-bit</td>
+                        <td>Unicode belgi</td>
+                    </tr>
+                    <tr>
+                        <td>int64</td>
+                        <td>64-bit</td>
+                        <td>Katta sonlar uchun</td>
+                    </tr>
+                    <tr>
+                        <td>float32</td>
+                        <td>32-bit</td>
+                        <td>3.14</td>
+                    </tr>
+                    <tr>
+                        <td>float64</td>
+                        <td>64-bit</td>
+                        <td>3.141592653589793</td>
+                    </tr>
+                    <tr>
+                        <td>string</td>
+                        <td>—</td>
+                        <td>"Salom Go"</td>
+                    </tr>
+                    <tr>
+                        <td>bool</td>
+                        <td>1-bit</td>
+                        <td>true / false</td>
+                    </tr>
+                    <tr>
+                        <td>byte (uint8)</td>
+                        <td>8-bit</td>
+                        <td>0 dan 255</td>
+                    </tr>
+                </table>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-filename">types<span class="dot">.go</span></span><button
+                            class="copy-btn" onclick="copyCode(this)">nusxa</button></div>
+                    <pre><span class="kw">package</span> <span class="pkg">main</span>
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    <span class="cmt">// Turni ko'rsatish</span>
+    a := <span class="num">42</span>
+    b := <span class="num">3.14</span>
+    c := <span class="str">"salom"</span>
+    d := <span class="kw">true</span>
+
+    fmt.<span class="fn">Printf</span>(<span class="str">"%T = %v\n"</span>, a, a) <span class="cmt">// int = 42</span>
+    fmt.<span class="fn">Printf</span>(<span class="str">"%T = %v\n"</span>, b, b) <span class="cmt">// float64 = 3.14</span>
+    fmt.<span class="fn">Printf</span>(<span class="str">"%T = %v\n"</span>, c, c) <span class="cmt">// string = salom</span>
+    fmt.<span class="fn">Printf</span>(<span class="str">"%T = %v\n"</span>, d, d) <span class="cmt">// bool = true</span>
+
+    <span class="cmt">// Tur o'zgartirish (Type Conversion)</span>
+    son := <span class="num">42</span>
+    float := <span class="typ">float64</span>(son)
+    matn := <span class="typ">string</span>([]<span class="typ">byte</span>(<span class="str">"A"</span>))
+
+    fmt.<span class="fn">Println</span>(float, matn)
+
+    <span class="cmt">// String uzunligi</span>
+    s := <span class="str">"Go tili"</span>
+    fmt.<span class="fn">Println</span>(<span class="fn">len</span>(s)) <span class="cmt">// 7</span>
+}</pre>
+                </div>
+
+                <div class="output-box">
+                    <div class="output-label">Natija</div>int = 42
+                    float64 = 3.14
+                    string = salom
+                    bool = true
+                    42 A
+                    7
+                </div>
+
+                <div class="tip">Go'da turlar orasida <strong>avtomatik konversiya bo'lmaydi</strong>! int ni float64 ga
+                    aylantirish uchun <code>float64(son)</code> deb yozish kerak.</div>
+
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" onclick="prev()">← Oldingi</button>
+                    <button class="btn btn-primary" onclick="next()">Keyingi →</button>
+                </div>
+            </div>
+
+            <!-- LESSON 4: Operatorlar -->
+            <div class="lesson" id="lesson-4">
+                <div class="lesson-header">
+                    <div class="lesson-badge">Dars 05</div>
+                    <h1 class="lesson-title"><span>Operatorlar</span></h1>
+                </div>
+                <p class="lesson-desc">Go'da arifmetik, taqqoslash va mantiqiy operatorlar.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-filename">operators<span
+                                class="dot">.go</span></span><button class="copy-btn"
+                            onclick="copyCode(this)">nusxa</button></div>
+                    <pre><span class="kw">package</span> <span class="pkg">main</span>
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    <span class="cmt">// Arifmetik operatorlar</span>
+    a, b := <span class="num">10</span>, <span class="num">3</span>
+    fmt.<span class="fn">Println</span>(a + b)  <span class="cmt">// 13  (qo'shish)</span>
+    fmt.<span class="fn">Println</span>(a - b)  <span class="cmt">// 7   (ayirish)</span>
+    fmt.<span class="fn">Println</span>(a * b)  <span class="cmt">// 30  (ko'paytirish)</span>
+    fmt.<span class="fn">Println</span>(a / b)  <span class="cmt">// 3   (bo'lish)</span>
+    fmt.<span class="fn">Println</span>(a % b)  <span class="cmt">// 1   (qoldiq)</span>
+
+    <span class="cmt">// Taqqoslash operatorlari — bool qaytaradi</span>
+    fmt.<span class="fn">Println</span>(a == b) <span class="cmt">// false</span>
+    fmt.<span class="fn">Println</span>(a != b) <span class="cmt">// true</span>
+    fmt.<span class="fn">Println</span>(a > b)  <span class="cmt">// true</span>
+    fmt.<span class="fn">Println</span>(a <= b) <span class="cmt">// false</span>
+
+    <span class="cmt">// Mantiqiy operatorlar</span>
+    x, y := <span class="kw">true</span>, <span class="kw">false</span>
+    fmt.<span class="fn">Println</span>(x && y)  <span class="cmt">// false (VA)</span>
+    fmt.<span class="fn">Println</span>(x || y)  <span class="cmt">// true  (YOKI)</span>
+    fmt.<span class="fn">Println</span>(!x)     <span class="cmt">// false (EMAS)</span>
+
+    <span class="cmt">// Qisqa yozuv operatorlari</span>
+    n := <span class="num">5</span>
+    n += <span class="num">3</span>   <span class="cmt">// n = n + 3 = 8</span>
+    n++       <span class="cmt">// n = n + 1 = 9</span>
+    n--       <span class="cmt">// n = n - 1 = 8</span>
+    fmt.<span class="fn">Println</span>(n)
+}</pre>
+                </div>
+
+                <div class="output-box">
+                    <div class="output-label">Natija</div>13 7 30 3 1
+                    false true true false
+                    false true false
+                    8
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" onclick="prev()">← Oldingi</button>
+                    <button class="btn btn-primary" onclick="next()">Keyingi →</button>
+                </div>
+            </div>
+
+            <!-- LESSON 5: if/else -->
+            <div class="lesson" id="lesson-5">
+                <div class="lesson-header">
+                    <div class="lesson-badge">Dars 06</div>
+                    <h1 class="lesson-title"><span>if / else</span> Shartli Operatorlar</h1>
+                </div>
+                <p class="lesson-desc">Dasturda qaror qabul qilish — if, else if, else konstruktsiyalari.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-filename">conditions<span
+                                class="dot">.go</span></span><button class="copy-btn"
+                            onclick="copyCode(this)">nusxa</button></div>
+                    <pre><span class="kw">package</span> <span class="pkg">main</span>
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    ball := <span class="num">75</span>
+
+    <span class="cmt">// Oddiy if-else</span>
+    <span class="kw">if</span> ball >= <span class="num">90</span> {
+        fmt.<span class="fn">Println</span>(<span class="str">"A'lo"</span>)
+    } <span class="kw">else if</span> ball >= <span class="num">70</span> {
+        fmt.<span class="fn">Println</span>(<span class="str">"Yaxshi"</span>)
+    } <span class="kw">else if</span> ball >= <span class="num">55</span> {
+        fmt.<span class="fn">Println</span>(<span class="str">"Qoniqarli"</span>)
+    } <span class="kw">else</span> {
+        fmt.<span class="fn">Println</span>(<span class="str">"Qoniqarsiz"</span>)
+    }
+
+    <span class="cmt">// if bilan qisqa e'lon (scope ichida)</span>
+    <span class="kw">if</span> toq := ball % <span class="num">2</span>; toq != <span class="num">0</span> {
+        fmt.<span class="fn">Println</span>(<span class="str">"Toq son"</span>)
+    } <span class="kw">else</span> {
+        fmt.<span class="fn">Println</span>(<span class="str">"Juft son"</span>)
+    }
+
+    <span class="cmt">// Murakkab shart</span>
+    yosh := <span class="num">20</span>
+    pul := <span class="num">500000</span>
+    <span class="kw">if</span> yosh >= <span class="num">18</span> && pul >= <span class="num">100000</span> {
+        fmt.<span class="fn">Println</span>(<span class="str">"Kreditga ruxsat bor"</span>)
+    }
+}</pre>
+                </div>
+
+                <div class="output-box">
+                    <div class="output-label">Natija</div>Yaxshi
+                    Toq son
+                    Kreditga ruxsat bor
+                </div>
+
+                <div class="note">Go'da if shartida qavslar <code>()</code> kerak emas, lekin figurali qavslar
+                    <code>{ }</code> majburiy!</div>
+
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" onclick="prev()">← Oldingi</button>
+                    <button class="btn btn-primary" onclick="next()">Keyingi →</button>
+                </div>
+            </div>
+
+            <!-- LESSON 6: for -->
+            <div class="lesson" id="lesson-6">
+                <div class="lesson-header">
+                    <div class="lesson-badge">Dars 07</div>
+                    <h1 class="lesson-title"><span>for</span> Sikli</h1>
+                </div>
+                <p class="lesson-desc">Go'da faqat <code>for</code> sikli bor — u while va do-while o'rnini ham bosadi!
+                </p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-filename">loops<span class="dot">.go</span></span><button
+                            class="copy-btn" onclick="copyCode(this)">nusxa</button></div>
+                    <pre><span class="kw">package</span> <span class="pkg">main</span>
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    <span class="cmt">// 1. Klassik for sikli</span>
+    <span class="kw">for</span> i := <span class="num">0</span>; i < <span class="num">5</span>; i++ {
+        fmt.<span class="fn">Printf</span>(<span class="str">"%d "</span>, i)
+    }
+    fmt.<span class="fn">Println</span>()
+
+    <span class="cmt">// 2. While kabi ishlash</span>
+    n := <span class="num">1</span>
+    <span class="kw">for</span> n <= <span class="num">8</span> {
+        fmt.<span class="fn">Printf</span>(<span class="str">"%d "</span>, n)
+        n *= <span class="num">2</span>
+    }
+    fmt.<span class="fn">Println</span>()
+
+    <span class="cmt">// 3. Cheksiz sikl + break</span>
+    count := <span class="num">0</span>
+    <span class="kw">for</span> {
+        count++
+        <span class="kw">if</span> count == <span class="num">3</span> { <span class="kw">break</span> }
+    }
+    fmt.<span class="fn">Println</span>(<span class="str">"Count:"</span>, count)
+
+    <span class="cmt">// 4. continue — o'tkazib yuborish</span>
+    <span class="kw">for</span> i := <span class="num">1</span>; i <= <span class="num">6</span>; i++ {
+        <span class="kw">if</span> i%<span class="num">2</span> == <span class="num">0</span> { <span class="kw">continue</span> }
+        fmt.<span class="fn">Printf</span>(<span class="str">"%d "</span>, i)
+    }
+    fmt.<span class="fn">Println</span>()
+
+    <span class="cmt">// 5. range — slice/array ichida yurish</span>
+    mevalar := []<span class="typ">string</span>{<span class="str">"olma"</span>, <span class="str">"nok"</span>, <span class="str">"uzum"</span>}
+    <span class="kw">for</span> i, meva := <span class="kw">range</span> mevalar {
+        fmt.<span class="fn">Printf</span>(<span class="str">"%d: %s\n"</span>, i, meva)
+    }
+}</pre>
+                </div>
+
+                <div class="output-box">
+                    <div class="output-label">Natija</div>0 1 2 3 4
+                    1 2 4 8
+                    Count: 3
+                    1 3 5
+                    0: olma
+                    1: nok
+                    2: uzum
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" onclick="prev()">← Oldingi</button>
+                    <button class="btn btn-primary" onclick="next()">Keyingi →</button>
+                </div>
+            </div>
+
+            <!-- LESSON 7: switch -->
+            <div class="lesson" id="lesson-7">
+                <div class="lesson-header">
+                    <div class="lesson-badge">Dars 08</div>
+                    <h1 class="lesson-title"><span>switch</span> Operatori</h1>
+                </div>
+                <p class="lesson-desc">Go'da switch — if/else if zanjiridan ancha toza va qulay variant.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-filename">switch<span
+                                class="dot">.go</span></span><button class="copy-btn"
+                            onclick="copyCode(this)">nusxa</button></div>
+                    <pre><span class="kw">package</span> <span class="pkg">main</span>
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    kun := <span class="num">3</span>
+
+    <span class="cmt">// Oddiy switch</span>
+    <span class="kw">switch</span> kun {
+    <span class="kw">case</span> <span class="num">1</span>:
+        fmt.<span class="fn">Println</span>(<span class="str">"Dushanba"</span>)
+    <span class="kw">case</span> <span class="num">2</span>:
+        fmt.<span class="fn">Println</span>(<span class="str">"Seshanba"</span>)
+    <span class="kw">case</span> <span class="num">3</span>:
+        fmt.<span class="fn">Println</span>(<span class="str">"Chorshanba"</span>)
+    <span class="kw">case</span> <span class="num">4</span>, <span class="num">5</span>:
+        fmt.<span class="fn">Println</span>(<span class="str">"Payshanba yoki Juma"</span>)
+    <span class="kw">default</span>:
+        fmt.<span class="fn">Println</span>(<span class="str">"Dam olish kuni"</span>)
+    }
+
+    <span class="cmt">// Shartsiz switch (if-else o'rniga)</span>
+    ball := <span class="num">85</span>
+    <span class="kw">switch</span> {
+    <span class="kw">case</span> ball >= <span class="num">90</span>:
+        fmt.<span class="fn">Println</span>(<span class="str">"A'lo (5)"</span>)
+    <span class="kw">case</span> ball >= <span class="num">70</span>:
+        fmt.<span class="fn">Println</span>(<span class="str">"Yaxshi (4)"</span>)
+    <span class="kw">case</span> ball >= <span class="num">55</span>:
+        fmt.<span class="fn">Println</span>(<span class="str">"Qoniqarli (3)"</span>)
+    <span class="kw">default</span>:
+        fmt.<span class="fn">Println</span>(<span class="str">"Qoniqarsiz (2)"</span>)
+    }
+
+    <span class="cmt">// Tur tekshirish (type switch)</span>
+    <span class="kw">var</span> qiymat <span class="kw">interface</span>{} = <span class="str">"salom"</span>
+    <span class="kw">switch</span> v := qiymat.(<span class="kw">type</span>) {
+    <span class="kw">case</span> <span class="typ">int</span>:
+        fmt.<span class="fn">Printf</span>(<span class="str">"int: %d\n"</span>, v)
+    <span class="kw">case</span> <span class="typ">string</span>:
+        fmt.<span class="fn">Printf</span>(<span class="str">"string: %s\n"</span>, v)
+    <span class="kw">case</span> <span class="typ">bool</span>:
+        fmt.<span class="fn">Printf</span>(<span class="str">"bool: %t\n"</span>, v)
+    }
+}</pre>
+                </div>
+
+                <div class="output-box">
+                    <div class="output-label">Natija</div>Chorshanba
+                    Yaxshi (4)
+                    string: salom
+                </div>
+
+                <div class="tip">Go'da switch ichida <code>break</code> yozish shart emas — har bir case avtomatik
+                    to'xtaydi. Keyingi casega o'tish uchun <code>fallthrough</code> kalit so'zi ishlatiladi.</div>
+
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" onclick="prev()">← Oldingi</button>
+                    <button class="btn btn-primary" onclick="next()">Keyingi →</button>
+                </div>
+            </div>
+
+            <!-- LESSON 8: Funksiyalar -->
+            <div class="lesson" id="lesson-8">
+                <div class="lesson-header">
+                    <div class="lesson-badge">Dars 09</div>
+                    <h1 class="lesson-title"><span>Funksiyalar</span> (Functions)</h1>
+                </div>
+                <p class="lesson-desc">Go'da funksiyalar — kodni modulga bo'lish va qayta ishlatish imkoni. Bir nechta
+                    qiymat qaytarish kabi kuchli xususiyatlar bor.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-filename">functions<span
+                                class="dot">.go</span></span><button class="copy-btn"
+                            onclick="copyCode(this)">nusxa</button></div>
+                    <pre><span class="kw">package</span> <span class="pkg">main</span>
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="cmt">// Oddiy funksiya</span>
+<span class="kw">func</span> <span class="fn">salom</span>(ism <span class="typ">string</span>) <span class="typ">string</span> {
+    <span class="kw">return</span> <span class="str">"Salom, "</span> + ism + <span class="str">"!"</span>
+}
+
+<span class="cmt">// Bir nechta parametr</span>
+<span class="kw">func</span> <span class="fn">yig'indi</span>(a, b <span class="typ">int</span>) <span class="typ">int</span> {
+    <span class="kw">return</span> a + b
+}
+
+<span class="cmt">// Ko'p qiymat qaytarish (Go ning kuchli tomoni!)</span>
+<span class="kw">func</span> <span class="fn">bo'lish</span>(a, b <span class="typ">float64</span>) (<span class="typ">float64</span>, <span class="typ">error</span>) {
+    <span class="kw">if</span> b == <span class="num">0</span> {
+        <span class="kw">return</span> <span class="num">0</span>, fmt.<span class="fn">Errorf</span>(<span class="str">"nolga bo'lish xatosi"</span>)
+    }
+    <span class="kw">return</span> a / b, <span class="kw">nil</span>
+}
+
+<span class="cmt">// Variadic funksiya (ixtiyoriy miqdorda argument)</span>
+<span class="kw">func</span> <span class="fn">jami</span>(sonlar ...<span class="typ">int</span>) <span class="typ">int</span> {
+    summa := <span class="num">0</span>
+    <span class="kw">for</span> _, s := <span class="kw">range</span> sonlar {
+        summa += s
+    }
+    <span class="kw">return</span> summa
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    fmt.<span class="fn">Println</span>(<span class="fn">salom</span>(<span class="str">"Dilnoza"</span>))
+    fmt.<span class="fn">Println</span>(<span class="fn">yig'indi</span>(<span class="num">15</span>, <span class="num">27</span>))
+
+    natija, xato := <span class="fn">bo'lish</span>(<span class="num">10</span>, <span class="num">3</span>)
+    <span class="kw">if</span> xato != <span class="kw">nil</span> {
+        fmt.<span class="fn">Println</span>(<span class="str">"Xato:"</span>, xato)
+    } <span class="kw">else</span> {
+        fmt.<span class="fn">Printf</span>(<span class="str">"%.4f\n"</span>, natija)
+    }
+
+    fmt.<span class="fn">Println</span>(<span class="fn">jami</span>(<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>))
+
+    <span class="cmt">// Anonim funksiya (lambda)</span>
+    kvadrat := <span class="kw">func</span>(x <span class="typ">int</span>) <span class="typ">int</span> { <span class="kw">return</span> x * x }
+    fmt.<span class="fn">Println</span>(<span class="fn">kvadrat</span>(<span class="num">7</span>))
+}</pre>
+                </div>
+
+                <div class="output-box">
+                    <div class="output-label">Natija</div>Salom, Dilnoza!
+                    42
+                    3.3333
+                    15
+                    49
+                </div>
+
+                <div class="note">Go'da funksiyalar <strong>birinchi darajali qiymat</strong> — ularni o'zgaruvchiga
+                    saqlash, argument sifatida uzatish va qaytarish mumkin!</div>
+
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" onclick="prev()">← Oldingi</button>
+                    <button class="btn btn-primary" onclick="next()">Keyingi →</button>
+                </div>
+            </div>
+
+            <!-- LESSON 9: Array, Slice, Map -->
+            <div class="lesson" id="lesson-9">
+                <div class="lesson-header">
+                    <div class="lesson-badge">Dars 10</div>
+                    <h1 class="lesson-title"><span>Array, Slice</span> va <span>Map</span></h1>
+                </div>
+                <p class="lesson-desc">Go'da ma'lumotlar to'plamini saqlash uchun array (qat'iy o'lchamli), slice
+                    (dinamik) va map (kalit-qiymat) ishlatiladi.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-filename">collections<span
+                                class="dot">.go</span></span><button class="copy-btn"
+                            onclick="copyCode(this)">nusxa</button></div>
+                    <pre><span class="kw">package</span> <span class="pkg">main</span>
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    <span class="cmt">// ═══ ARRAY (qat'iy o'lcham) ═══</span>
+    <span class="kw">var</span> sonlar [<span class="num">5</span>]<span class="typ">int</span> = [<span class="num">5</span>]<span class="typ">int</span>{<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>, <span class="num">50</span>}
+    fmt.<span class="fn">Println</span>(sonlar[<span class="num">0</span>], sonlar[<span class="num">2</span>])
+
+    <span class="cmt">// ═══ SLICE (dinamik, ko'p ishlatiladigan) ═══</span>
+    mevalar := []<span class="typ">string</span>{<span class="str">"olma"</span>, <span class="str">"nok"</span>, <span class="str">"gilos"</span>}
+
+    <span class="cmt">// Qo'shish</span>
+    mevalar = <span class="fn">append</span>(mevalar, <span class="str">"shaftoli"</span>, <span class="str">"qovun"</span>)
+    fmt.<span class="fn">Println</span>(mevalar)
+    fmt.<span class="fn">Println</span>(<span class="str">"Uzunlik:"</span>, <span class="fn">len</span>(mevalar))
+
+    <span class="cmt">// Slicing (kesma olish)</span>
+    fmt.<span class="fn">Println</span>(mevalar[<span class="num">1</span>:<span class="num">4</span>]) <span class="cmt">// [nok gilos shaftoli]</span>
+    fmt.<span class="fn">Println</span>(mevalar[:<span class="num">2</span>])  <span class="cmt">// [olma nok]</span>
+
+    <span class="cmt">// make bilan slice yaratish</span>
+    raqamlar := <span class="fn">make</span>([]<span class="typ">int</span>, <span class="num">3</span>, <span class="num">5</span>) <span class="cmt">// uzunlik=3, sig'im=5</span>
+    fmt.<span class="fn">Println</span>(raqamlar)
+
+    <span class="cmt">// ═══ MAP (kalit → qiymat) ═══</span>
+    talaba := <span class="kw">map</span>[<span class="typ">string</span>]<span class="typ">int</span>{
+        <span class="str">"matematika"</span>: <span class="num">95</span>,
+        <span class="str">"fizika"</span>:     <span class="num">87</span>,
+        <span class="str">"inglizcha"</span>:  <span class="num">92</span>,
+    }
+
+    fmt.<span class="fn">Println</span>(talaba[<span class="str">"matematika"</span>])
+
+    <span class="cmt">// Yangi qiymat qo'shish</span>
+    talaba[<span class="str">"kimyo"</span>] = <span class="num">78</span>
+
+    <span class="cmt">// Mavjudligini tekshirish</span>
+    ball, mavjud := talaba[<span class="str">"biologiya"</span>]
+    <span class="kw">if</span> !mavjud {
+        fmt.<span class="fn">Println</span>(<span class="str">"Biologiya topilmadi, default:"</span>, ball)
+    }
+
+    <span class="cmt">// Barcha kalit-qiymatlarni ko'rish</span>
+    <span class="kw">for</span> fan, baho := <span class="kw">range</span> talaba {
+        fmt.<span class="fn">Printf</span>(<span class="str">"%s: %d\n"</span>, fan, baho)
+    }
+
+    <span class="cmt">// O'chirish</span>
+    <span class="fn">delete</span>(talaba, <span class="str">"kimyo"</span>)
+}</pre>
+                </div>
+
+                <div class="output-box">
+                    <div class="output-label">Natija</div>10 30
+                    [olma nok gilos shaftoli qovun]
+                    Uzunlik: 5
+                    [nok gilos shaftoli]
+                    [olma nok]
+                    [0 0 0]
+                    95
+                    Biologiya topilmadi, default: 0
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" onclick="prev()">← Oldingi</button>
+                    <button class="btn btn-primary" onclick="next()">Keyingi →</button>
+                </div>
+            </div>
+
+            <!-- LESSON 10: Struct -->
+            <div class="lesson" id="lesson-10">
+                <div class="lesson-header">
+                    <div class="lesson-badge">Dars 11</div>
+                    <h1 class="lesson-title"><span>Struct</span> va Metodlar</h1>
+                </div>
+                <p class="lesson-desc">Struct — Go'da obyektga o'xshash tuzilma. Metodlar orqali unga funksionallik
+                    qo'shish mumkin.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-filename">structs<span
+                                class="dot">.go</span></span><button class="copy-btn"
+                            onclick="copyCode(this)">nusxa</button></div>
+                    <pre><span class="kw">package</span> <span class="pkg">main</span>
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="cmt">// Struct e'loni</span>
+<span class="kw">type</span> <span class="typ">Talaba</span> <span class="kw">struct</span> {
+    Ism     <span class="typ">string</span>
+    Yosh    <span class="typ">int</span>
+    Baholar []<span class="typ">int</span>
+}
+
+<span class="cmt">// Metod — (receiver bilan funksiya)</span>
+<span class="kw">func</span> (t <span class="typ">Talaba</span>) <span class="fn">OrtachaBalll</span>() <span class="typ">float64</span> {
+    <span class="kw">if</span> <span class="fn">len</span>(t.Baholar) == <span class="num">0</span> { <span class="kw">return</span> <span class="num">0</span> }
+    summa := <span class="num">0</span>
+    <span class="kw">for</span> _, b := <span class="kw">range</span> t.Baholar {
+        summa += b
+    }
+    <span class="kw">return</span> <span class="typ">float64</span>(summa) / <span class="typ">float64</span>(<span class="fn">len</span>(t.Baholar))
+}
+
+<span class="cmt">// Pointer receiver — o'zgartirishlar saqlanadi</span>
+<span class="kw">func</span> (t *<span class="typ">Talaba</span>) <span class="fn">BaholarQo'sh</span>(baho <span class="typ">int</span>) {
+    t.Baholar = <span class="fn">append</span>(t.Baholar, baho)
+}
+
+<span class="kw">func</span> (t <span class="typ">Talaba</span>) <span class="fn">Taqdim</span>() <span class="typ">string</span> {
+    <span class="kw">return</span> fmt.<span class="fn">Sprintf</span>(<span class="str">"%s (%d yosh) — o'rtacha: %.1f"</span>,
+        t.Ism, t.Yosh, t.<span class="fn">OrtachaBalll</span>())
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    <span class="cmt">// Struct yaratish</span>
+    ali := <span class="typ">Talaba</span>{
+        Ism:  <span class="str">"Ali Karimov"</span>,
+        Yosh: <span class="num">20</span>,
+    }
+
+    ali.<span class="fn">BaholarQo'sh</span>(<span class="num">88</span>)
+    ali.<span class="fn">BaholarQo'sh</span>(<span class="num">95</span>)
+    ali.<span class="fn">BaholarQo'sh</span>(<span class="num">76</span>)
+
+    fmt.<span class="fn">Println</span>(ali.<span class="fn">Taqdim</span>())
+
+    <span class="cmt">// Struct array</span>
+    guruh := []<span class="typ">Talaba</span>{
+        {<span class="str">"Zulfiya"</span>, <span class="num">19</span>, []<span class="typ">int</span>{<span class="num">90</span>, <span class="num">85</span>}},
+        {<span class="str">"Bobur"</span>, <span class="num">21</span>, []<span class="typ">int</span>{<span class="num">70</span>, <span class="num">80</span>, <span class="num">75</span>}},
+    }
+
+    <span class="kw">for</span> _, t := <span class="kw">range</span> guruh {
+        fmt.<span class="fn">Println</span>(t.<span class="fn">Taqdim</span>())
+    }
+}</pre>
+                </div>
+
+                <div class="output-box">
+                    <div class="output-label">Natija</div>Ali Karimov (20 yosh) — o'rtacha: 86.3
+                    Zulfiya (19 yosh) — o'rtacha: 87.5
+                    Bobur (21 yosh) — o'rtacha: 75.0
+                </div>
+
+                <div class="note">Go'da <strong>meros (inheritance)</strong> yo'q, lekin <strong>composition</strong>
+                    (bir structni boshqasiga joylash) orqali xuddi shu natijaga erishiladi. Bu Go falsafasining asosi!
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" onclick="prev()">← Oldingi</button>
+                    <button class="btn btn-primary" onclick="next()">Keyingi →</button>
+                </div>
+            </div>
+
+            <!-- LESSON 11: Goroutine -->
+            <div class="lesson" id="lesson-11">
+                <div class="lesson-header">
+                    <div class="lesson-badge">Dars 12</div>
+                    <h1 class="lesson-title"><span>Goroutine</span> va Channel</h1>
+                </div>
+                <p class="lesson-desc">Go'ning eng kuchli tomoni — concurrency! Goroutine'lar bir vaqtda minglab
+                    vazifalarni bajarishga imkon beradi.</p>
+
+                <div class="code-block">
+                    <div class="code-header"><span class="code-filename">goroutine<span
+                                class="dot">.go</span></span><button class="copy-btn"
+                            onclick="copyCode(this)">nusxa</button></div>
+                    <pre><span class="kw">package</span> <span class="pkg">main</span>
+
+<span class="kw">import</span> (
+    <span class="str">"fmt"</span>
+    <span class="str">"sync"</span>
+    <span class="str">"time"</span>
+)
+
+<span class="kw">func</span> <span class="fn">vazifa</span>(id <span class="typ">int</span>, wg *sync.<span class="typ">WaitGroup</span>) {
+    <span class="kw">defer</span> wg.<span class="fn">Done</span>()
+    fmt.<span class="fn">Printf</span>(<span class="str">"Vazifa %d boshlandi\n"</span>, id)
+    time.<span class="fn">Sleep</span>(<span class="num">100</span> * time.Millisecond)
+    fmt.<span class="fn">Printf</span>(<span class="str">"Vazifa %d tugadi\n"</span>, id)
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    <span class="cmt">// ═══ GOROUTINE ═══</span>
+    <span class="kw">var</span> wg sync.<span class="typ">WaitGroup</span>
+
+    <span class="kw">for</span> i := <span class="num">1</span>; i <= <span class="num">3</span>; i++ {
+        wg.<span class="fn">Add</span>(<span class="num">1</span>)
+        <span class="kw">go</span> <span class="fn">vazifa</span>(i, &wg) <span class="cmt">// "go" bilan goroutine!</span>
+    }
+    wg.<span class="fn">Wait</span>() <span class="cmt">// hammasi tugashini kutish</span>
+
+    <span class="cmt">// ═══ CHANNEL ═══</span>
+    ch := <span class="fn">make</span>(<span class="kw">chan</span> <span class="typ">int</span>)
+
+    <span class="kw">go</span> <span class="kw">func</span>() {
+        summa := <span class="num">0</span>
+        <span class="kw">for</span> i := <span class="num">1</span>; i <= <span class="num">100</span>; i++ {
+            summa += i
+        }
+        ch <- summa <span class="cmt">// channelga jo'natish</span>
+    }()
+
+    natija := <-ch <span class="cmt">// channeldan olish</span>
+    fmt.<span class="fn">Println</span>(<span class="str">"1 dan 100 gacha yig'indi:"</span>, natija)
+
+    <span class="cmt">// ═══ BUFFERED CHANNEL ═══</span>
+    xabarlar := <span class="fn">make</span>(<span class="kw">chan</span> <span class="typ">string</span>, <span class="num">2</span>)
+    xabarlar <- <span class="str">"birinchi"</span>
+    xabarlar <- <span class="str">"ikkinchi"</span>
+
+    fmt.<span class="fn">Println</span>(<-xabarlar)
+    fmt.<span class="fn">Println</span>(<-xabarlar)
+
+    <span class="cmt">// ═══ SELECT ═══</span>
+    c1 := <span class="fn">make</span>(<span class="kw">chan</span> <span class="typ">string</span>)
+    c2 := <span class="fn">make</span>(<span class="kw">chan</span> <span class="typ">string</span>)
+
+    <span class="kw">go</span> <span class="kw">func</span>() { c1 <- <span class="str">"c1 tayyor"</span> }()
+    <span class="kw">go</span> <span class="kw">func</span>() { c2 <- <span class="str">"c2 tayyor"</span> }()
+
+    <span class="kw">for</span> i := <span class="num">0</span>; i < <span class="num">2</span>; i++ {
+        <span class="kw">select</span> {
+        <span class="kw">case</span> msg := <-c1:
+            fmt.<span class="fn">Println</span>(msg)
+        <span class="kw">case</span> msg := <-c2:
+            fmt.<span class="fn">Println</span>(msg)
+        }
+    }
+}</pre>
+                </div>
+
+                <div class="output-box">
+                    <div class="output-label">Natija</div>Vazifa 1 boshlandi
+                    Vazifa 2 boshlandi
+                    Vazifa 3 boshlandi
+                    Vazifa 1 tugadi
+                    Vazifa 2 tugadi
+                    Vazifa 3 tugadi
+                    1 dan 100 gacha yig'indi: 5050
+                    birinchi
+                    ikkinchi
+                    c1 tayyor
+                    c2 tayyor
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h4>🚀 Goroutine</h4>
+                        <p><code>go func()</code> yozish kifoya — thread dan yengilroq, minglab goroutine ishlaydi.</p>
+                    </div>
+                    <div class="info-card">
+                        <h4>📡 Channel</h4>
+                        <p>Goroutine'lar orasida xavfsiz ma'lumot almashish uchun. <code>make(chan int)</code></p>
+                    </div>
+                    <div class="info-card">
+                        <h4>🔄 Select</h4>
+                        <p>Bir necha channelni kutish — qaysi biriga avval ma'lumot kelsa, o'sha ishlaydi.</p>
+                    </div>
+                    <div class="info-card">
+                        <h4>🔒 WaitGroup</h4>
+                        <p><code>sync.WaitGroup</code> — barcha goroutine'lar tugashini kutish uchun.</p>
+                    </div>
+                </div>
+
+                <div
+                    style="background: linear-gradient(135deg, rgba(0,173,216,0.1), rgba(0,173,216,0.05)); border: 1px solid var(--go); border-radius: 12px; padding: 24px; margin-top: 28px; text-align: center;">
+                    <div style="font-size: 2.5rem; margin-bottom: 10px;">🎉</div>
+                    <div style="font-size: 1.3rem; font-weight: 800; color: var(--go); margin-bottom: 8px;">
+                        Tabriklaymiz!</div>
+                    <p style="color: var(--text); font-size: 0.9rem;">Siz Go tilining barcha asosiy mavzularini
+                        o'zdingiz! Endi <strong>real loyihalar</strong> yarating: REST API, CLI dastur, yoki
+                        microservice.</p>
+                    <div style="margin-top: 16px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                        <code
+                            style="background: var(--code-bg); padding: 6px 12px; border-radius: 6px; font-family: 'JetBrains Mono'; font-size: 0.8rem; color: var(--accent);">go.dev/tour</code>
+                        <code
+                            style="background: var(--code-bg); padding: 6px 12px; border-radius: 6px; font-family: 'JetBrains Mono'; font-size: 0.8rem; color: var(--accent);">gobyexample.com</code>
+                        <code
+                            style="background: var(--code-bg); padding: 6px 12px; border-radius: 6px; font-family: 'JetBrains Mono'; font-size: 0.8rem; color: var(--accent);">pkg.go.dev</code>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" onclick="prev()">← Oldingi</button>
+                    <button class="btn btn-primary" disabled>✓ Kurs Tugadi!</button>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        let current = 0;
+        const total = 12;
+        const done = new Set();
+
+        function goTo(n) {
+            document.getElementById('lesson-' + current).classList.remove('active');
+            document.querySelectorAll('.sidebar-item')[current].classList.remove('active');
+            done.add(current);
+            document.querySelectorAll('.sidebar-item')[current].classList.add('done');
+
+            current = n;
+            document.getElementById('lesson-' + current).classList.add('active');
+            document.querySelectorAll('.sidebar-item')[current].classList.remove('done');
+            document.querySelectorAll('.sidebar-item')[current].classList.add('active');
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+
+        function next() { if (current < total - 1) goTo(current + 1); }
+        function prev() { if (current > 0) goTo(current - 1); }
+
+        function updateProgress() {
+            const pct = Math.round((done.size / total) * 100);
+            document.getElementById('progressBar').style.width = pct + '%';
+            document.getElementById('progressText').textContent = done.size + ' / ' + total;
+        }
+
+        function copyCode(btn) {
+            const pre = btn.closest('.code-block').querySelector('pre');
+            navigator.clipboard.writeText(pre.innerText);
+            btn.textContent = '✓ nusxalandi';
+            setTimeout(() => btn.textContent = 'nusxa', 2000);
+        }
+
+        function checkQuiz(btn, correct) {
+            const opts = btn.closest('.quiz-options').querySelectorAll('.quiz-opt');
+            opts.forEach(o => o.disabled = true);
+            btn.classList.add(correct ? 'correct' : 'wrong');
+            const r = document.getElementById('qr');
+            r.style.display = 'block';
+            r.style.color = correct ? 'var(--green)' : 'var(--red)';
+            r.textContent = correct ? '✅ To\'g\'ri! := qisqa e\'lon operatori.' : '❌ Noto\'g\'ri. To\'g\'ri javob := edi.';
+        }
+
+        // keyboard nav
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowRight') next();
+            if (e.key === 'ArrowLeft') prev();
+        });
+    </script>
+</body>
+
+</html>
