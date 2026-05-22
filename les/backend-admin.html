@@ -1,0 +1,3168 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Backend Roadmap Admin // Senior Go</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f8fa;
+    --sidebar-bg: #ffffff;
+    --content-bg: #ffffff;
+    --border: #e5e7eb;
+    --border-light: #f3f4f6;
+    --text: #111827;
+    --text-secondary: #4b5563;
+    --text-muted: #9ca3af;
+    --primary: #2563eb;
+    --primary-light: #eff6ff;
+    --success: #10b981;
+    --success-light: #ecfdf5;
+    --warning: #f59e0b;
+    --warning-light: #fffbeb;
+    --danger: #ef4444;
+    --danger-light: #fef2f2;
+    --code-bg: #0f172a;
+    --code-text: #e2e8f0;
+    --code-comment: #64748b;
+    --code-keyword: #c084fc;
+    --code-string: #86efac;
+    --code-fn: #60a5fa;
+    --code-accent: #fbbf24;
+    --sans: 'Inter', -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* LAYOUT */
+  .app {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: 100vh;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .sidebar::-webkit-scrollbar { width: 6px; }
+  .sidebar::-webkit-scrollbar-track { background: transparent; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  .sidebar-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-mark {
+    width: 32px;
+    height: 32px;
+    background: var(--primary);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .logo-text { font-weight: 700; font-size: 15px; }
+  .logo-sub { font-size: 11px; color: var(--text-muted); margin-top: -2px; }
+
+  .sidebar-search {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .search-input {
+    width: 100%;
+    padding: 8px 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: var(--sans);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-input:focus { border-color: var(--primary); }
+  .search-input::placeholder { color: var(--text-muted); }
+
+  .nav-section {
+    padding: 16px 12px;
+  }
+  .nav-section + .nav-section { border-top: 1px solid var(--border-light); }
+  .nav-label {
+    padding: 0 12px 8px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.15s;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+  }
+  .nav-item:hover { background: var(--bg); color: var(--text); }
+  .nav-item.active {
+    background: var(--primary-light);
+    color: var(--primary);
+  }
+  .nav-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    background: var(--bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    min-width: 28px;
+    text-align: center;
+  }
+  .nav-item.active .nav-num {
+    background: var(--primary);
+    color: white;
+  }
+  .nav-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-left: auto;
+  }
+  .dot-critical { background: var(--danger); }
+  .dot-high { background: var(--warning); }
+  .dot-medium { background: var(--primary); }
+
+  /* MAIN CONTENT */
+  .main {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .topbar {
+    height: 60px;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .breadcrumb b { color: var(--text); font-weight: 600; }
+  .topbar-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .btn {
+    padding: 7px 14px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: white;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn:hover { background: var(--bg); }
+  .btn-primary {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+  .btn-primary:hover { background: #1d4ed8; }
+
+  .content {
+    padding: 32px;
+    max-width: 1100px;
+    width: 100%;
+  }
+
+  /* PAGE STYLES */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  .page-header {
+    margin-bottom: 32px;
+  }
+  .page-badges {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 100px;
+  }
+  .badge-critical { background: var(--danger-light); color: var(--danger); }
+  .badge-high { background: var(--warning-light); color: var(--warning); }
+  .badge-medium { background: var(--primary-light); color: var(--primary); }
+  .badge-info { background: var(--border-light); color: var(--text-secondary); }
+
+  .page-title {
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .page-subtitle {
+    font-size: 15px;
+    color: var(--text-secondary);
+    max-width: 720px;
+  }
+
+  /* SECTIONS */
+  h2.section-h {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 32px 0 16px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  h2.section-h::before {
+    content: '';
+    width: 3px;
+    height: 18px;
+    background: var(--primary);
+    border-radius: 2px;
+  }
+
+  h3.sub-h {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 24px 0 12px;
+    color: var(--text);
+  }
+
+  p {
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    font-size: 14px;
+  }
+
+  /* CARDS */
+  .card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .card-tight { padding: 16px 20px; }
+
+  .info-box {
+    background: var(--primary-light);
+    border-left: 3px solid var(--primary);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin: 16px 0;
+    font-size: 13px;
+    color: var(--text);
+  }
+  .info-box b { color: var(--primary); }
+
+  .warn-box {
+    background: var(--warning-light);
+    border-left: 3px solid var(--warning);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin: 16px 0;
+    font-size: 13px;
+  }
+  .warn-box b { color: #b45309; }
+
+  .success-box {
+    background: var(--success-light);
+    border-left: 3px solid var(--success);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin: 16px 0;
+    font-size: 13px;
+  }
+  .success-box b { color: var(--success); }
+
+  /* CODE */
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    border-radius: 8px;
+    padding: 18px 20px;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.65;
+    margin: 12px 0;
+    position: relative;
+  }
+  pre::before {
+    content: attr(data-lang);
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    font-size: 10px;
+    color: var(--code-comment);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+  }
+  code.inline {
+    background: var(--border-light);
+    color: var(--text);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+  .c-comment { color: var(--code-comment); font-style: italic; }
+  .c-keyword { color: var(--code-keyword); }
+  .c-string { color: var(--code-string); }
+  .c-fn { color: var(--code-fn); }
+  .c-num { color: var(--code-accent); }
+
+  /* DEFINITION LIST */
+  dl {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 12px 24px;
+    margin: 16px 0;
+    font-size: 13px;
+  }
+  dt {
+    font-weight: 600;
+    color: var(--text);
+  }
+  dd {
+    color: var(--text-secondary);
+  }
+
+  /* TABLE */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 13px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  th {
+    text-align: left;
+    padding: 10px 14px;
+    background: var(--bg);
+    font-weight: 600;
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text-secondary);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+
+  /* CHECKLIST */
+  .check-list {
+    list-style: none;
+    padding: 0;
+  }
+  .check-list li {
+    padding: 8px 0;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+  }
+  .check-list li::before {
+    content: '✓';
+    color: var(--success);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* DIAGRAM */
+  .diagram {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    margin: 16px 0;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.7;
+    white-space: pre;
+    overflow-x: auto;
+    color: var(--text);
+  }
+
+  /* PILL TABS */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+  .tab {
+    padding: 8px 14px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    font-family: inherit;
+  }
+  .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .app { grid-template-columns: 1fr; }
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -280px;
+      width: 280px;
+      z-index: 100;
+      transition: left 0.3s;
+    }
+    .sidebar.open { left: 0; }
+    .content { padding: 20px; }
+    dl { grid-template-columns: 1fr; gap: 4px 0; }
+    dt { margin-top: 12px; }
+    .menu-btn { display: flex !important; }
+  }
+  .menu-btn {
+    display: none;
+    background: white;
+    border: 1px solid var(--border);
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  /* OVERLAY for mobile */
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 90;
+  }
+  .overlay.active { display: block; }
+</style>
+</head>
+<body>
+
+<div class="overlay" onclick="closeSidebar()"></div>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-mark">G</div>
+      <div>
+        <div class="logo-text">Backend Roadmap</div>
+        <div class="logo-sub">Senior · Go · Scale</div>
+      </div>
+    </div>
+
+    <div class="sidebar-search">
+      <input type="text" class="search-input" placeholder="Search modules..." id="searchInput">
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Senior Modules</div>
+      <button class="nav-item active" data-page="m19">
+        <span class="nav-num">19</span> Distributed Systems
+        <span class="nav-dot dot-critical"></span>
+      </button>
+      <button class="nav-item" data-page="m20">
+        <span class="nav-num">20</span> System Design
+        <span class="nav-dot dot-critical"></span>
+      </button>
+      <button class="nav-item" data-page="m21">
+        <span class="nav-num">21</span> Kubernetes
+        <span class="nav-dot dot-high"></span>
+      </button>
+      <button class="nav-item" data-page="m22">
+        <span class="nav-num">22</span> Observability
+        <span class="nav-dot dot-critical"></span>
+      </button>
+      <button class="nav-item" data-page="m23">
+        <span class="nav-num">23</span> Security
+        <span class="nav-dot dot-critical"></span>
+      </button>
+      <button class="nav-item" data-page="m24">
+        <span class="nav-num">24</span> Testing
+        <span class="nav-dot dot-high"></span>
+      </button>
+      <button class="nav-item" data-page="m25">
+        <span class="nav-num">25</span> PostgreSQL Deep
+        <span class="nav-dot dot-critical"></span>
+      </button>
+      <button class="nav-item" data-page="m26">
+        <span class="nav-num">26</span> CI/CD
+        <span class="nav-dot dot-high"></span>
+      </button>
+      <button class="nav-item" data-page="m27">
+        <span class="nav-num">27</span> Realtime Arch
+        <span class="nav-dot dot-critical"></span>
+      </button>
+      <button class="nav-item" data-page="m28">
+        <span class="nav-num">28</span> Search Systems
+        <span class="nav-dot dot-high"></span>
+      </button>
+      <button class="nav-item" data-page="m29">
+        <span class="nav-num">29</span> Architecture
+        <span class="nav-dot dot-critical"></span>
+      </button>
+      <button class="nav-item" data-page="m30">
+        <span class="nav-num">30</span> Profiling/Perf
+        <span class="nav-dot dot-critical"></span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <button class="menu-btn" onclick="openSidebar()">☰</button>
+        <div class="breadcrumb">
+          Modules <span>›</span> <b id="crumb">Distributed Systems</b>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn">Export PDF</button>
+        <button class="btn btn-primary">Save Progress</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- =================== M19 =================== -->
+      <div class="page active" id="m19">
+        <div class="page-header">
+          <div class="page-badges">
+            <span class="badge badge-critical">Critical</span>
+            <span class="badge badge-info">Module 19</span>
+            <span class="badge badge-info">Theory + Practice</span>
+          </div>
+          <h1 class="page-title">Distributed Systems</h1>
+          <p class="page-subtitle">Senior backend interviewlarning eng asosiy savollar manbasi. CAP, consistency, idempotency — bularsiz mikroservis qurish mumkin emas.</p>
+        </div>
+
+        <h2 class="section-h">CAP Theorem</h2>
+        <p>Distributed sistema bir vaqtning o'zida faqat <b>2 ta</b> xususiyatni to'liq ta'minlay oladi:</p>
+
+        <dl>
+          <dt>C — Consistency</dt>
+          <dd>Barcha node'lar bir xil ma'lumotni qaytaradi. Yozish darhol hammaga ko'rinadi.</dd>
+          <dt>A — Availability</dt>
+          <dd>Har bir so'rov javob oladi (xato bo'lmaydi), lekin javob eski bo'lishi mumkin.</dd>
+          <dt>P — Partition tolerance</dt>
+          <dd>Tarmoq uzilsa ham sistema ishlashda davom etadi. Real dunyoda bu <b>majburiy</b>.</dd>
+        </dl>
+
+        <div class="info-box">
+          <b>Amaliy qaror:</b> Network partition har doim bo'ladi → P doimo kerak. Demak siz <b>CP</b> yoki <b>AP</b> tanlaysiz.<br>
+          <b>CP</b> misol: PostgreSQL, MongoDB (strong consistency). <br>
+          <b>AP</b> misol: Cassandra, DynamoDB, Redis cluster (eventual consistency).
+        </div>
+
+        <h2 class="section-h">Consistency darajalari</h2>
+        <table>
+          <thead><tr><th>Daraja</th><th>Tushuntirish</th><th>Qachon ishlatiladi</th></tr></thead>
+          <tbody>
+            <tr><td><b>Strong</b></td><td>Yozgandan so'ng darhol o'qiganda yangi qiymat</td><td>Bank, payment, balance</td></tr>
+            <tr><td><b>Eventual</b></td><td>Vaqt o'tib hamma joyda sync bo'ladi (ms–s)</td><td>Like count, profil ko'rishlar</td></tr>
+            <tr><td><b>Read-your-writes</b></td><td>Foydalanuvchi o'z yozganini ko'radi</td><td>Profil tahrirlash, post yozish</td></tr>
+            <tr><td><b>Causal</b></td><td>Sabab-oqibat tartib saqlanadi</td><td>Chat xabarlari, comment thread</td></tr>
+          </tbody>
+        </table>
+
+        <h2 class="section-h">Idempotency — eng amaliy mavzu</h2>
+        <p>Bir operatsiya bir necha marta bajarilsa ham natija bir xil bo'lishi.</p>
+
+        <div class="warn-box">
+          <b>Muammo:</b> Foydalanuvchi "Pay" tugmasini 3 marta bosdi yoki tarmoq retry qildi → pul 3 marta yechiladi.
+        </div>
+
+        <h3 class="sub-h">Yechim 1 — Idempotency Key</h3>
+<pre data-lang="Go"><span class="c-comment">// Client har request uchun unique key yuboradi</span>
+POST /api/v1/payments
+<span class="c-keyword">Idempotency-Key:</span> <span class="c-string">"a3f5-payment-2026-05-22-user123"</span>
+
+<span class="c-keyword">func</span> <span class="c-fn">CreatePayment</span>(ctx context.Context, key string, amount int64) error {
+    <span class="c-comment">// 1. Redis'da key bor-yo'qligini tekshir</span>
+    exists, err := redis.SetNX(ctx, <span class="c-string">"idem:"</span>+key, <span class="c-string">"processing"</span>, <span class="c-num">24</span>*time.Hour).Result()
+    <span class="c-keyword">if</span> err != <span class="c-keyword">nil</span> { <span class="c-keyword">return</span> err }
+
+    <span class="c-keyword">if</span> !exists {
+        <span class="c-comment">// Key bor — oldingi natijani qaytar</span>
+        result, _ := redis.Get(ctx, <span class="c-string">"idem:result:"</span>+key).Result()
+        <span class="c-keyword">return</span> json.Unmarshal([]<span class="c-keyword">byte</span>(result), &response)
+    }
+
+    <span class="c-comment">// 2. Birinchi marta — to'lovni amalga oshir</span>
+    payment, err := processPayment(ctx, amount)
+
+    <span class="c-comment">// 3. Natijani saqla</span>
+    data, _ := json.Marshal(payment)
+    redis.Set(ctx, <span class="c-string">"idem:result:"</span>+key, data, <span class="c-num">24</span>*time.Hour)
+
+    <span class="c-keyword">return</span> <span class="c-keyword">nil</span>
+}</pre>
+
+        <h3 class="sub-h">Yechim 2 — DB unique constraint</h3>
+<pre data-lang="SQL"><span class="c-keyword">CREATE TABLE</span> payments (
+    id <span class="c-keyword">UUID</span> <span class="c-keyword">PRIMARY KEY</span>,
+    idempotency_key <span class="c-keyword">VARCHAR</span>(<span class="c-num">128</span>) <span class="c-keyword">UNIQUE NOT NULL</span>,  <span class="c-comment">-- ← kalit</span>
+    user_id <span class="c-keyword">UUID</span>,
+    amount <span class="c-keyword">BIGINT</span>,
+    status <span class="c-keyword">VARCHAR</span>(<span class="c-num">20</span>),
+    created_at <span class="c-keyword">TIMESTAMP DEFAULT</span> <span class="c-fn">NOW</span>()
+);
+
+<span class="c-comment">-- Ikkinchi bor INSERT urinsa — duplicate error</span>
+<span class="c-keyword">INSERT INTO</span> payments (idempotency_key, ...) <span class="c-keyword">VALUES</span> (<span class="c-string">'a3f5-...'</span>, ...);
+<span class="c-comment">-- ERROR: duplicate key value violates unique constraint</span></pre>
+
+        <h2 class="section-h">Retry Strategy — Exponential Backoff</h2>
+        <p>Tarmoq xatosi bo'lsa darhol qayta urinmaslik kerak — sistema'ga zarba beradi.</p>
+
+<pre data-lang="Go"><span class="c-keyword">func</span> <span class="c-fn">retryWithBackoff</span>(ctx context.Context, op <span class="c-keyword">func</span>() error) error {
+    delays := []time.Duration{
+        <span class="c-num">100</span>*time.Millisecond,   <span class="c-comment">// 1-urinish</span>
+        <span class="c-num">500</span>*time.Millisecond,   <span class="c-comment">// 2-urinish</span>
+        <span class="c-num">2</span>*time.Second,          <span class="c-comment">// 3-urinish</span>
+        <span class="c-num">5</span>*time.Second,          <span class="c-comment">// 4-urinish</span>
+    }
+
+    <span class="c-keyword">for</span> i, delay := <span class="c-keyword">range</span> delays {
+        err := op()
+        <span class="c-keyword">if</span> err == <span class="c-keyword">nil</span> { <span class="c-keyword">return</span> <span class="c-keyword">nil</span> }
+
+        <span class="c-comment">// Retriable bo'lmasa darhol chiqib ket</span>
+        <span class="c-keyword">if</span> !isRetriable(err) { <span class="c-keyword">return</span> err }
+
+        <span class="c-comment">// Jitter qo'shamiz — barcha clientlar bir vaqtda urmasin</span>
+        jitter := time.Duration(rand.Int63n(<span class="c-num">100</span>)) * time.Millisecond
+
+        <span class="c-keyword">select</span> {
+        <span class="c-keyword">case</span> &lt;-time.After(delay + jitter):
+        <span class="c-keyword">case</span> &lt;-ctx.Done(): <span class="c-keyword">return</span> ctx.Err()
+        }
+    }
+    <span class="c-keyword">return</span> errors.New(<span class="c-string">"max retries exceeded"</span>)
+}</pre>
+
+        <h2 class="section-h">Distributed Lock</h2>
+        <p>Bir vaqtda bir necha server bir resursga yozmasin.</p>
+
+<pre data-lang="Go"><span class="c-comment">// Redis-based distributed lock (Redlock pattern)</span>
+<span class="c-keyword">func</span> <span class="c-fn">withLock</span>(ctx context.Context, key string, ttl time.Duration, fn <span class="c-keyword">func</span>() error) error {
+    lockKey := <span class="c-string">"lock:"</span> + key
+    token := uuid.New().String()  <span class="c-comment">// kim qulflaganini bilish uchun</span>
+
+    <span class="c-comment">// SET NX — faqat yo'q bo'lsa qo'yadi</span>
+    ok, err := redis.SetNX(ctx, lockKey, token, ttl).Result()
+    <span class="c-keyword">if</span> err != <span class="c-keyword">nil</span> { <span class="c-keyword">return</span> err }
+    <span class="c-keyword">if</span> !ok { <span class="c-keyword">return</span> errors.New(<span class="c-string">"already locked"</span>) }
+
+    <span class="c-keyword">defer</span> <span class="c-fn">func</span>() {
+        <span class="c-comment">// LUA script — atomik tekshir va o'chir</span>
+        script := <span class="c-string">`if redis.call("GET", KEYS[1]) == ARGV[1] then
+            return redis.call("DEL", KEYS[1])
+        else return 0 end`</span>
+        redis.Eval(ctx, script, []string{lockKey}, token)
+    }()
+
+    <span class="c-keyword">return</span> fn()
+}
+
+<span class="c-comment">// Misol: invoice raqami berishda</span>
+withLock(ctx, <span class="c-string">"invoice-counter"</span>, <span class="c-num">5</span>*time.Second, <span class="c-keyword">func</span>() error {
+    next := getNextInvoiceNumber()  <span class="c-comment">// race condition yo'q</span>
+    <span class="c-keyword">return</span> saveInvoice(next)
+})</pre>
+
+        <h2 class="section-h">Split Brain</h2>
+        <p>Cluster ikkiga bo'linib qoladi va har biri o'zini "master" deb hisoblaydi.</p>
+
+        <div class="diagram">  Normal cluster:           Network partition:
+  ┌─────────────────┐       ┌──────┐ ✗ ┌──────┐
+  │ N1  N2  N3      │       │ N1   │   │ N2   │
+  │ master: N1      │  →    │ N3   │   │ N2   │
+  │                 │       │master│   │master│  ← split brain!
+  └─────────────────┘       └──────┘   └──────┘</div>
+
+        <div class="success-box">
+          <b>Yechim — Quorum:</b> Master tanlash uchun <code class="inline">N/2 + 1</code> ovoz kerak. 3 node'li clusterda 2 ovoz. Shunda ozchilik tomon master tanlay olmaydi.
+        </div>
+
+        <h2 class="section-h">Real interview savol — to'liq javob</h2>
+
+        <div class="card">
+          <p><b>Savol:</b> Foydalanuvchi "Pay" tugmasini 3 marta bosdi. Sizning mikroservisingiz <i>aniq 1 marta</i> to'lov qilishini qanday ta'minlaysiz?</p>
+
+          <h3 class="sub-h">Javob — 4 qatlamli himoya</h3>
+          <ol style="padding-left: 20px; color: var(--text-secondary); font-size: 13px;">
+            <li style="margin: 6px 0;"><b>Frontend:</b> Tugma bosilgandan keyin <code class="inline">disabled</code> qilinadi, debouncing 500ms.</li>
+            <li style="margin: 6px 0;"><b>Idempotency-Key:</b> Client har to'lov uchun UUID generate qiladi va header'da yuboradi.</li>
+            <li style="margin: 6px 0;"><b>Redis cache:</b> Backend key'ni <code class="inline">SETNX</code> bilan tekshiradi — 24 soat saqlaydi.</li>
+            <li style="margin: 6px 0;"><b>DB constraint:</b> <code class="inline">payments</code> jadvalida <code class="inline">UNIQUE(idempotency_key)</code> — final himoya.</li>
+          </ol>
+
+          <h3 class="sub-h">Flow diagrami</h3>
+          <div class="diagram">  Client                Gateway          Payment Service      Redis      DB
+    │                     │                    │              │         │
+    ├─[Pay #1]───────────►│                    │              │         │
+    │  Idem-Key: abc123   ├───────────────────►│              │         │
+    │                     │                    ├─SETNX abc123─►         │
+    │                     │                    │◄──OK(new)────┤         │
+    │                     │                    ├─INSERT──────────────►  │
+    │                     │                    │◄─────────────────success
+    │◄──────200 OK────────│◄───────────────────│              │         │
+    │                     │                    │              │         │
+    ├─[Pay #2]───────────►│  (retry from net)  │              │         │
+    │  Idem-Key: abc123   ├───────────────────►│              │         │
+    │                     │                    ├─SETNX abc123─►         │
+    │                     │                    │◄─OK(exists)──┤         │
+    │                     │                    │◄─cached result         │
+    │◄──200 OK (same)─────│◄───────────────────│              │         │</div>
+        </div>
+
+        <h2 class="section-h">Checklist — bilish kerak</h2>
+        <ul class="check-list">
+          <li>CAP theorem va real qarorlar (CP vs AP)</li>
+          <li>Consistency darajalari va qachon qaysi biri kerak</li>
+          <li>Idempotency — 4 qatlamli himoya</li>
+          <li>Retry + exponential backoff + jitter</li>
+          <li>Distributed lock (Redis, Zookeeper, etcd)</li>
+          <li>Quorum va split-brain prevention</li>
+          <li>Eventual consistency va conflict resolution (LWW, CRDT)</li>
+          <li>Two-phase commit (2PC) va alternatives (Saga)</li>
+        </ul>
+      </div>
+
+      <!-- =================== M20 =================== -->
+      <div class="page" id="m20">
+        <div class="page-header">
+          <div class="page-badges">
+            <span class="badge badge-critical">Critical</span>
+            <span class="badge badge-info">Module 20</span>
+            <span class="badge badge-info">Architecture</span>
+          </div>
+          <h1 class="page-title">System Design</h1>
+          <p class="page-subtitle">Architecture chiza olish — bu senior'ning eng asosiy ko'nikmasi. Instagram, Telegram, Zoom darajasidagi tizimlarni qanday qilib loyihalash.</p>
+        </div>
+
+        <h2 class="section-h">System Design framework — 7 qadam</h2>
+        <ol style="padding-left: 20px; color: var(--text-secondary); font-size: 13px; line-height: 2;">
+          <li><b>Requirements:</b> Functional + Non-functional (RPS, latency, uptime)</li>
+          <li><b>Capacity estimate:</b> Storage, bandwidth, QPS hisoblash</li>
+          <li><b>API design:</b> Endpoint'lar, request/response</li>
+          <li><b>Data model:</b> Schema, indekslar, partition strategy</li>
+          <li><b>High-level architecture:</b> Komponentlar va aloqalar</li>
+          <li><b>Deep dive:</b> Bottleneck'lar, scale qilish</li>
+          <li><b>Trade-offs:</b> Nimani qurbon qildik?</li>
+        </ol>
+
+        <h2 class="section-h">Misol — Telegram-class chat (50M user)</h2>
+
+        <h3 class="sub-h">1. Requirements</h3>
+        <table>
+          <thead><tr><th>Functional</th><th>Non-functional</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>1-1 va guruh chat<br>Media yuborish<br>Online status<br>Read receipts<br>Push notification</td>
+              <td>50M DAU, 5M concurrent<br>p99 latency &lt; 200ms<br>99.9% uptime<br>Message order guarantee<br>End-to-end encryption</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3 class="sub-h">2. Capacity estimate</h3>
+<pre data-lang="Calculation">DAU             = 50,000,000
+Avg messages    = 40 per user/day
+Total messages  = 2,000,000,000 per day
+Per second      = ~23,000 msg/sec (avg)
+Peak (3x)       = ~70,000 msg/sec
+
+<span class="c-comment">// Storage</span>
+Avg message     = 200 bytes
+Per day         = 2B × 200B = 400 GB/day
+Per year        = ~150 TB
+With media (5%) = ~500 TB/year
+
+<span class="c-comment">// Connections</span>
+Concurrent WS   = 5M users
+Per server      = 50k connections
+Servers needed  = 100 chat servers</pre>
+
+        <h3 class="sub-h">3. High-level architecture</h3>
+        <div class="diagram">                          ┌───────────────┐
+                          │   Mobile/Web  │
+                          └───────┬───────┘
+                                  │ WSS
+                          ┌───────▼────────┐
+                          │  Load Balancer │  (sticky session)
+                          │   (TLS, L7)    │
+                          └───────┬────────┘
+                                  │
+                ┌─────────────────┼─────────────────┐
+                ▼                 ▼                 ▼
+        ┌─────────────┐   ┌─────────────┐   ┌─────────────┐
+        │ Chat Server │   │ Chat Server │   │ Chat Server │
+        │  (Go + WS)  │   │  (Go + WS)  │   │  (Go + WS)  │
+        └──────┬──────┘   └──────┬──────┘   └──────┬──────┘
+               │                 │                 │
+               └─────────────────┼─────────────────┘
+                                 │
+                  ┌──────────────┴──────────────┐
+                  ▼                             ▼
+          ┌───────────────┐             ┌──────────────┐
+          │ Redis Cluster │             │  Kafka       │
+          │ (presence,    │             │  (message    │
+          │  pub/sub)     │             │   pipeline)  │
+          └───────────────┘             └──────┬───────┘
+                                               │
+                              ┌────────────────┼──────────────┐
+                              ▼                ▼              ▼
+                       ┌──────────┐    ┌──────────┐   ┌──────────┐
+                       │ Postgres │    │ Cassandra │   │   S3     │
+                       │ (users,  │    │ (messages,│   │ (media)  │
+                       │  groups) │    │  sharded) │   │          │
+                       └──────────┘    └──────────┘   └──────────┘</div>
+
+        <h3 class="sub-h">4. Xabar yuborish flow</h3>
+        <ol style="padding-left: 20px; color: var(--text-secondary); font-size: 13px; line-height: 2;">
+          <li>User A xabar yuboradi → WebSocket orqali Chat-Server-7'ga keladi</li>
+          <li>Chat-Server xabarni Kafka'ga yozadi (durability)</li>
+          <li>Kafka consumer Cassandra'ga yozadi (persist)</li>
+          <li>Chat-Server Redis Pub/Sub orqali qabul qiluvchining server'iga signal yuboradi</li>
+          <li>User B'ning Chat-Server-23'i xabarni unga yetkazadi</li>
+          <li>User B offline bo'lsa → Push notification service ishga tushadi</li>
+        </ol>
+
+        <h3 class="sub-h">5. Sharding strategiyasi</h3>
+<pre data-lang="Strategy"><span class="c-comment">// Messages — chat_id bo'yicha shard</span>
+shard_key = chat_id % N_SHARDS
+
+<span class="c-comment">// Bir chat'ning barcha xabarlari bitta shard'da</span>
+<span class="c-comment">// → range query tez ishlaydi</span>
+<span class="c-comment">// → cross-shard JOIN kerak emas</span>
+
+<span class="c-comment">// Users — user_id bo'yicha shard (consistent hashing)</span>
+<span class="c-comment">// → rebalancing oson</span></pre>
+
+        <h2 class="section-h">Bottleneck'lar va yechimlar</h2>
+        <table>
+          <thead><tr><th>Bottleneck</th><th>Yechim</th></tr></thead>
+          <tbody>
+            <tr><td>WebSocket connection limit</td><td>Horizontal scale + sticky session</td></tr>
+            <tr><td>Cross-server message delivery</td><td>Redis Pub/Sub yoki NATS</td></tr>
+            <tr><td>Message ordering</td><td>Kafka partition + per-chat ordering</td></tr>
+            <tr><td>"Last seen" too frequent writes</td><td>Redis (TTL 60s) + batch flush to DB</td></tr>
+            <tr><td>Push notifications spike</td><td>Queue (Kafka) + worker pool</td></tr>
+            <tr><td>Media storage</td><td>S3/MinIO + CDN</td></tr>
+          </tbody>
+        </table>
+
+        <h2 class="section-h">Trade-offs</h2>
+        <dl>
+          <dt>Cassandra vs Postgres</dt>
+          <dd>Messages → Cassandra (write-heavy, time-series). Users → Postgres (relations, transactions).</dd>
+          <dt>Pub/Sub vs Queue</dt>
+          <dd>Realtime delivery → Pub/Sub (fire-and-forget). Durable processing → Kafka.</dd>
+          <dt>Sticky session vs Stateless</dt>
+          <dd>WebSocket uchun sticky majburiy. Lekin failover qiyinroq.</dd>
+        </dl>
+
+        <h2 class="section-h">Boshqa klassik System Design savollar</h2>
+        <ul class="check-list">
+          <li>URL shortener (bit.ly) — base62 encoding, cache, custom alias</li>
+          <li>Instagram newsfeed — fanout-on-write vs fanout-on-read</li>
+          <li>YouTube — video upload, encoding pipeline, CDN, recommendation</li>
+          <li>Uber — geo-index, matching, surge pricing, real-time tracking</li>
+          <li>Twitter timeline — hybrid fanout (celebrity problem)</li>
+          <li>Notification system — priority queue, deduplication, batching</li>
+          <li>Rate limiter — token bucket, sliding window, Redis-based</li>
+          <li>Distributed cache — consistent hashing, cache invalidation</li>
+        </ul>
+      </div>
+
+      <!-- =================== M21 =================== -->
+      <div class="page" id="m21">
+        <div class="page-header">
+          <div class="page-badges">
+            <span class="badge badge-high">High</span>
+            <span class="badge badge-info">Module 21</span>
+            <span class="badge badge-info">DevOps</span>
+          </div>
+          <h1 class="page-title">Kubernetes</h1>
+          <p class="page-subtitle">Container orchestration — production'da standart. Auto-scaling, self-healing, rolling deploy.</p>
+        </div>
+
+        <h2 class="section-h">Asosiy obyektlar</h2>
+        <dl>
+          <dt>Pod</dt>
+          <dd>Eng kichik birlik. 1 yoki bir nechta container'lar bir tarmoqda ishlaydi.</dd>
+          <dt>Deployment</dt>
+          <dd>Pod'larning desired state'ini saqlaydi. Replica count, update strategy.</dd>
+          <dt>Service</dt>
+          <dd>Pod'larga stabil network endpoint beradi. ClusterIP / NodePort / LoadBalancer.</dd>
+          <dt>Ingress</dt>
+          <dd>HTTP/HTTPS routing — domain'lar va path'lar orqali servicelarga.</dd>
+          <dt>ConfigMap / Secret</dt>
+          <dd>Konfiguratsiya va maxfiy ma'lumotlar (env, files).</dd>
+          <dt>StatefulSet</dt>
+          <dd>Stateful workload — DB, Redis cluster. Stable network identity.</dd>
+          <dt>PersistentVolume</dt>
+          <dd>Pod o'lganda ham saqlanib qoladigan disk.</dd>
+        </dl>
+
+        <h2 class="section-h">Real misol — Go chat-service deploy</h2>
+
+        <h3 class="sub-h">deployment.yaml</h3>
+<pre data-lang="YAML"><span class="c-keyword">apiVersion</span>: apps/v1
+<span class="c-keyword">kind</span>: Deployment
+<span class="c-keyword">metadata</span>:
+  <span class="c-keyword">name</span>: chat-service
+  <span class="c-keyword">labels</span>:
+    <span class="c-keyword">app</span>: chat
+<span class="c-keyword">spec</span>:
+  <span class="c-keyword">replicas</span>: <span class="c-num">3</span>
+  <span class="c-keyword">strategy</span>:
+    <span class="c-keyword">type</span>: RollingUpdate
+    <span class="c-keyword">rollingUpdate</span>:
+      <span class="c-keyword">maxSurge</span>: <span class="c-num">1</span>           <span class="c-comment"># yangi pod qo'shish</span>
+      <span class="c-keyword">maxUnavailable</span>: <span class="c-num">0</span>     <span class="c-comment"># downtime yo'q</span>
+  <span class="c-keyword">selector</span>:
+    <span class="c-keyword">matchLabels</span>:
+      <span class="c-keyword">app</span>: chat
+  <span class="c-keyword">template</span>:
+    <span class="c-keyword">metadata</span>:
+      <span class="c-keyword">labels</span>:
+        <span class="c-keyword">app</span>: chat
+    <span class="c-keyword">spec</span>:
+      <span class="c-keyword">containers</span>:
+      - <span class="c-keyword">name</span>: chat
+        <span class="c-keyword">image</span>: myregistry/chat-service:v1.2.3
+        <span class="c-keyword">ports</span>:
+        - <span class="c-keyword">containerPort</span>: <span class="c-num">8080</span>
+
+        <span class="c-keyword">resources</span>:
+          <span class="c-keyword">requests</span>:
+            <span class="c-keyword">cpu</span>: <span class="c-string">"200m"</span>      <span class="c-comment"># 0.2 CPU</span>
+            <span class="c-keyword">memory</span>: <span class="c-string">"256Mi"</span>
+          <span class="c-keyword">limits</span>:
+            <span class="c-keyword">cpu</span>: <span class="c-string">"1000m"</span>     <span class="c-comment"># max 1 CPU</span>
+            <span class="c-keyword">memory</span>: <span class="c-string">"512Mi"</span>
+
+        <span class="c-keyword">env</span>:
+        - <span class="c-keyword">name</span>: DB_URL
+          <span class="c-keyword">valueFrom</span>:
+            <span class="c-keyword">secretKeyRef</span>:
+              <span class="c-keyword">name</span>: db-secret
+              <span class="c-keyword">key</span>: url
+
+        <span class="c-comment"># Health checks</span>
+        <span class="c-keyword">livenessProbe</span>:        <span class="c-comment"># pod tirikmi?</span>
+          <span class="c-keyword">httpGet</span>:
+            <span class="c-keyword">path</span>: /health
+            <span class="c-keyword">port</span>: <span class="c-num">8080</span>
+          <span class="c-keyword">initialDelaySeconds</span>: <span class="c-num">10</span>
+          <span class="c-keyword">periodSeconds</span>: <span class="c-num">10</span>
+
+        <span class="c-keyword">readinessProbe</span>:       <span class="c-comment"># traffic qabul qilishga tayyormi?</span>
+          <span class="c-keyword">httpGet</span>:
+            <span class="c-keyword">path</span>: /ready
+            <span class="c-keyword">port</span>: <span class="c-num">8080</span>
+          <span class="c-keyword">periodSeconds</span>: <span class="c-num">5</span></pre>
+
+        <h3 class="sub-h">hpa.yaml — auto-scaling</h3>
+<pre data-lang="YAML"><span class="c-keyword">apiVersion</span>: autoscaling/v2
+<span class="c-keyword">kind</span>: HorizontalPodAutoscaler
+<span class="c-keyword">metadata</span>:
+  <span class="c-keyword">name</span>: chat-service-hpa
+<span class="c-keyword">spec</span>:
+  <span class="c-keyword">scaleTargetRef</span>:
+    <span class="c-keyword">apiVersion</span>: apps/v1
+    <span class="c-keyword">kind</span>: Deployment
+    <span class="c-keyword">name</span>: chat-service
+  <span class="c-keyword">minReplicas</span>: <span class="c-num">3</span>
+  <span class="c-keyword">maxReplicas</span>: <span class="c-num">10</span>
+  <span class="c-keyword">metrics</span>:
+  - <span class="c-keyword">type</span>: Resource
+    <span class="c-keyword">resource</span>:
+      <span class="c-keyword">name</span>: cpu
+      <span class="c-keyword">target</span>:
+        <span class="c-keyword">type</span>: Utilization
+        <span class="c-keyword">averageUtilization</span>: <span class="c-num">70</span>     <span class="c-comment"># CPU > 70% → scale up</span>
+  - <span class="c-keyword">type</span>: Resource
+    <span class="c-keyword">resource</span>:
+      <span class="c-keyword">name</span>: memory
+      <span class="c-keyword">target</span>:
+        <span class="c-keyword">type</span>: Utilization
+        <span class="c-keyword">averageUtilization</span>: <span class="c-num">80</span></pre>
+
+        <h3 class="sub-h">service.yaml</h3>
+<pre data-lang="YAML"><span class="c-keyword">apiVersion</span>: v1
+<span class="c-keyword">kind</span>: Service
+<span class="c-keyword">metadata</span>:
+  <span class="c-keyword">name</span>: chat-service
+<span class="c-keyword">spec</span>:
+  <span class="c-keyword">selector</span>:
+    <span class="c-keyword">app</span>: chat
+  <span class="c-keyword">ports</span>:
+  - <span class="c-keyword">port</span>: <span class="c-num">80</span>
+    <span class="c-keyword">targetPort</span>: <span class="c-num">8080</span>
+  <span class="c-keyword">type</span>: ClusterIP    <span class="c-comment"># faqat cluster ichida</span>
+
+<span class="c-comment"># Ingress orqali tashqaridan kirish</span>
+---
+<span class="c-keyword">apiVersion</span>: networking.k8s.io/v1
+<span class="c-keyword">kind</span>: Ingress
+<span class="c-keyword">metadata</span>:
+  <span class="c-keyword">name</span>: chat-ingress
+  <span class="c-keyword">annotations</span>:
+    <span class="c-keyword">nginx.ingress.kubernetes.io/proxy-read-timeout</span>: <span class="c-string">"3600"</span>
+    <span class="c-keyword">nginx.ingress.kubernetes.io/affinity</span>: <span class="c-string">"cookie"</span>      <span class="c-comment"># sticky</span>
+<span class="c-keyword">spec</span>:
+  <span class="c-keyword">rules</span>:
+  - <span class="c-keyword">host</span>: chat.myapp.uz
+    <span class="c-keyword">http</span>:
+      <span class="c-keyword">paths</span>:
+      - <span class="c-keyword">path</span>: /
+        <span class="c-keyword">pathType</span>: Prefix
+        <span class="c-keyword">backend</span>:
+          <span class="c-keyword">service</span>:
+            <span class="c-keyword">name</span>: chat-service
+            <span class="c-keyword">port</span>: { <span class="c-keyword">number</span>: <span class="c-num">80</span> }</pre>
+
+        <h2 class="section-h">Kerakli kubectl buyruqlari</h2>
+<pre data-lang="bash"><span class="c-comment"># Deploy</span>
+kubectl apply -f deployment.yaml
+
+<span class="c-comment"># Pod'larni ko'rish</span>
+kubectl get pods -l app=chat -w
+
+<span class="c-comment"># Loglarni o'qish</span>
+kubectl logs -f deploy/chat-service --tail=100
+
+<span class="c-comment"># Pod ichiga kirish</span>
+kubectl exec -it chat-service-7d8b6 -- /bin/sh
+
+<span class="c-comment"># Manual scale</span>
+kubectl scale deploy/chat-service --replicas=5
+
+<span class="c-comment"># Rolling restart (env o'zgartirgandan keyin)</span>
+kubectl rollout restart deploy/chat-service
+
+<span class="c-comment"># Rollback</span>
+kubectl rollout undo deploy/chat-service
+
+<span class="c-comment"># Resource ishlatilishi</span>
+kubectl top pods
+kubectl top nodes</pre>
+
+        <h2 class="section-h">Production checklist</h2>
+        <ul class="check-list">
+          <li>Resource requests/limits aniq qo'yilgan</li>
+          <li>Liveness va readiness probe'lar to'g'ri</li>
+          <li>Rolling update strategy (zero downtime)</li>
+          <li>HPA — auto-scaling sozlangan</li>
+          <li>PodDisruptionBudget — node maintenance vaqtida</li>
+          <li>Secrets — Vault yoki sealed-secrets orqali</li>
+          <li>Network policies — pod'lar orasidagi traffic</li>
+          <li>Monitoring — Prometheus + Grafana</li>
+        </ul>
+      </div>
+
+      <!-- =================== M22 =================== -->
+      <div class="page" id="m22">
+        <div class="page-header">
+          <div class="page-badges">
+            <span class="badge badge-critical">Critical</span>
+            <span class="badge badge-info">Module 22</span>
+          </div>
+          <h1 class="page-title">Observability</h1>
+          <p class="page-subtitle">Production'ning ko'zi va qulog'i. Logs sizga "nima bo'lgan"ini, Metrics "qancha tez"ligini, Traces "qayerda muammo"ligini ko'rsatadi.</p>
+        </div>
+
+        <h2 class="section-h">3 ustun — pillars of observability</h2>
+        <table>
+          <thead><tr><th>Pillar</th><th>Savol</th><th>Tool</th></tr></thead>
+          <tbody>
+            <tr><td><b>Metrics</b></td><td>Tizim qanchalik tez/yuklangan?</td><td>Prometheus, Grafana</td></tr>
+            <tr><td><b>Logs</b></td><td>Aniq nima bo'ldi?</td><td>Loki, ELK, Vector</td></tr>
+            <tr><td><b>Traces</b></td><td>Sekinlik qayerda?</td><td>Jaeger, Tempo, OpenTelemetry</td></tr>
+          </tbody>
+        </table>
+
+        <h2 class="section-h">Metrics — Prometheus + Go</h2>
+
+        <h3 class="sub-h">Application kodi — metric'larni expose qilish</h3>
+<pre data-lang="Go"><span class="c-keyword">import</span> (
+    <span class="c-string">"github.com/prometheus/client_golang/prometheus"</span>
+    <span class="c-string">"github.com/prometheus/client_golang/prometheus/promhttp"</span>
+)
+
+<span class="c-keyword">var</span> (
+    httpRequests = prometheus.NewCounterVec(
+        prometheus.CounterOpts{
+            Name: <span class="c-string">"http_requests_total"</span>,
+            Help: <span class="c-string">"Total HTTP requests"</span>,
+        },
+        []string{<span class="c-string">"method"</span>, <span class="c-string">"path"</span>, <span class="c-string">"status"</span>},
+    )
+
+    httpDuration = prometheus.NewHistogramVec(
+        prometheus.HistogramOpts{
+            Name:    <span class="c-string">"http_request_duration_seconds"</span>,
+            Help:    <span class="c-string">"HTTP request latency"</span>,
+            Buckets: []<span class="c-keyword">float64</span>{<span class="c-num">0.01</span>, <span class="c-num">0.05</span>, <span class="c-num">0.1</span>, <span class="c-num">0.5</span>, <span class="c-num">1</span>, <span class="c-num">2</span>, <span class="c-num">5</span>},
+        },
+        []string{<span class="c-string">"method"</span>, <span class="c-string">"path"</span>},
+    )
+
+    wsConnections = prometheus.NewGauge(
+        prometheus.GaugeOpts{
+            Name: <span class="c-string">"websocket_connections_active"</span>,
+            Help: <span class="c-string">"Currently active WS connections"</span>,
+        },
+    )
+)
+
+<span class="c-keyword">func</span> <span class="c-fn">init</span>() {
+    prometheus.MustRegister(httpRequests, httpDuration, wsConnections)
+}
+
+<span class="c-comment">// Middleware</span>
+<span class="c-keyword">func</span> <span class="c-fn">metricsMiddleware</span>(next http.Handler) http.Handler {
+    <span class="c-keyword">return</span> http.HandlerFunc(<span class="c-keyword">func</span>(w http.ResponseWriter, r *http.Request) {
+        start := time.Now()
+        rw := &amp;responseWriter{ResponseWriter: w, status: <span class="c-num">200</span>}
+
+        next.ServeHTTP(rw, r)
+
+        duration := time.Since(start).Seconds()
+        httpRequests.WithLabelValues(r.Method, r.URL.Path, fmt.Sprint(rw.status)).Inc()
+        httpDuration.WithLabelValues(r.Method, r.URL.Path).Observe(duration)
+    })
+}
+
+<span class="c-comment">// /metrics endpoint</span>
+http.Handle(<span class="c-string">"/metrics"</span>, promhttp.Handler())</pre>
+
+        <h3 class="sub-h">PromQL — Grafana uchun</h3>
+<pre data-lang="PromQL"><span class="c-comment"># Request rate (per second)</span>
+rate(http_requests_total[5m])
+
+<span class="c-comment"># Error rate (%)</span>
+sum(rate(http_requests_total{status=~"5.."}[5m]))
+  /
+sum(rate(http_requests_total[5m])) * 100
+
+<span class="c-comment"># p95 latency</span>
+histogram_quantile(0.95,
+  rate(http_request_duration_seconds_bucket[5m])
+)
+
+<span class="c-comment"># p99 latency by endpoint</span>
+histogram_quantile(0.99,
+  sum by(path, le) (
+    rate(http_request_duration_seconds_bucket[5m])
+  )
+)
+
+<span class="c-comment"># Active WebSocket connections</span>
+websocket_connections_active</pre>
+
+        <h2 class="section-h">RED method — har bir servis uchun</h2>
+        <dl>
+          <dt>R — Rate</dt>
+          <dd>Sekundiga qancha so'rov keldi? (req/s)</dd>
+          <dt>E — Errors</dt>
+          <dd>Necha foiz xato? (5xx rate)</dd>
+          <dt>D — Duration</dt>
+          <dd>Qancha vaqt ketdi? (p50, p95, p99 latency)</dd>
+        </dl>
+
+        <h2 class="section-h">Distributed Tracing — OpenTelemetry</h2>
+
+        <h3 class="sub-h">Setup</h3>
+<pre data-lang="Go"><span class="c-keyword">import</span> (
+    <span class="c-string">"go.opentelemetry.io/otel"</span>
+    <span class="c-string">"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"</span>
+    <span class="c-string">"go.opentelemetry.io/otel/sdk/trace"</span>
+)
+
+<span class="c-keyword">func</span> <span class="c-fn">initTracer</span>() <span class="c-keyword">func</span>() {
+    exporter, _ := otlptracegrpc.New(ctx,
+        otlptracegrpc.WithEndpoint(<span class="c-string">"jaeger:4317"</span>),
+        otlptracegrpc.WithInsecure(),
+    )
+
+    tp := trace.NewTracerProvider(
+        trace.WithBatcher(exporter),
+        trace.WithResource(resource.NewWithAttributes(
+            semconv.SchemaURL,
+            semconv.ServiceName(<span class="c-string">"chat-service"</span>),
+        )),
+    )
+    otel.SetTracerProvider(tp)
+
+    <span class="c-keyword">return</span> <span class="c-keyword">func</span>() { tp.Shutdown(ctx) }
+}
+
+<span class="c-comment">// Handler ichida</span>
+<span class="c-keyword">func</span> <span class="c-fn">getProduct</span>(ctx context.Context, id string) (*Product, error) {
+    tracer := otel.Tracer(<span class="c-string">"chat-service"</span>)
+    ctx, span := tracer.Start(ctx, <span class="c-string">"getProduct"</span>)
+    <span class="c-keyword">defer</span> span.End()
+
+    span.SetAttributes(attribute.String(<span class="c-string">"product.id"</span>, id))
+
+    <span class="c-comment">// DB query — sub-span yaratiladi avtomatik (otelsql bilan)</span>
+    p, err := db.QueryProductByID(ctx, id)
+    <span class="c-keyword">if</span> err != <span class="c-keyword">nil</span> {
+        span.RecordError(err)
+        span.SetStatus(codes.Error, err.Error())
+    }
+    <span class="c-keyword">return</span> p, err
+}</pre>
+
+        <h3 class="sub-h">Trace tahlili — "API sekin, qayerda?"</h3>
+        <div class="diagram">Request: GET /api/orders/123  →  total 850ms ⚠
+
+┌─ gateway              [12ms]   ███
+├── auth-service        [8ms]    ██
+├── order-service       [820ms]  ████████████████████████ ← BOTTLENECK
+│   ├── postgres query  [780ms]  ████████████████████████ ← root cause
+│   └── format response [40ms]   ████
+└── response            [10ms]   ███
+
+Aniq: postgres query sekin
+Yechim: EXPLAIN ANALYZE → index yo'q → CREATE INDEX</div>
+
+        <h2 class="section-h">Structured Logging</h2>
+<pre data-lang="Go"><span class="c-keyword">import</span> <span class="c-string">"log/slog"</span>
+
+logger := slog.New(slog.NewJSONHandler(os.Stdout, &amp;slog.HandlerOptions{
+    Level: slog.LevelInfo,
+}))
+
+<span class="c-comment">// ❌ Yomon</span>
+log.Printf(<span class="c-string">"user %d failed to pay %d uzs: %v"</span>, userID, amount, err)
+
+<span class="c-comment">// ✅ Yaxshi — structured, qidirsa bo'ladi</span>
+logger.Error(<span class="c-string">"payment failed"</span>,
+    slog.String(<span class="c-string">"trace_id"</span>, traceID),
+    slog.Int64(<span class="c-string">"user_id"</span>, userID),
+    slog.Int64(<span class="c-string">"amount"</span>, amount),
+    slog.String(<span class="c-string">"reason"</span>, err.Error()),
+)
+
+<span class="c-comment">// Output: JSON, Loki/ELK'da qidirish oson</span>
+<span class="c-comment">// {"level":"error","msg":"payment failed","trace_id":"abc",</span>
+<span class="c-comment">//  "user_id":123,"amount":50000,"reason":"insufficient balance"}</span></pre>
+
+        <h2 class="section-h">Alerting — Prometheus AlertManager</h2>
+<pre data-lang="YAML"><span class="c-keyword">groups</span>:
+- <span class="c-keyword">name</span>: api
+  <span class="c-keyword">rules</span>:
+  - <span class="c-keyword">alert</span>: HighErrorRate
+    <span class="c-keyword">expr</span>: |
+      sum(rate(http_requests_total{status=~"5.."}[5m]))
+        / sum(rate(http_requests_total[5m])) > 0.05
+    <span class="c-keyword">for</span>: <span class="c-num">2m</span>     <span class="c-comment"># 2 daqiqa davom etsa</span>
+    <span class="c-keyword">labels</span>:
+      <span class="c-keyword">severity</span>: critical
+    <span class="c-keyword">annotations</span>:
+      <span class="c-keyword">summary</span>: <span class="c-string">"Error rate &gt; 5%"</span>
+      <span class="c-keyword">description</span>: <span class="c-string">"{{ $value }} errors per second"</span>
+
+  - <span class="c-keyword">alert</span>: SlowAPI
+    <span class="c-keyword">expr</span>: |
+      histogram_quantile(0.95,
+        rate(http_request_duration_seconds_bucket[5m])
+      ) > 1
+    <span class="c-keyword">for</span>: <span class="c-num">5m</span>
+    <span class="c-keyword">labels</span>:
+      <span class="c-keyword">severity</span>: warning</pre>
+
+        <h2 class="section-h">Checklist</h2>
+        <ul class="check-list">
+          <li>Har bir servisda /metrics endpoint</li>
+          <li>RED metrics (rate, errors, duration)</li>
+          <li>Structured logging (JSON) + trace_id</li>
+          <li>Distributed tracing — OpenTelemetry</li>
+          <li>Dashboard'lar — Grafana</li>
+          <li>Alert'lar — actionable (false positive minimal)</li>
+          <li>SLI/SLO aniqlangan (99.9% uptime, p95 &lt; 200ms)</li>
+        </ul>
+      </div>
+
+      <!-- =================== M23 =================== -->
+      <div class="page" id="m23">
+        <div class="page-header">
+          <div class="page-badges">
+            <span class="badge badge-critical">Critical</span>
+            <span class="badge badge-info">Module 23</span>
+          </div>
+          <h1 class="page-title">Security</h1>
+          <p class="page-subtitle">JWT, RBAC, OAuth2, OWASP Top 10 — senior backend developer minimum xavfsizlik bilimi.</p>
+        </div>
+
+        <h2 class="section-h">JWT + Refresh Token Pattern</h2>
+
+        <div class="warn-box">
+          <b>Muhim:</b> Access token <b>qisqa</b> umrli (15 min), Refresh token <b>uzun</b> (7-30 kun). Refresh token DB'da saqlanadi va rotation qilinadi.
+        </div>
+
+<pre data-lang="Go"><span class="c-keyword">import</span> <span class="c-string">"github.com/golang-jwt/jwt/v5"</span>
+
+<span class="c-keyword">type</span> Claims <span class="c-keyword">struct</span> {
+    UserID <span class="c-keyword">int64</span>  `json:"uid"`
+    Role   string `json:"role"`
+    jwt.RegisteredClaims
+}
+
+<span class="c-comment">// Access token (short-lived)</span>
+<span class="c-keyword">func</span> <span class="c-fn">generateAccess</span>(userID int64, role string) (string, error) {
+    claims := Claims{
+        UserID: userID,
+        Role:   role,
+        RegisteredClaims: jwt.RegisteredClaims{
+            ExpiresAt: jwt.NewNumericDate(time.Now().Add(<span class="c-num">15</span> * time.Minute)),
+            IssuedAt:  jwt.NewNumericDate(time.Now()),
+            Issuer:    <span class="c-string">"myapp"</span>,
+        },
+    }
+    token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+    <span class="c-keyword">return</span> token.SignedString(secretKey)
+}
+
+<span class="c-comment">// Refresh token (long-lived, DB'da saqlanadi)</span>
+<span class="c-keyword">func</span> <span class="c-fn">generateRefresh</span>(userID int64) (string, error) {
+    token := uuid.New().String()
+    hash := sha256.Sum256([]<span class="c-keyword">byte</span>(token))
+
+    _, err := db.Exec(ctx, `
+        INSERT INTO refresh_tokens (user_id, token_hash, expires_at)
+        VALUES ($1, $2, $3)`,
+        userID, hash[:], time.Now().Add(<span class="c-num">7</span>*<span class="c-num">24</span>*time.Hour),
+    )
+    <span class="c-keyword">return</span> token, err
+}
+
+<span class="c-comment">// Refresh endpoint — token rotation</span>
+<span class="c-keyword">func</span> <span class="c-fn">refreshHandler</span>(w http.ResponseWriter, r *http.Request) {
+    oldToken := getRefreshFromCookie(r)
+    hash := sha256.Sum256([]<span class="c-keyword">byte</span>(oldToken))
+
+    <span class="c-comment">// 1. Eski tokenni topish</span>
+    <span class="c-keyword">var</span> userID <span class="c-keyword">int64</span>
+    <span class="c-keyword">var</span> used <span class="c-keyword">bool</span>
+    err := db.QueryRow(ctx, `
+        SELECT user_id, used FROM refresh_tokens
+        WHERE token_hash = $1 AND expires_at > NOW()`,
+        hash[:],
+    ).Scan(&amp;userID, &amp;used)
+
+    <span class="c-keyword">if</span> err != <span class="c-keyword">nil</span> || used {
+        <span class="c-comment">// ⚠ used=true bo'lsa — token o'g'irlangan!</span>
+        <span class="c-comment">// Bu user'ning barcha refresh tokenlarini bekor qiling</span>
+        db.Exec(ctx, `UPDATE refresh_tokens SET revoked=true WHERE user_id=$1`, userID)
+        http.Error(w, <span class="c-string">"unauthorized"</span>, <span class="c-num">401</span>)
+        <span class="c-keyword">return</span>
+    }
+
+    <span class="c-comment">// 2. Eski tokenni "used" deb belgilash</span>
+    db.Exec(ctx, `UPDATE refresh_tokens SET used=true WHERE token_hash=$1`, hash[:])
+
+    <span class="c-comment">// 3. Yangilarini generate qilish</span>
+    newAccess, _ := generateAccess(userID, role)
+    newRefresh, _ := generateRefresh(userID)
+
+    setCookies(w, newAccess, newRefresh)
+}</pre>
+
+        <h2 class="section-h">RBAC — Role-Based Access Control</h2>
+<pre data-lang="SQL"><span class="c-keyword">CREATE TABLE</span> roles (
+    id <span class="c-keyword">SERIAL PRIMARY KEY</span>,
+    name <span class="c-keyword">VARCHAR</span>(<span class="c-num">50</span>) <span class="c-keyword">UNIQUE</span>     <span class="c-comment">-- admin, manager, user</span>
+);
+
+<span class="c-keyword">CREATE TABLE</span> permissions (
+    id <span class="c-keyword">SERIAL PRIMARY KEY</span>,
+    resource <span class="c-keyword">VARCHAR</span>(<span class="c-num">50</span>),    <span class="c-comment">-- 'orders', 'users'</span>
+    action <span class="c-keyword">VARCHAR</span>(<span class="c-num">50</span>)        <span class="c-comment">-- 'create', 'read', 'update', 'delete'</span>
+);
+
+<span class="c-keyword">CREATE TABLE</span> role_permissions (
+    role_id <span class="c-keyword">INT REFERENCES</span> roles(id),
+    permission_id <span class="c-keyword">INT REFERENCES</span> permissions(id),
+    <span class="c-keyword">PRIMARY KEY</span> (role_id, permission_id)
+);
+
+<span class="c-keyword">CREATE TABLE</span> user_roles (
+    user_id <span class="c-keyword">BIGINT</span>,
+    role_id <span class="c-keyword">INT</span>
+);</pre>
+
+<pre data-lang="Go"><span class="c-comment">// Middleware</span>
+<span class="c-keyword">func</span> <span class="c-fn">RequirePermission</span>(resource, action string) gin.HandlerFunc {
+    <span class="c-keyword">return</span> <span class="c-keyword">func</span>(c *gin.Context) {
+        userID := c.GetInt64(<span class="c-string">"user_id"</span>)
+
+        <span class="c-keyword">var</span> count <span class="c-keyword">int</span>
+        db.QueryRow(ctx, `
+            SELECT COUNT(*) FROM user_roles ur
+            JOIN role_permissions rp ON ur.role_id = rp.role_id
+            JOIN permissions p ON rp.permission_id = p.id
+            WHERE ur.user_id = $1 AND p.resource = $2 AND p.action = $3`,
+            userID, resource, action,
+        ).Scan(&amp;count)
+
+        <span class="c-keyword">if</span> count == <span class="c-num">0</span> {
+            c.AbortWithStatusJSON(<span class="c-num">403</span>, gin.H{<span class="c-string">"error"</span>: <span class="c-string">"forbidden"</span>})
+            <span class="c-keyword">return</span>
+        }
+        c.Next()
+    }
+}
+
+<span class="c-comment">// Routes</span>
+r.DELETE(<span class="c-string">"/orders/:id"</span>, RequirePermission(<span class="c-string">"orders"</span>, <span class="c-string">"delete"</span>), deleteOrder)</pre>
+
+        <h2 class="section-h">Brute Force Protection</h2>
+<pre data-lang="Go"><span class="c-comment">// Login attempt limiter</span>
+<span class="c-keyword">func</span> <span class="c-fn">checkLoginAttempts</span>(ctx context.Context, identifier string) error {
+    key := <span class="c-string">"login_fail:"</span> + identifier
+
+    count, _ := redis.Get(ctx, key).Int()
+    <span class="c-keyword">if</span> count &gt;= <span class="c-num">5</span> {
+        ttl, _ := redis.TTL(ctx, key).Result()
+        <span class="c-keyword">return</span> fmt.Errorf(<span class="c-string">"too many attempts, retry in %v"</span>, ttl)
+    }
+    <span class="c-keyword">return</span> <span class="c-keyword">nil</span>
+}
+
+<span class="c-keyword">func</span> <span class="c-fn">recordFailedLogin</span>(ctx context.Context, identifier string) {
+    key := <span class="c-string">"login_fail:"</span> + identifier
+    pipe := redis.Pipeline()
+    pipe.Incr(ctx, key)
+    pipe.Expire(ctx, key, <span class="c-num">15</span>*time.Minute)
+    pipe.Exec(ctx)
+}
+
+<span class="c-keyword">func</span> <span class="c-fn">loginHandler</span>(c *gin.Context) {
+    email := c.PostForm(<span class="c-string">"email"</span>)
+    password := c.PostForm(<span class="c-string">"password"</span>)
+
+    <span class="c-keyword">if</span> err := checkLoginAttempts(ctx, email); err != <span class="c-keyword">nil</span> {
+        c.JSON(<span class="c-num">429</span>, gin.H{<span class="c-string">"error"</span>: err.Error()})
+        <span class="c-keyword">return</span>
+    }
+
+    user, err := db.GetUserByEmail(email)
+    <span class="c-keyword">if</span> err != <span class="c-keyword">nil</span> || !bcrypt.CompareHashAndPassword(user.PasswordHash, password) {
+        recordFailedLogin(ctx, email)
+        c.JSON(<span class="c-num">401</span>, gin.H{<span class="c-string">"error"</span>: <span class="c-string">"invalid credentials"</span>})
+        <span class="c-keyword">return</span>
+    }
+
+    redis.Del(ctx, <span class="c-string">"login_fail:"</span>+email)
+    <span class="c-comment">// ... generate tokens</span>
+}</pre>
+
+        <h2 class="section-h">OWASP Top 10 — qisqacha</h2>
+        <table>
+          <thead><tr><th>Hujum</th><th>Yechim</th></tr></thead>
+          <tbody>
+            <tr><td><b>SQL Injection</b></td><td>Prepared statements, ORM, never concat input</td></tr>
+            <tr><td><b>XSS</b></td><td>Output escaping, CSP header, sanitize HTML</td></tr>
+            <tr><td><b>CSRF</b></td><td>CSRF token, SameSite cookies</td></tr>
+            <tr><td><b>SSRF</b></td><td>URL whitelist, block private IPs (10.*, 172.16.*, 192.168.*)</td></tr>
+            <tr><td><b>Broken Auth</b></td><td>Strong password, MFA, rate limit, session timeout</td></tr>
+            <tr><td><b>Sensitive Data</b></td><td>TLS, encryption at rest, bcrypt/argon2 for passwords</td></tr>
+            <tr><td><b>Misconfiguration</b></td><td>Hide stack traces, disable debug, latest patches</td></tr>
+            <tr><td><b>Vulnerable deps</b></td><td>govulncheck, dependabot, regular updates</td></tr>
+          </tbody>
+        </table>
+
+        <h2 class="section-h">SQL Injection — XAVFLI vs XAVFSIZ</h2>
+<pre data-lang="Go"><span class="c-comment">// ❌ XAVFLI — string concat</span>
+query := <span class="c-string">"SELECT * FROM users WHERE email = '"</span> + email + <span class="c-string">"'"</span>
+<span class="c-comment">// email = "x' OR '1'='1"  →  butun jadval</span>
+
+<span class="c-comment">// ✅ XAVFSIZ — parametrized query</span>
+db.QueryRow(<span class="c-string">"SELECT * FROM users WHERE email = $1"</span>, email)
+<span class="c-comment">// Postgres driver avtomatik escape qiladi</span></pre>
+
+        <h2 class="section-h">Secrets management</h2>
+        <ul class="check-list">
+          <li><b>Hech qachon</b> kod ichida API key, password yozmang</li>
+          <li>Environment variable ishlatish — minimum</li>
+          <li>HashiCorp Vault yoki AWS Secrets Manager — production</li>
+          <li>Kubernetes Secrets — sealed-secrets bilan</li>
+          <li>Secret rotation — har 90 kun</li>
+          <li>.env fayllarni .gitignore'ga qo'shish</li>
+          <li>git-secrets yoki trufflehog bilan tekshirish</li>
+        </ul>
+      </div>
+
+      <!-- =================== M24 =================== -->
+      <div class="page" id="m24">
+        <div class="page-header">
+          <div class="page-badges">
+            <span class="badge badge-high">High</span>
+            <span class="badge badge-info">Module 24</span>
+          </div>
+          <h1 class="page-title">Testing</h1>
+          <p class="page-subtitle">Unit, integration, load — har biri o'z o'rnida. 10k WebSocket connection'ni k6 bilan test qilish.</p>
+        </div>
+
+        <h2 class="section-h">Testing piramidasi</h2>
+        <div class="diagram">                    /\
+                   /E2E\         ← 5%   (sekin, qimmat, broken oson)
+                  /------\
+                 /Integ-  \      ← 25%  (DB, services bilan)
+                /---ration-\
+               /            \
+              /  Unit Tests  \   ← 70%  (tez, mock'lar, asos)
+             /________________\</div>
+
+        <h2 class="section-h">Unit Test — Table-driven (Go idiom)</h2>
+<pre data-lang="Go"><span class="c-keyword">func</span> <span class="c-fn">TestCalculateDiscount</span>(t *testing.T) {
+    tests := []<span class="c-keyword">struct</span> {
+        name     string
+        amount   <span class="c-keyword">int64</span>
+        userType string
+        want     <span class="c-keyword">int64</span>
+        wantErr  <span class="c-keyword">bool</span>
+    }{
+        {<span class="c-string">"vip 20%"</span>, <span class="c-num">10000</span>, <span class="c-string">"vip"</span>, <span class="c-num">2000</span>, <span class="c-keyword">false</span>},
+        {<span class="c-string">"regular 5%"</span>, <span class="c-num">10000</span>, <span class="c-string">"regular"</span>, <span class="c-num">500</span>, <span class="c-keyword">false</span>},
+        {<span class="c-string">"zero amount"</span>, <span class="c-num">0</span>, <span class="c-string">"vip"</span>, <span class="c-num">0</span>, <span class="c-keyword">false</span>},
+        {<span class="c-string">"negative error"</span>, -<span class="c-num">100</span>, <span class="c-string">"vip"</span>, <span class="c-num">0</span>, <span class="c-keyword">true</span>},
+        {<span class="c-string">"unknown type"</span>, <span class="c-num">100</span>, <span class="c-string">"xyz"</span>, <span class="c-num">0</span>, <span class="c-keyword">true</span>},
+    }
+
+    <span class="c-keyword">for</span> _, tc := <span class="c-keyword">range</span> tests {
+        t.Run(tc.name, <span class="c-keyword">func</span>(t *testing.T) {
+            got, err := CalculateDiscount(tc.amount, tc.userType)
+
+            <span class="c-keyword">if</span> (err != <span class="c-keyword">nil</span>) != tc.wantErr {
+                t.Fatalf(<span class="c-string">"err: got %v, want %v"</span>, err, tc.wantErr)
+            }
+            <span class="c-keyword">if</span> got != tc.want {
+                t.Errorf(<span class="c-string">"got %d, want %d"</span>, got, tc.want)
+            }
+        })
+    }
+}</pre>
+
+        <h2 class="section-h">Mock'lar — interface'ga asoslangan</h2>
+<pre data-lang="Go"><span class="c-comment">// Service interface'ga bog'liq, concrete tip'ga emas</span>
+<span class="c-keyword">type</span> UserRepo <span class="c-keyword">interface</span> {
+    FindByID(ctx context.Context, id int64) (*User, error)
+}
+
+<span class="c-keyword">type</span> EmailService <span class="c-keyword">struct</span> {
+    repo UserRepo  <span class="c-comment">// interface!</span>
+}
+
+<span class="c-comment">// Test'da mock yaratamiz</span>
+<span class="c-keyword">type</span> mockRepo <span class="c-keyword">struct</span> {
+    user *User
+    err  error
+}
+
+<span class="c-keyword">func</span> (m *mockRepo) <span class="c-fn">FindByID</span>(ctx context.Context, id int64) (*User, error) {
+    <span class="c-keyword">return</span> m.user, m.err
+}
+
+<span class="c-keyword">func</span> <span class="c-fn">TestSendWelcomeEmail</span>(t *testing.T) {
+    repo := &amp;mockRepo{
+        user: &amp;User{ID: <span class="c-num">1</span>, Email: <span class="c-string">"test@example.com"</span>},
+    }
+    svc := &amp;EmailService{repo: repo}
+
+    err := svc.SendWelcome(ctx, <span class="c-num">1</span>)
+    <span class="c-keyword">if</span> err != <span class="c-keyword">nil</span> {
+        t.Fatal(err)
+    }
+}</pre>
+
+        <h2 class="section-h">Integration Test — testcontainers</h2>
+<pre data-lang="Go"><span class="c-keyword">import</span> <span class="c-string">"github.com/testcontainers/testcontainers-go/modules/postgres"</span>
+
+<span class="c-keyword">func</span> <span class="c-fn">TestUserRepository</span>(t *testing.T) {
+    ctx := context.Background()
+
+    <span class="c-comment">// Real Postgres container ko'tarish</span>
+    pgContainer, err := postgres.RunContainer(ctx,
+        testcontainers.WithImage(<span class="c-string">"postgres:16"</span>),
+        postgres.WithDatabase(<span class="c-string">"testdb"</span>),
+        postgres.WithUsername(<span class="c-string">"test"</span>),
+        postgres.WithPassword(<span class="c-string">"test"</span>),
+    )
+    <span class="c-keyword">if</span> err != <span class="c-keyword">nil</span> { t.Fatal(err) }
+    <span class="c-keyword">defer</span> pgContainer.Terminate(ctx)
+
+    dsn, _ := pgContainer.ConnectionString(ctx)
+    db, _ := sql.Open(<span class="c-string">"postgres"</span>, dsn)
+
+    <span class="c-comment">// Migrations</span>
+    runMigrations(db)
+
+    <span class="c-comment">// Test</span>
+    repo := NewUserRepo(db)
+    user, err := repo.Create(ctx, <span class="c-string">"test@example.com"</span>)
+
+    assert.NoError(t, err)
+    assert.NotZero(t, user.ID)
+}</pre>
+
+        <h2 class="section-h">Real vazifa — 10k WebSocket Load Test</h2>
+
+        <h3 class="sub-h">k6 script</h3>
+<pre data-lang="JavaScript"><span class="c-keyword">import</span> ws <span class="c-keyword">from</span> <span class="c-string">'k6/ws'</span>;
+<span class="c-keyword">import</span> { check } <span class="c-keyword">from</span> <span class="c-string">'k6'</span>;
+<span class="c-keyword">import</span> { Counter, Trend } <span class="c-keyword">from</span> <span class="c-string">'k6/metrics'</span>;
+
+<span class="c-keyword">export const</span> options = {
+  scenarios: {
+    chat_load: {
+      executor: <span class="c-string">'ramping-vus'</span>,
+      stages: [
+        { duration: <span class="c-string">'1m'</span>, target: <span class="c-num">1000</span> },   <span class="c-comment">// 1k user'gacha</span>
+        { duration: <span class="c-string">'2m'</span>, target: <span class="c-num">5000</span> },   <span class="c-comment">// 5k</span>
+        { duration: <span class="c-string">'2m'</span>, target: <span class="c-num">10000</span> },  <span class="c-comment">// 10k</span>
+        { duration: <span class="c-string">'5m'</span>, target: <span class="c-num">10000</span> },  <span class="c-comment">// hold</span>
+        { duration: <span class="c-string">'1m'</span>, target: <span class="c-num">0</span> },      <span class="c-comment">// cool down</span>
+      ],
+    },
+  },
+  thresholds: {
+    ws_session_duration: [<span class="c-string">'p(95)&lt;5000'</span>],
+    msg_received: [<span class="c-string">'count&gt;100000'</span>],
+  },
+};
+
+<span class="c-keyword">const</span> msgReceived = <span class="c-keyword">new</span> Counter(<span class="c-string">'msg_received'</span>);
+<span class="c-keyword">const</span> msgLatency = <span class="c-keyword">new</span> Trend(<span class="c-string">'msg_latency'</span>);
+
+<span class="c-keyword">export default function</span> () {
+  <span class="c-keyword">const</span> url = <span class="c-string">'wss://chat.myapp.uz/ws'</span>;
+  <span class="c-keyword">const</span> token = getAuthToken();
+
+  <span class="c-keyword">const</span> res = ws.connect(url, { headers: { Authorization: <span class="c-string">`Bearer ${token}`</span> } }, <span class="c-keyword">function</span> (socket) {
+    socket.on(<span class="c-string">'open'</span>, () =&gt; {
+      socket.send(JSON.stringify({ type: <span class="c-string">'subscribe'</span>, room: <span class="c-string">'general'</span> }));
+
+      <span class="c-comment">// Har 5 sec'da xabar yuborish</span>
+      socket.setInterval(() =&gt; {
+        socket.send(JSON.stringify({
+          type: <span class="c-string">'message'</span>,
+          ts: Date.now(),
+          text: <span class="c-string">'hello'</span>,
+        }));
+      }, <span class="c-num">5000</span>);
+    });
+
+    socket.on(<span class="c-string">'message'</span>, (data) =&gt; {
+      <span class="c-keyword">const</span> msg = JSON.parse(data);
+      msgReceived.add(<span class="c-num">1</span>);
+      <span class="c-keyword">if</span> (msg.ts) msgLatency.add(Date.now() - msg.ts);
+    });
+
+    socket.setTimeout(() =&gt; socket.close(), <span class="c-num">60000</span>);
+  });
+
+  check(res, { <span class="c-string">'status 101'</span>: (r) =&gt; r &amp;&amp; r.status === <span class="c-num">101</span> });
+}</pre>
+
+        <h3 class="sub-h">Tahlil qilinadigan metrikalar</h3>
+        <table>
+          <thead><tr><th>Metrika</th><th>Maqsadli ko'rsatkich</th></tr></thead>
+          <tbody>
+            <tr><td>Connection rate</td><td>&gt; 500 conn/sec ochilishi kerak</td></tr>
+            <tr><td>Memory per connection</td><td>&lt; 50 KB</td></tr>
+            <tr><td>p95 message latency</td><td>&lt; 100ms</td></tr>
+            <tr><td>p99 message latency</td><td>&lt; 500ms</td></tr>
+            <tr><td>Goroutine count</td><td>~2 per connection (read + write)</td></tr>
+            <tr><td>CPU per 1k connections</td><td>&lt; 5%</td></tr>
+          </tbody>
+        </table>
+
+        <h2 class="section-h">Benchmark Test</h2>
+<pre data-lang="Go"><span class="c-keyword">func</span> <span class="c-fn">BenchmarkParseJSON</span>(b *testing.B) {
+    data := []<span class="c-keyword">byte</span>(`{"id":1,"name":"test","email":"x@y.uz"}`)
+
+    b.ResetTimer()
+    b.ReportAllocs()
+
+    <span class="c-keyword">for</span> i := <span class="c-num">0</span>; i &lt; b.N; i++ {
+        <span class="c-keyword">var</span> u User
+        json.Unmarshal(data, &amp;u)
+    }
+}
+
+<span class="c-comment">// Run: go test -bench=. -benchmem</span>
+<span class="c-comment">// BenchmarkParseJSON-8   500000   3120 ns/op   480 B/op   8 allocs/op</span></pre>
+
+        <h2 class="section-h">Checklist</h2>
+        <ul class="check-list">
+          <li>Unit test coverage &gt; 70% (kritik kodlar uchun &gt; 90%)</li>
+          <li>Table-driven testlar</li>
+          <li>Mock interfeysi orqali (gomock yoki manual)</li>
+          <li>Integration test — testcontainers</li>
+          <li>Load test — k6, vegeta</li>
+          <li>Benchmark — kritik hot path</li>
+          <li>Race detector — <code class="inline">go test -race</code></li>
+          <li>CI'da test'lar avtomatik ishlaydi</li>
+        </ul>
+      </div>
+
+      <!-- =================== M25 =================== -->
+      <div class="page" id="m25">
+        <div class="page-header">
+          <div class="page-badges">
+            <span class="badge badge-critical">Critical</span>
+            <span class="badge badge-info">Module 25</span>
+          </div>
+          <h1 class="page-title">PostgreSQL Deep</h1>
+          <p class="page-subtitle">EXPLAIN ANALYZE, MVCC, partitioning, advanced indexes — 20M zapis search'ni 100ms'da bajarish.</p>
+        </div>
+
+        <h2 class="section-h">EXPLAIN ANALYZE — query tahlili</h2>
+<pre data-lang="SQL"><span class="c-keyword">EXPLAIN</span> (<span class="c-keyword">ANALYZE</span>, <span class="c-keyword">BUFFERS</span>, <span class="c-keyword">FORMAT TEXT</span>)
+<span class="c-keyword">SELECT</span> * <span class="c-keyword">FROM</span> products
+<span class="c-keyword">WHERE</span> name <span class="c-keyword">ILIKE</span> <span class="c-string">'%phone%'</span>
+<span class="c-keyword">ORDER BY</span> created_at <span class="c-keyword">DESC</span>
+<span class="c-keyword">LIMIT</span> <span class="c-num">20</span>;
+
+<span class="c-comment">-- Output o'qish:</span>
+
+Limit  (cost=<span class="c-num">125834.45</span>..<span class="c-num">125834.50</span> rows=<span class="c-num">20</span>) (actual time=<span class="c-num">4823.5</span>..<span class="c-num">4823.5</span>)
+  -&gt; Sort  (cost=...)  (actual time=<span class="c-num">4823.5</span>..<span class="c-num">4823.5</span>)
+       Sort Key: created_at DESC
+       -&gt; Seq Scan on products  <span class="c-comment">-- ⚠ ALARM! Full table scan</span>
+            Filter: (name ~~* '%phone%'::text)
+            Rows Removed by Filter: <span class="c-num">19998500</span>
+            Buffers: shared read=<span class="c-num">450000</span>     <span class="c-comment">-- 3.5 GB o'qildi</span>
+Planning Time: <span class="c-num">0.3</span> ms
+Execution Time: <span class="c-num">4823.7</span> ms              <span class="c-comment">-- 4.8 SEKUND!</span></pre>
+
+        <h3 class="sub-h">Yechim: Trigram (GIN) index</h3>
+<pre data-lang="SQL"><span class="c-keyword">CREATE EXTENSION IF NOT EXISTS</span> pg_trgm;
+
+<span class="c-keyword">CREATE INDEX</span> idx_products_name_trgm
+<span class="c-keyword">ON</span> products
+<span class="c-keyword">USING GIN</span> (name gin_trgm_ops);
+
+<span class="c-comment">-- Endi takror urinish:</span>
+Limit  (cost=<span class="c-num">450.20</span>..<span class="c-num">450.25</span> rows=<span class="c-num">20</span>) (actual time=<span class="c-num">68.2</span>..<span class="c-num">68.2</span>)
+  -&gt; Sort
+       -&gt; Bitmap Heap Scan on products
+            Recheck Cond: (name ~~* '%phone%'::text)
+            -&gt; Bitmap Index Scan on idx_products_name_trgm  <span class="c-comment">-- ✓</span>
+                 Index Cond: (name ~~* '%phone%'::text)
+Execution Time: <span class="c-num">68.5</span> ms                  <span class="c-comment">-- 70x tezroq!</span></pre>
+
+        <h2 class="section-h">Index turlari va qachon kerak</h2>
+        <table>
+          <thead><tr><th>Index</th><th>Qachon ishlatiladi</th></tr></thead>
+          <tbody>
+            <tr><td><b>B-Tree</b> (default)</td><td>Tenglik, range (&lt;, &gt;), ORDER BY</td></tr>
+            <tr><td><b>GIN</b></td><td>Full-text search, JSONB, array, trigram (ILIKE)</td></tr>
+            <tr><td><b>GiST</b></td><td>Geometric (PostGIS), exclusion constraints, fuzzy match</td></tr>
+            <tr><td><b>BRIN</b></td><td>Katta jadval + tabiiy tartibli (timestamp, ID) — kichik size</td></tr>
+            <tr><td><b>Hash</b></td><td>Faqat <code class="inline">=</code> tenglik (kamdan-kam)</td></tr>
+            <tr><td><b>Partial</b></td><td>Faqat ma'lum qator'lar (<code class="inline">WHERE deleted=false</code>)</td></tr>
+            <tr><td><b>Covering</b></td><td>INCLUDE bilan — index-only scan</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sub-h">Covering index misol</h3>
+<pre data-lang="SQL"><span class="c-comment">-- Faqat indexdan o'qish, jadvalga umuman tegmaslik</span>
+<span class="c-keyword">CREATE INDEX</span> idx_orders_user_status
+<span class="c-keyword">ON</span> orders (user_id, status)
+<span class="c-keyword">INCLUDE</span> (total, created_at);
+
+<span class="c-comment">-- Bu query endi index-only scan:</span>
+<span class="c-keyword">SELECT</span> total, created_at <span class="c-keyword">FROM</span> orders
+<span class="c-keyword">WHERE</span> user_id = <span class="c-num">123</span> <span class="c-keyword">AND</span> status = <span class="c-string">'paid'</span>;</pre>
+
+        <h2 class="section-h">MVCC — Multi-Version Concurrency Control</h2>
+        <p>Postgres yozish o'qishni bloklamasligi va aksincha — bu MVCC. Har yozuv versiyalanadi.</p>
+
+        <div class="diagram">  Transaction 1            Transaction 2
+       │                          │
+   BEGIN                          │
+   UPDATE row1                BEGIN
+   (old version saqlanadi)    SELECT row1 → eski version o'qiydi
+       │                          │
+   COMMIT                     COMMIT
+       │
+   (yangi version aktiv,
+    eski version vacuum
+    bilan o'chiriladi)</div>
+
+        <h3 class="sub-h">Isolation level'lar</h3>
+        <table>
+          <thead><tr><th>Level</th><th>Muammolar</th><th>Misol</th></tr></thead>
+          <tbody>
+            <tr><td>Read Uncommitted</td><td>Postgres'da yo'q, Read Committed kabi</td><td>—</td></tr>
+            <tr><td><b>Read Committed</b> (default)</td><td>Non-repeatable read, phantom read</td><td>Oddiy CRUD</td></tr>
+            <tr><td>Repeatable Read</td><td>Phantom read</td><td>Report generation</td></tr>
+            <tr><td><b>Serializable</b></td><td>Hech qaysi (eng kuchli)</td><td>Bank transfers, balance</td></tr>
+          </tbody>
+        </table>
+
+        <h2 class="section-h">Lock va Deadlock</h2>
+<pre data-lang="SQL"><span class="c-comment">-- ⚠ Deadlock yaratuvchi sahna</span>
+
+<span class="c-comment">-- Session 1:</span>
+<span class="c-keyword">BEGIN</span>;
+<span class="c-keyword">UPDATE</span> accounts <span class="c-keyword">SET</span> balance = balance - <span class="c-num">100</span> <span class="c-keyword">WHERE</span> id = <span class="c-num">1</span>;
+<span class="c-comment">-- (id=1 row qulflandi)</span>
+<span class="c-keyword">UPDATE</span> accounts <span class="c-keyword">SET</span> balance = balance + <span class="c-num">100</span> <span class="c-keyword">WHERE</span> id = <span class="c-num">2</span>;
+<span class="c-comment">-- (id=2 ni kutyapti...)</span>
+
+<span class="c-comment">-- Session 2:</span>
+<span class="c-keyword">BEGIN</span>;
+<span class="c-keyword">UPDATE</span> accounts <span class="c-keyword">SET</span> balance = balance - <span class="c-num">50</span> <span class="c-keyword">WHERE</span> id = <span class="c-num">2</span>;
+<span class="c-comment">-- (id=2 qulflandi)</span>
+<span class="c-keyword">UPDATE</span> accounts <span class="c-keyword">SET</span> balance = balance + <span class="c-num">50</span> <span class="c-keyword">WHERE</span> id = <span class="c-num">1</span>;
+<span class="c-comment">-- (id=1 ni kutyapti... DEADLOCK!)</span>
+
+<span class="c-comment">-- ✅ Yechim: doim bir xil tartibda qulflash</span>
+<span class="c-keyword">UPDATE</span> accounts <span class="c-keyword">SET</span> balance = balance - <span class="c-num">100</span>
+<span class="c-keyword">WHERE</span> id <span class="c-keyword">IN</span> (<span class="c-num">1</span>, <span class="c-num">2</span>)
+<span class="c-keyword">ORDER BY</span> id;  <span class="c-comment">-- har doim kichik id'dan</span></pre>
+
+        <h2 class="section-h">Partitioning — katta jadvallarni bo'lish</h2>
+<pre data-lang="SQL"><span class="c-comment">-- Range partition (vaqt bo'yicha)</span>
+<span class="c-keyword">CREATE TABLE</span> messages (
+    id <span class="c-keyword">BIGSERIAL</span>,
+    chat_id <span class="c-keyword">BIGINT</span>,
+    text <span class="c-keyword">TEXT</span>,
+    created_at <span class="c-keyword">TIMESTAMP NOT NULL</span>,
+    <span class="c-keyword">PRIMARY KEY</span> (id, created_at)
+) <span class="c-keyword">PARTITION BY RANGE</span> (created_at);
+
+<span class="c-comment">-- Har oy uchun alohida partition</span>
+<span class="c-keyword">CREATE TABLE</span> messages_2026_01 <span class="c-keyword">PARTITION OF</span> messages
+    <span class="c-keyword">FOR VALUES FROM</span> (<span class="c-string">'2026-01-01'</span>) <span class="c-keyword">TO</span> (<span class="c-string">'2026-02-01'</span>);
+
+<span class="c-keyword">CREATE TABLE</span> messages_2026_02 <span class="c-keyword">PARTITION OF</span> messages
+    <span class="c-keyword">FOR VALUES FROM</span> (<span class="c-string">'2026-02-01'</span>) <span class="c-keyword">TO</span> (<span class="c-string">'2026-03-01'</span>);
+
+<span class="c-comment">-- Eski partitionni o'chirish — sekund'da, DELETE'siz</span>
+<span class="c-keyword">DROP TABLE</span> messages_2025_01;</pre>
+
+        <h2 class="section-h">Vacuum va Autovacuum</h2>
+        <p>MVCC dead tuple'lar yaratadi — vacuum ularni tozalaydi va space qaytaradi.</p>
+
+<pre data-lang="SQL"><span class="c-comment">-- Bloat'ni tekshirish</span>
+<span class="c-keyword">SELECT</span>
+    schemaname, tablename,
+    n_dead_tup, n_live_tup,
+    <span class="c-keyword">ROUND</span>(n_dead_tup * <span class="c-num">100.0</span> / <span class="c-keyword">NULLIF</span>(n_live_tup, <span class="c-num">0</span>), <span class="c-num">2</span>) <span class="c-keyword">AS</span> dead_pct
+<span class="c-keyword">FROM</span> pg_stat_user_tables
+<span class="c-keyword">WHERE</span> n_dead_tup &gt; <span class="c-num">1000</span>
+<span class="c-keyword">ORDER BY</span> dead_pct <span class="c-keyword">DESC</span>;
+
+<span class="c-comment">-- Manual vacuum</span>
+<span class="c-keyword">VACUUM ANALYZE</span> orders;
+
+<span class="c-comment">-- Aggressive — table'ni qulflaydi, ehtiyot bo'ling</span>
+<span class="c-keyword">VACUUM FULL</span> orders;
+
+<span class="c-comment">-- Autovacuum tuning (postgresql.conf)</span>
+autovacuum_vacuum_scale_factor = <span class="c-num">0.1</span>     <span class="c-comment">-- 10% dead → vacuum</span>
+autovacuum_analyze_scale_factor = <span class="c-num">0.05</span>
+autovacuum_max_workers = <span class="c-num">4</span></pre>
+
+        <h2 class="section-h">Connection pooling — PgBouncer</h2>
+<pre data-lang="ini"><span class="c-comment">; pgbouncer.ini</span>
+[databases]
+mydb = host=postgres-primary port=5432 dbname=mydb
+
+[pgbouncer]
+listen_port = <span class="c-num">6432</span>
+pool_mode = transaction        <span class="c-comment">; eng tejamli</span>
+max_client_conn = <span class="c-num">10000</span>      <span class="c-comment">; clientdan keladigan</span>
+default_pool_size = <span class="c-num">25</span>       <span class="c-comment">; pg'ga ulanish</span>
+reserve_pool_size = <span class="c-num">5</span></pre>
+
+        <h2 class="section-h">Replication</h2>
+        <div class="diagram">         Application
+          │
+          ├── Writes ──► Primary (master)
+          │                 │
+          │                 │ WAL stream
+          │                 ▼
+          └── Reads  ──► Replica 1, Replica 2, Replica 3
+                            (read-only)
+
+  Synchronous:  primary commit, replica yetkazib olmaguncha kutadi (data loss 0)
+  Asynchronous: primary darhol commit, replica orqada (ms-s lag, data loss bor)</div>
+
+        <h2 class="section-h">Real vazifa — 20M zapis search</h2>
+        <div class="card">
+          <p><b>Talab:</b> <code class="inline">products</code> jadvali — 20 million qator. <code class="inline">name ILIKE '%phone%'</code> qidiruvini <b>100ms'dan tez</b> qilish.</p>
+
+          <h3 class="sub-h">Yechim qadamlar</h3>
+          <ol style="padding-left: 20px; color: var(--text-secondary); font-size: 13px; line-height: 2;">
+            <li><code class="inline">CREATE EXTENSION pg_trgm</code></li>
+            <li><code class="inline">CREATE INDEX ... USING GIN (name gin_trgm_ops)</code></li>
+            <li>Tez-tez ishlatiladigan qidiruv natijalarini Redis'da cache (5 min TTL)</li>
+            <li>Pagination — <code class="inline">LIMIT 20 OFFSET ?</code> emas, <b>keyset pagination</b>: <code class="inline">WHERE id &gt; last_id LIMIT 20</code></li>
+            <li>Hot data — materialized view (10 daqiqada bir refresh)</li>
+            <li>Ko'p qidiriladigan field uchun Elasticsearch (28-modul)</li>
+          </ol>
+
+          <h3 class="sub-h">Keyset pagination misol</h3>
+<pre data-lang="SQL"><span class="c-comment">-- ❌ Sekin (offset 1M = 1M qator o'qiladi)</span>
+<span class="c-keyword">SELECT</span> * <span class="c-keyword">FROM</span> products <span class="c-keyword">ORDER BY</span> id <span class="c-keyword">LIMIT</span> <span class="c-num">20</span> <span class="c-keyword">OFFSET</span> <span class="c-num">1000000</span>;
+
+<span class="c-comment">-- ✅ Tez (faqat 20 qator o'qiladi)</span>
+<span class="c-keyword">SELECT</span> * <span class="c-keyword">FROM</span> products
+<span class="c-keyword">WHERE</span> id &gt; <span class="c-num">1000000</span>     <span class="c-comment">-- oxirgi olingan id</span>
+<span class="c-keyword">ORDER BY</span> id <span class="c-keyword">LIMIT</span> <span class="c-num">20</span>;</pre>
+        </div>
+      </div>
+
+      <!-- =================== M26 =================== -->
+      <div class="page" id="m26">
+        <div class="page-header">
+          <div class="page-badges">
+            <span class="badge badge-high">High</span>
+            <span class="badge badge-info">Module 26</span>
+          </div>
+          <h1 class="page-title">CI/CD</h1>
+          <p class="page-subtitle">Avtomatik test, build, deploy. Push qildingiz → 5 minutdan keyin production'da.</p>
+        </div>
+
+        <h2 class="section-h">Klassik pipeline</h2>
+        <div class="diagram">git push main
+    │
+    ▼
+[1] Checkout code
+    │
+    ▼
+[2] Lint (golangci-lint)
+    │
+    ▼
+[3] Unit + Integration tests
+    │  (parallel)
+    ├── go test -race ./...
+    ├── coverage report
+    └── security scan (govulncheck)
+    │
+    ▼
+[4] Build Docker image
+    │  multi-stage, minimal
+    ▼
+[5] Push to registry
+    │  tag: git-sha + latest
+    ▼
+[6] Deploy to staging
+    │
+    ▼
+[7] Smoke tests
+    │  (auto rollback if fail)
+    ▼
+[8] Deploy to production
+    │  blue-green / canary
+    ▼
+[9] Monitor + alert</div>
+
+        <h2 class="section-h">GitHub Actions — to'liq misol</h2>
+<pre data-lang="YAML"><span class="c-comment"># .github/workflows/deploy.yml</span>
+<span class="c-keyword">name</span>: CI/CD
+
+<span class="c-keyword">on</span>:
+  <span class="c-keyword">push</span>:
+    <span class="c-keyword">branches</span>: [main]
+  <span class="c-keyword">pull_request</span>:
+    <span class="c-keyword">branches</span>: [main]
+
+<span class="c-keyword">env</span>:
+  <span class="c-keyword">GO_VERSION</span>: <span class="c-string">'1.22'</span>
+  <span class="c-keyword">REGISTRY</span>: ghcr.io
+  <span class="c-keyword">IMAGE_NAME</span>: ${{ github.repository }}
+
+<span class="c-keyword">jobs</span>:
+  <span class="c-keyword">test</span>:
+    <span class="c-keyword">runs-on</span>: ubuntu-latest
+    <span class="c-keyword">services</span>:
+      <span class="c-keyword">postgres</span>:
+        <span class="c-keyword">image</span>: postgres:16
+        <span class="c-keyword">env</span>:
+          <span class="c-keyword">POSTGRES_PASSWORD</span>: test
+        <span class="c-keyword">ports</span>: [<span class="c-string">'5432:5432'</span>]
+        <span class="c-keyword">options</span>: --health-cmd pg_isready --health-interval 10s
+      <span class="c-keyword">redis</span>:
+        <span class="c-keyword">image</span>: redis:7-alpine
+        <span class="c-keyword">ports</span>: [<span class="c-string">'6379:6379'</span>]
+    <span class="c-keyword">steps</span>:
+      - <span class="c-keyword">uses</span>: actions/checkout@v4
+
+      - <span class="c-keyword">uses</span>: actions/setup-go@v5
+        <span class="c-keyword">with</span>:
+          <span class="c-keyword">go-version</span>: ${{ env.GO_VERSION }}
+          <span class="c-keyword">cache</span>: <span class="c-keyword">true</span>
+
+      - <span class="c-keyword">name</span>: Lint
+        <span class="c-keyword">uses</span>: golangci/golangci-lint-action@v4
+
+      - <span class="c-keyword">name</span>: Run tests with race
+        <span class="c-keyword">run</span>: go test -race -coverprofile=cover.out ./...
+
+      - <span class="c-keyword">name</span>: Security scan
+        <span class="c-keyword">run</span>: |
+          go install golang.org/x/vuln/cmd/govulncheck@latest
+          govulncheck ./...
+
+      - <span class="c-keyword">name</span>: Coverage
+        <span class="c-keyword">uses</span>: codecov/codecov-action@v4
+
+  <span class="c-keyword">build-and-push</span>:
+    <span class="c-keyword">needs</span>: test
+    <span class="c-keyword">if</span>: github.ref == <span class="c-string">'refs/heads/main'</span>
+    <span class="c-keyword">runs-on</span>: ubuntu-latest
+    <span class="c-keyword">permissions</span>:
+      <span class="c-keyword">contents</span>: read
+      <span class="c-keyword">packages</span>: write
+    <span class="c-keyword">steps</span>:
+      - <span class="c-keyword">uses</span>: actions/checkout@v4
+
+      - <span class="c-keyword">name</span>: Login to GHCR
+        <span class="c-keyword">uses</span>: docker/login-action@v3
+        <span class="c-keyword">with</span>:
+          <span class="c-keyword">registry</span>: ${{ env.REGISTRY }}
+          <span class="c-keyword">username</span>: ${{ github.actor }}
+          <span class="c-keyword">password</span>: ${{ secrets.GITHUB_TOKEN }}
+
+      - <span class="c-keyword">name</span>: Build &amp; push
+        <span class="c-keyword">uses</span>: docker/build-push-action@v5
+        <span class="c-keyword">with</span>:
+          <span class="c-keyword">push</span>: <span class="c-keyword">true</span>
+          <span class="c-keyword">tags</span>: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          <span class="c-keyword">cache-from</span>: type=gha
+          <span class="c-keyword">cache-to</span>: type=gha,mode=max
+
+  <span class="c-keyword">deploy</span>:
+    <span class="c-keyword">needs</span>: build-and-push
+    <span class="c-keyword">runs-on</span>: ubuntu-latest
+    <span class="c-keyword">steps</span>:
+      - <span class="c-keyword">name</span>: Deploy to k8s
+        <span class="c-keyword">run</span>: |
+          kubectl set image deploy/chat-service \
+            chat=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          kubectl rollout status deploy/chat-service --timeout=5m</pre>
+
+        <h2 class="section-h">Multi-stage Dockerfile — minimal image</h2>
+<pre data-lang="Dockerfile"><span class="c-comment"># Stage 1: builder</span>
+<span class="c-keyword">FROM</span> golang:1.22-alpine <span class="c-keyword">AS</span> builder
+
+<span class="c-keyword">WORKDIR</span> /build
+<span class="c-keyword">COPY</span> go.mod go.sum ./
+<span class="c-keyword">RUN</span> go mod download
+
+<span class="c-keyword">COPY</span> . .
+<span class="c-keyword">RUN</span> CGO_ENABLED=0 GOOS=linux \
+    go build -ldflags=<span class="c-string">"-w -s"</span> -o /app ./cmd/server
+
+<span class="c-comment"># Stage 2: minimal runtime</span>
+<span class="c-keyword">FROM</span> gcr.io/distroless/static-debian12
+
+<span class="c-keyword">COPY</span> --from=builder /app /app
+<span class="c-keyword">EXPOSE</span> <span class="c-num">8080</span>
+<span class="c-keyword">USER</span> nonroot:nonroot
+<span class="c-keyword">ENTRYPOINT</span> [<span class="c-string">"/app"</span>]
+
+<span class="c-comment"># Image size: ~15 MB (Go binary + base only)</span></pre>
+
+        <h2 class="section-h">Deployment strategies</h2>
+        <table>
+          <thead><tr><th>Strategy</th><th>Qanday ishlaydi</th><th>Trade-off</th></tr></thead>
+          <tbody>
+            <tr><td><b>Rolling update</b></td><td>Pod'larni birma-bir yangilash</td><td>Sodda, lekin ikki versiya bir vaqt yashaydi</td></tr>
+            <tr><td><b>Blue-green</b></td><td>Yangi versiya parallel, switch with LB</td><td>Tezkor rollback, 2x resurs</td></tr>
+            <tr><td><b>Canary</b></td><td>5% → 25% → 100% traffic yangiga</td><td>Risk minimal, monitoring kerak</td></tr>
+            <tr><td><b>Feature flags</b></td><td>Kod deploy, feature toggle</td><td>Eng moslashuvchan, code complexity</td></tr>
+          </tbody>
+        </table>
+
+        <h2 class="section-h">Rollback strategy</h2>
+<pre data-lang="bash"><span class="c-comment"># Avtomatik rollback CI/CD ichida</span>
+kubectl rollout status deploy/chat-service --timeout=5m
+<span class="c-keyword">if</span> [ $? -ne <span class="c-num">0</span> ]; <span class="c-keyword">then</span>
+  <span class="c-keyword">echo</span> <span class="c-string">"Deploy failed, rolling back..."</span>
+  kubectl rollout undo deploy/chat-service
+  <span class="c-keyword">exit</span> <span class="c-num">1</span>
+<span class="c-keyword">fi</span>
+
+<span class="c-comment"># Manual rollback</span>
+kubectl rollout history deploy/chat-service
+kubectl rollout undo deploy/chat-service --to-revision=<span class="c-num">3</span></pre>
+      </div>
+
+      <!-- =================== M27 =================== -->
+      <div class="page" id="m27">
+        <div class="page-header">
+          <div class="page-badges">
+            <span class="badge badge-critical">Critical</span>
+            <span class="badge badge-info">Module 27</span>
+          </div>
+          <h1 class="page-title">Realtime Architecture</h1>
+          <p class="page-subtitle">100k WebSocket connection 3 serverda — presence sync, reconnect, backpressure.</p>
+        </div>
+
+        <h2 class="section-h">WebSocket scaling muammosi</h2>
+        <p>HTTP'da har request stateless. WebSocket — long-lived connection. Bir server faqat ma'lum miqdor connection ushlay oladi.</p>
+
+        <div class="diagram">  Bir server limit:
+  - File descriptor: 1M (ulimit)
+  - Memory per conn: ~30-50 KB
+  - 1 server max: ~30-50k WS connection
+
+  100k user uchun: minimum 3 server kerak</div>
+
+        <h2 class="section-h">Arxitektura — 100k user, 3 server</h2>
+        <div class="diagram">       Clients (100,000)
+            │
+            ▼
+    ┌──────────────────┐
+    │  Load Balancer   │  (Nginx with sticky session via ip_hash)
+    │  ip_hash         │
+    └────────┬─────────┘
+             │
+   ┌─────────┼─────────┐
+   ▼         ▼         ▼
+ ┌────┐   ┌────┐   ┌────┐
+ │ WS1│   │ WS2│   │ WS3│  ← Each holds ~33k connections
+ │35k │   │33k │   │32k │
+ └─┬──┘   └─┬──┘   └─┬──┘
+   │        │        │
+   └────────┼────────┘
+            │
+            ▼
+    ┌───────────────┐
+    │ Redis Pub/Sub │   ← server-to-server message routing
+    │  (or NATS)    │
+    └───────┬───────┘
+            │
+            ▼
+    ┌───────────────┐
+    │   Postgres    │   ← persist messages, users
+    └───────────────┘</div>
+
+        <h2 class="section-h">Cross-server message delivery — Redis Pub/Sub</h2>
+<pre data-lang="Go"><span class="c-comment">// Server: connection manager</span>
+<span class="c-keyword">type</span> Hub <span class="c-keyword">struct</span> {
+    clients    <span class="c-keyword">map</span>[int64]*Client  <span class="c-comment">// user_id → connection</span>
+    mu         sync.RWMutex
+    redis      *redis.Client
+    serverID   string
+}
+
+<span class="c-keyword">func</span> (h *Hub) <span class="c-fn">Register</span>(c *Client) {
+    h.mu.Lock()
+    h.clients[c.UserID] = c
+    h.mu.Unlock()
+
+    <span class="c-comment">// Redis'da user qaysi serverda — saqlash</span>
+    h.redis.Set(ctx, fmt.Sprintf(<span class="c-string">"user:%d:server"</span>, c.UserID), h.serverID, <span class="c-num">5</span>*time.Minute)
+
+    <span class="c-comment">// User'ning shaxsiy kanaliga subscribe</span>
+    h.subscribeUser(c.UserID)
+}
+
+<span class="c-comment">// Xabar yuborish</span>
+<span class="c-keyword">func</span> (h *Hub) <span class="c-fn">SendToUser</span>(ctx context.Context, userID int64, msg []<span class="c-keyword">byte</span>) error {
+    <span class="c-comment">// 1. Lokal serverda bormi?</span>
+    h.mu.RLock()
+    client, ok := h.clients[userID]
+    h.mu.RUnlock()
+
+    <span class="c-keyword">if</span> ok {
+        client.Send &lt;- msg  <span class="c-comment">// to'g'ridan-to'g'ri yuborish</span>
+        <span class="c-keyword">return</span> <span class="c-keyword">nil</span>
+    }
+
+    <span class="c-comment">// 2. Boshqa serverda — Redis Pub/Sub orqali</span>
+    channel := fmt.Sprintf(<span class="c-string">"user:%d"</span>, userID)
+    <span class="c-keyword">return</span> h.redis.Publish(ctx, channel, msg).Err()
+}
+
+<span class="c-comment">// Subscriber — boshqa serverdan keladigan xabarlar</span>
+<span class="c-keyword">func</span> (h *Hub) <span class="c-fn">subscribeUser</span>(userID int64) {
+    sub := h.redis.Subscribe(ctx, fmt.Sprintf(<span class="c-string">"user:%d"</span>, userID))
+    <span class="c-keyword">go func</span>() {
+        <span class="c-keyword">for</span> msg := <span class="c-keyword">range</span> sub.Channel() {
+            h.mu.RLock()
+            client, ok := h.clients[userID]
+            h.mu.RUnlock()
+            <span class="c-keyword">if</span> ok {
+                client.Send &lt;- []<span class="c-keyword">byte</span>(msg.Payload)
+            }
+        }
+    }()
+}</pre>
+
+        <h2 class="section-h">Presence — online/offline tracking</h2>
+<pre data-lang="Go"><span class="c-comment">// Online holatini saqlash — TTL bilan</span>
+<span class="c-keyword">func</span> (h *Hub) <span class="c-fn">setOnline</span>(userID int64) {
+    redis.Set(ctx, fmt.Sprintf(<span class="c-string">"presence:%d"</span>, userID), <span class="c-string">"online"</span>, <span class="c-num">60</span>*time.Second)
+}
+
+<span class="c-comment">// Har 30 sec'da heartbeat — TTL'ni yangilash</span>
+<span class="c-keyword">func</span> (c *Client) <span class="c-fn">heartbeat</span>() {
+    ticker := time.NewTicker(<span class="c-num">30</span> * time.Second)
+    <span class="c-keyword">defer</span> ticker.Stop()
+    <span class="c-keyword">for</span> <span class="c-keyword">range</span> ticker.C {
+        redis.Expire(ctx, fmt.Sprintf(<span class="c-string">"presence:%d"</span>, c.UserID), <span class="c-num">60</span>*time.Second)
+    }
+}
+
+<span class="c-comment">// Online tekshirish</span>
+<span class="c-keyword">func</span> <span class="c-fn">isOnline</span>(userID int64) <span class="c-keyword">bool</span> {
+    _, err := redis.Get(ctx, fmt.Sprintf(<span class="c-string">"presence:%d"</span>, userID)).Result()
+    <span class="c-keyword">return</span> err != redis.Nil
+}</pre>
+
+        <h2 class="section-h">Reconnect strategy — client tomonda</h2>
+<pre data-lang="JavaScript"><span class="c-keyword">class</span> ReconnectingWS {
+  <span class="c-fn">constructor</span>(url) {
+    <span class="c-keyword">this</span>.url = url;
+    <span class="c-keyword">this</span>.attempts = <span class="c-num">0</span>;
+    <span class="c-keyword">this</span>.maxAttempts = <span class="c-num">10</span>;
+    <span class="c-keyword">this</span>.lastMessageId = <span class="c-keyword">null</span>;  <span class="c-comment">// reconnect'da yo'qolgan xabarlarni qaytarish</span>
+    <span class="c-keyword">this</span>.<span class="c-fn">connect</span>();
+  }
+
+  <span class="c-fn">connect</span>() {
+    <span class="c-keyword">const</span> url = <span class="c-keyword">this</span>.lastMessageId
+      ? <span class="c-string">`${this.url}?after=${this.lastMessageId}`</span>
+      : <span class="c-keyword">this</span>.url;
+
+    <span class="c-keyword">this</span>.ws = <span class="c-keyword">new</span> WebSocket(url);
+
+    <span class="c-keyword">this</span>.ws.onopen = () =&gt; {
+      console.log(<span class="c-string">'connected'</span>);
+      <span class="c-keyword">this</span>.attempts = <span class="c-num">0</span>;
+    };
+
+    <span class="c-keyword">this</span>.ws.onmessage = (e) =&gt; {
+      <span class="c-keyword">const</span> msg = JSON.parse(e.data);
+      <span class="c-keyword">this</span>.lastMessageId = msg.id;
+      <span class="c-keyword">this</span>.<span class="c-fn">onMessage</span>(msg);
+    };
+
+    <span class="c-keyword">this</span>.ws.onclose = () =&gt; {
+      <span class="c-keyword">if</span> (<span class="c-keyword">this</span>.attempts &gt;= <span class="c-keyword">this</span>.maxAttempts) <span class="c-keyword">return</span>;
+
+      <span class="c-comment">// Exponential backoff + jitter</span>
+      <span class="c-keyword">const</span> delay = Math.<span class="c-fn">min</span>(<span class="c-num">1000</span> * <span class="c-num">2</span> ** <span class="c-keyword">this</span>.attempts, <span class="c-num">30000</span>)
+                  + Math.<span class="c-fn">random</span>() * <span class="c-num">1000</span>;
+      <span class="c-keyword">this</span>.attempts++;
+      <span class="c-fn">setTimeout</span>(() =&gt; <span class="c-keyword">this</span>.<span class="c-fn">connect</span>(), delay);
+    };
+  }
+}</pre>
+
+        <h2 class="section-h">Backpressure — sekin client'ni boshqarish</h2>
+<pre data-lang="Go"><span class="c-keyword">type</span> Client <span class="c-keyword">struct</span> {
+    UserID <span class="c-keyword">int64</span>
+    Conn   *websocket.Conn
+    Send   <span class="c-keyword">chan</span> []<span class="c-keyword">byte</span>  <span class="c-comment">// buffered channel</span>
+}
+
+<span class="c-keyword">func</span> <span class="c-fn">NewClient</span>(uid int64, conn *websocket.Conn) *Client {
+    <span class="c-keyword">return</span> &amp;Client{
+        UserID: uid,
+        Conn:   conn,
+        Send:   <span class="c-fn">make</span>(<span class="c-keyword">chan</span> []<span class="c-keyword">byte</span>, <span class="c-num">256</span>),  <span class="c-comment">// 256 message buffer</span>
+    }
+}
+
+<span class="c-keyword">func</span> (c *Client) <span class="c-fn">writePump</span>() {
+    <span class="c-keyword">for</span> msg := <span class="c-keyword">range</span> c.Send {
+        c.Conn.SetWriteDeadline(time.Now().Add(<span class="c-num">10</span> * time.Second))
+        <span class="c-keyword">if</span> err := c.Conn.WriteMessage(websocket.TextMessage, msg); err != <span class="c-keyword">nil</span> {
+            <span class="c-keyword">return</span>
+        }
+    }
+}
+
+<span class="c-comment">// Yuborishda — buffer to'lib qolsa, eski xabarlarni tashlash</span>
+<span class="c-keyword">func</span> (c *Client) <span class="c-fn">trySend</span>(msg []<span class="c-keyword">byte</span>) <span class="c-keyword">bool</span> {
+    <span class="c-keyword">select</span> {
+    <span class="c-keyword">case</span> c.Send &lt;- msg:
+        <span class="c-keyword">return</span> <span class="c-keyword">true</span>
+    <span class="c-keyword">default</span>:
+        <span class="c-comment">// Buffer to'lgan — slow consumer</span>
+        log.Warn(<span class="c-string">"slow client"</span>, <span class="c-string">"user_id"</span>, c.UserID)
+        <span class="c-comment">// Optional: connection'ni uzish</span>
+        <span class="c-keyword">return</span> <span class="c-keyword">false</span>
+    }
+}</pre>
+
+        <h2 class="section-h">Message ordering — Kafka partition</h2>
+<pre data-lang="Go"><span class="c-comment">// Kafka producer — bir chat'ning xabarlari bir partition'ga</span>
+producer.SendMessage(&amp;kafka.Message{
+    Topic: <span class="c-string">"chat-messages"</span>,
+    Key:   []<span class="c-keyword">byte</span>(fmt.Sprint(chatID)),  <span class="c-comment">// ← partition key</span>
+    Value: msgBytes,
+})
+
+<span class="c-comment">// Bir chat = bir partition = ordered delivery garantirovannogo</span></pre>
+
+        <h2 class="section-h">Checklist — production realtime</h2>
+        <ul class="check-list">
+          <li>Sticky session (ip_hash yoki cookie-based)</li>
+          <li>Cross-server delivery (Redis Pub/Sub / NATS)</li>
+          <li>Presence with TTL + heartbeat</li>
+          <li>Reconnect bilan missed messages qaytarish</li>
+          <li>Backpressure handling (buffer + slow consumer disconnect)</li>
+          <li>Per-chat ordering (Kafka partition key)</li>
+          <li>Rate limit (har user uchun)</li>
+          <li>Health check + graceful shutdown</li>
+        </ul>
+      </div>
+
+      <!-- =================== M28 =================== -->
+      <div class="page" id="m28">
+        <div class="page-header">
+          <div class="page-badges">
+            <span class="badge badge-high">High</span>
+            <span class="badge badge-info">Module 28</span>
+          </div>
+          <h1 class="page-title">Search Systems</h1>
+          <p class="page-subtitle">10M employee orasidan "abdulloh / abdullox / abdulla" topa olish — typo-tolerant search.</p>
+        </div>
+
+        <h2 class="section-h">Qachon Postgres FTS, qachon Elasticsearch?</h2>
+        <table>
+          <thead><tr><th></th><th>Postgres FTS / Trigram</th><th>Elasticsearch</th></tr></thead>
+          <tbody>
+            <tr><td>Data &lt; 10M</td><td>✓ Yetadi</td><td>Overkill</td></tr>
+            <tr><td>Data &gt; 50M</td><td>Sekinlashishi mumkin</td><td>✓ Optimal</td></tr>
+            <tr><td>Real-time index update</td><td>✓ ACID</td><td>~1s lag</td></tr>
+            <tr><td>Relevance scoring</td><td>Oddiy (ts_rank)</td><td>✓ BM25, custom</td></tr>
+            <tr><td>Faceted search</td><td>Qiyinroq</td><td>✓ Native</td></tr>
+            <tr><td>Operational cost</td><td>Bitta DB yetadi</td><td>Alohida cluster</td></tr>
+          </tbody>
+        </table>
+
+        <h2 class="section-h">Yo'l 1 — Postgres trigram (oddiy va kuchli)</h2>
+<pre data-lang="SQL"><span class="c-keyword">CREATE EXTENSION IF NOT EXISTS</span> pg_trgm;
+
+<span class="c-comment">-- Index</span>
+<span class="c-keyword">CREATE INDEX</span> idx_employees_name_trgm
+<span class="c-keyword">ON</span> employees
+<span class="c-keyword">USING GIN</span> (full_name gin_trgm_ops);
+
+<span class="c-comment">-- ILIKE search — typo-tolerant emas, lekin tez</span>
+<span class="c-keyword">SELECT</span> id, full_name <span class="c-keyword">FROM</span> employees
+<span class="c-keyword">WHERE</span> full_name <span class="c-keyword">ILIKE</span> <span class="c-string">'%abdulla%'</span>
+<span class="c-keyword">LIMIT</span> <span class="c-num">20</span>;
+
+<span class="c-comment">-- Similarity search — typo'larga toza</span>
+<span class="c-keyword">SELECT</span> id, full_name,
+       similarity(full_name, <span class="c-string">'abdulloh'</span>) <span class="c-keyword">AS</span> sim
+<span class="c-keyword">FROM</span> employees
+<span class="c-keyword">WHERE</span> full_name % <span class="c-string">'abdulloh'</span>      <span class="c-comment">-- trigram similarity</span>
+<span class="c-keyword">ORDER BY</span> sim <span class="c-keyword">DESC</span>
+<span class="c-keyword">LIMIT</span> <span class="c-num">20</span>;
+
+<span class="c-comment">-- Natija:</span>
+<span class="c-comment">-- abdulloh         sim=1.00</span>
+<span class="c-comment">-- abdullox         sim=0.78</span>
+<span class="c-comment">-- abdulla          sim=0.72</span>
+<span class="c-comment">-- abdullaev        sim=0.62</span></pre>
+
+        <h2 class="section-h">Yo'l 2 — Postgres Full-Text Search</h2>
+<pre data-lang="SQL"><span class="c-comment">-- tsvector column</span>
+<span class="c-keyword">ALTER TABLE</span> articles <span class="c-keyword">ADD COLUMN</span> search_vec tsvector
+  <span class="c-keyword">GENERATED ALWAYS AS</span> (
+    setweight(to_tsvector(<span class="c-string">'simple'</span>, <span class="c-keyword">coalesce</span>(title, <span class="c-string">''</span>)), <span class="c-string">'A'</span>) ||
+    setweight(to_tsvector(<span class="c-string">'simple'</span>, <span class="c-keyword">coalesce</span>(body, <span class="c-string">''</span>)), <span class="c-string">'B'</span>)
+  ) <span class="c-keyword">STORED</span>;
+
+<span class="c-keyword">CREATE INDEX</span> idx_articles_search <span class="c-keyword">ON</span> articles <span class="c-keyword">USING GIN</span> (search_vec);
+
+<span class="c-comment">-- Search with ranking</span>
+<span class="c-keyword">SELECT</span> id, title,
+       ts_rank(search_vec, query) <span class="c-keyword">AS</span> rank
+<span class="c-keyword">FROM</span> articles, plainto_tsquery(<span class="c-string">'simple'</span>, <span class="c-string">'golang microservice'</span>) query
+<span class="c-keyword">WHERE</span> search_vec @@ query
+<span class="c-keyword">ORDER BY</span> rank <span class="c-keyword">DESC</span>
+<span class="c-keyword">LIMIT</span> <span class="c-num">20</span>;</pre>
+
+        <h2 class="section-h">Yo'l 3 — Elasticsearch (katta scale)</h2>
+
+        <h3 class="sub-h">Index mapping</h3>
+<pre data-lang="JSON">PUT /employees
+{
+  <span class="c-string">"settings"</span>: {
+    <span class="c-string">"analysis"</span>: {
+      <span class="c-string">"analyzer"</span>: {
+        <span class="c-string">"name_analyzer"</span>: {
+          <span class="c-string">"type"</span>: <span class="c-string">"custom"</span>,
+          <span class="c-string">"tokenizer"</span>: <span class="c-string">"standard"</span>,
+          <span class="c-string">"filter"</span>: [<span class="c-string">"lowercase"</span>, <span class="c-string">"asciifolding"</span>]
+        }
+      }
+    }
+  },
+  <span class="c-string">"mappings"</span>: {
+    <span class="c-string">"properties"</span>: {
+      <span class="c-string">"full_name"</span>: {
+        <span class="c-string">"type"</span>: <span class="c-string">"text"</span>,
+        <span class="c-string">"analyzer"</span>: <span class="c-string">"name_analyzer"</span>,
+        <span class="c-string">"fields"</span>: {
+          <span class="c-string">"keyword"</span>: { <span class="c-string">"type"</span>: <span class="c-string">"keyword"</span> },
+          <span class="c-string">"suggest"</span>:  { <span class="c-string">"type"</span>: <span class="c-string">"completion"</span> }
+        }
+      },
+      <span class="c-string">"department"</span>: { <span class="c-string">"type"</span>: <span class="c-string">"keyword"</span> },
+      <span class="c-string">"salary"</span>:     { <span class="c-string">"type"</span>: <span class="c-string">"long"</span> }
+    }
+  }
+}</pre>
+
+        <h3 class="sub-h">Fuzzy search query</h3>
+<pre data-lang="JSON">POST /employees/_search
+{
+  <span class="c-string">"query"</span>: {
+    <span class="c-string">"bool"</span>: {
+      <span class="c-string">"must"</span>: [
+        {
+          <span class="c-string">"match"</span>: {
+            <span class="c-string">"full_name"</span>: {
+              <span class="c-string">"query"</span>:     <span class="c-string">"abdulloh"</span>,
+              <span class="c-string">"fuzziness"</span>: <span class="c-string">"AUTO"</span>,
+              <span class="c-string">"prefix_length"</span>: <span class="c-num">1</span>
+            }
+          }
+        }
+      ],
+      <span class="c-string">"filter"</span>: [
+        { <span class="c-string">"term"</span>: { <span class="c-string">"department"</span>: <span class="c-string">"IT"</span> } },
+        { <span class="c-string">"range"</span>: { <span class="c-string">"salary"</span>: { <span class="c-string">"gte"</span>: <span class="c-num">5000000</span> } } }
+      ]
+    }
+  },
+  <span class="c-string">"highlight"</span>: {
+    <span class="c-string">"fields"</span>: { <span class="c-string">"full_name"</span>: {} }
+  }
+}</pre>
+
+        <h3 class="sub-h">Autocomplete</h3>
+<pre data-lang="JSON">POST /employees/_search
+{
+  <span class="c-string">"suggest"</span>: {
+    <span class="c-string">"name_suggest"</span>: {
+      <span class="c-string">"prefix"</span>: <span class="c-string">"abdul"</span>,
+      <span class="c-string">"completion"</span>: {
+        <span class="c-string">"field"</span>: <span class="c-string">"full_name.suggest"</span>,
+        <span class="c-string">"size"</span>: <span class="c-num">10</span>
+      }
+    }
+  }
+}</pre>
+
+        <h2 class="section-h">DB → ES sync — Outbox / CDC</h2>
+        <div class="diagram">         Postgres (source of truth)
+              │
+              ├── INSERT/UPDATE
+              │
+              ▼
+       outbox table  ← har o'zgarish bu yerga ham yoziladi (bir tx)
+              │
+              ▼
+       Debezium / custom worker
+              │
+              ▼
+           Kafka topic
+              │
+              ▼
+       Elasticsearch sink connector
+              │
+              ▼
+        Elasticsearch index (eventual consistency, ~1s lag)</div>
+
+<pre data-lang="SQL"><span class="c-comment">-- Outbox pattern</span>
+<span class="c-keyword">BEGIN</span>;
+  <span class="c-keyword">UPDATE</span> employees <span class="c-keyword">SET</span> full_name = <span class="c-string">'Abdulloh Yo''ldoshev'</span> <span class="c-keyword">WHERE</span> id = <span class="c-num">123</span>;
+
+  <span class="c-keyword">INSERT INTO</span> outbox (event_type, payload)
+  <span class="c-keyword">VALUES</span> (<span class="c-string">'employee.updated'</span>, <span class="c-string">'{"id":123,...}'</span>);
+<span class="c-keyword">COMMIT</span>;
+
+<span class="c-comment">-- Worker bu outbox'ni o'qib, Kafka'ga yuboradi va flag qo'yadi</span></pre>
+
+        <h2 class="section-h">Pagination — search uchun</h2>
+        <table>
+          <thead><tr><th>Approach</th><th>Foydasi</th><th>Cheklov</th></tr></thead>
+          <tbody>
+            <tr><td>from + size</td><td>Random access</td><td>Sekin (deep pages), max 10k</td></tr>
+            <tr><td>search_after</td><td>Cheksiz, tez</td><td>Random access yo'q</td></tr>
+            <tr><td>scroll API</td><td>Bulk export</td><td>Real-time emas</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- =================== M29 =================== -->
+      <div class="page" id="m29">
+        <div class="page-header">
+          <div class="page-badges">
+            <span class="badge badge-critical">Critical</span>
+            <span class="badge badge-info">Module 29</span>
+          </div>
+          <h1 class="page-title">Architecture Patterns</h1>
+          <p class="page-subtitle">DDD, Clean Arch, CQRS, Saga, Outbox, Circuit Breaker — senior backend asboblari.</p>
+        </div>
+
+        <h2 class="section-h">Clean Architecture — qatlamlar</h2>
+        <div class="diagram">  ┌──────────────────────────────────────────┐
+  │   Delivery (HTTP, gRPC, WebSocket)       │  ← Tashqi dunyo
+  └──────────────────┬───────────────────────┘
+                     │ calls
+  ┌──────────────────▼───────────────────────┐
+  │   Use Case / Service                     │  ← Business orchestration
+  │   (PaymentService, OrderService)         │
+  └──────────────────┬───────────────────────┘
+                     │ depends on
+  ┌──────────────────▼───────────────────────┐
+  │   Domain (entities + business rules)     │  ← Core
+  │   (Order, Payment, Money)                │
+  └──────────────────▲───────────────────────┘
+                     │ implements
+  ┌──────────────────┴───────────────────────┐
+  │   Infrastructure (DB, Cache, External)   │
+  │   (PostgresOrderRepo, RedisCache)        │
+  └──────────────────────────────────────────┘
+
+  Qoida: Dependency arrows DOIM ichkariga qaragan.
+  Domain hech narsani bilmaydi, Use Case faqat domain'ni biladi.</div>
+
+<pre data-lang="Go"><span class="c-comment">// domain/order.go — sof biznes</span>
+<span class="c-keyword">package</span> domain
+
+<span class="c-keyword">type</span> Order <span class="c-keyword">struct</span> {
+    ID       OrderID
+    UserID   UserID
+    Items    []Item
+    Status   OrderStatus
+    Total    Money
+}
+
+<span class="c-keyword">func</span> (o *Order) <span class="c-fn">Cancel</span>() error {
+    <span class="c-keyword">if</span> o.Status == StatusShipped {
+        <span class="c-keyword">return</span> ErrCannotCancelShipped
+    }
+    o.Status = StatusCancelled
+    <span class="c-keyword">return</span> <span class="c-keyword">nil</span>
+}
+
+<span class="c-comment">// usecase/cancel_order.go</span>
+<span class="c-keyword">package</span> usecase
+
+<span class="c-keyword">type</span> OrderRepository <span class="c-keyword">interface</span> {     <span class="c-comment">// interface qatlam ichida</span>
+    FindByID(ctx context.Context, id domain.OrderID) (*domain.Order, error)
+    Save(ctx context.Context, o *domain.Order) error
+}
+
+<span class="c-keyword">type</span> CancelOrderUseCase <span class="c-keyword">struct</span> {
+    repo OrderRepository
+    bus  EventBus
+}
+
+<span class="c-keyword">func</span> (uc *CancelOrderUseCase) <span class="c-fn">Execute</span>(ctx context.Context, id domain.OrderID) error {
+    order, err := uc.repo.FindByID(ctx, id)
+    <span class="c-keyword">if</span> err != <span class="c-keyword">nil</span> { <span class="c-keyword">return</span> err }
+
+    <span class="c-keyword">if</span> err := order.Cancel(); err != <span class="c-keyword">nil</span> {
+        <span class="c-keyword">return</span> err
+    }
+
+    <span class="c-keyword">if</span> err := uc.repo.Save(ctx, order); err != <span class="c-keyword">nil</span> {
+        <span class="c-keyword">return</span> err
+    }
+
+    <span class="c-keyword">return</span> uc.bus.Publish(ctx, domain.OrderCancelledEvent{ID: order.ID})
+}
+
+<span class="c-comment">// infra/postgres/order_repo.go — interface'ni implement qiladi</span>
+<span class="c-keyword">type</span> PostgresOrderRepo <span class="c-keyword">struct</span> { db *sql.DB }
+
+<span class="c-keyword">func</span> (r *PostgresOrderRepo) <span class="c-fn">FindByID</span>(...) (...) { <span class="c-comment">/* SQL */</span> }</pre>
+
+        <h2 class="section-h">CQRS — Read/Write Separation</h2>
+        <p>Yozish va o'qish modellari alohida. Yozish — normalized, transactional. O'qish — denormalized, optimized.</p>
+
+        <div class="diagram">  Commands (yozish)             Queries (o'qish)
+       │                              │
+       ▼                              ▼
+  ┌─────────────┐              ┌─────────────┐
+  │ Write Model │              │ Read Model  │
+  │ (Postgres)  │              │ (Elastic,   │
+  │ normalized  │              │  Redis,     │
+  └──────┬──────┘              │  view)      │
+         │                     └──────▲──────┘
+         │ event                      │
+         └────────►  Event Bus  ──────┘
+                  (Kafka/NATS)</div>
+
+        <h2 class="section-h">Saga Pattern — distributed transaction</h2>
+        <p>Bir necha servis bo'ylab tranzaksiya. Bir bosqich xato bo'lsa — oldingilarini bekor qilish.</p>
+
+        <h3 class="sub-h">Choreography (event-driven)</h3>
+        <div class="diagram">  Order Service        Inventory Service       Payment Service
+       │                      │                      │
+       │── OrderCreated ─────►│                      │
+       │                      │── InventoryReserved ►│
+       │                      │                      │── ChargePayment
+       │                      │                      │       │
+       │                      │                      │       ▼ ✗ FAIL
+       │                      │◄─ PaymentFailed ─────│
+       │◄─ InventoryReleased ─│
+       │
+       ▼ cancel order</div>
+
+        <h3 class="sub-h">Orchestration — Go misol</h3>
+<pre data-lang="Go"><span class="c-keyword">type</span> OrderSaga <span class="c-keyword">struct</span> {
+    orderSvc     OrderService
+    inventorySvc InventoryService
+    paymentSvc   PaymentService
+}
+
+<span class="c-keyword">func</span> (s *OrderSaga) <span class="c-fn">Execute</span>(ctx context.Context, req CreateOrderRequest) error {
+    <span class="c-comment">// Compensating actions stack'i</span>
+    <span class="c-keyword">var</span> compensations []<span class="c-keyword">func</span>() error
+
+    rollback := <span class="c-keyword">func</span>() {
+        <span class="c-keyword">for</span> i := <span class="c-fn">len</span>(compensations) - <span class="c-num">1</span>; i &gt;= <span class="c-num">0</span>; i-- {
+            <span class="c-keyword">if</span> err := compensations[i](); err != <span class="c-keyword">nil</span> {
+                log.Error(<span class="c-string">"compensation failed"</span>, <span class="c-string">"err"</span>, err)
+                <span class="c-comment">// Manual intervention queue'ga qo'yish</span>
+            }
+        }
+    }
+
+    <span class="c-comment">// 1. Order yaratish</span>
+    order, err := s.orderSvc.Create(ctx, req)
+    <span class="c-keyword">if</span> err != <span class="c-keyword">nil</span> { <span class="c-keyword">return</span> err }
+    compensations = <span class="c-fn">append</span>(compensations, <span class="c-keyword">func</span>() error {
+        <span class="c-keyword">return</span> s.orderSvc.Cancel(ctx, order.ID)
+    })
+
+    <span class="c-comment">// 2. Inventory reserve</span>
+    <span class="c-keyword">if</span> err := s.inventorySvc.Reserve(ctx, order.Items); err != <span class="c-keyword">nil</span> {
+        rollback()
+        <span class="c-keyword">return</span> err
+    }
+    compensations = <span class="c-fn">append</span>(compensations, <span class="c-keyword">func</span>() error {
+        <span class="c-keyword">return</span> s.inventorySvc.Release(ctx, order.Items)
+    })
+
+    <span class="c-comment">// 3. Payment</span>
+    <span class="c-keyword">if</span> err := s.paymentSvc.Charge(ctx, order.UserID, order.Total); err != <span class="c-keyword">nil</span> {
+        rollback()
+        <span class="c-keyword">return</span> err
+    }
+
+    <span class="c-comment">// 4. Confirm</span>
+    <span class="c-keyword">return</span> s.orderSvc.Confirm(ctx, order.ID)
+}</pre>
+
+        <h2 class="section-h">Outbox Pattern — atomic event publishing</h2>
+        <div class="warn-box">
+          <b>Muammo:</b> DB'ga yozish va Kafka'ga event yuborish ikkita alohida operatsiya. Biri muvaffaqiyatli, ikkinchisi xato bo'lsa — inconsistency.
+        </div>
+
+<pre data-lang="SQL"><span class="c-comment">-- outbox table — events bilan bir transaction</span>
+<span class="c-keyword">CREATE TABLE</span> outbox (
+    id <span class="c-keyword">BIGSERIAL PRIMARY KEY</span>,
+    aggregate_type <span class="c-keyword">VARCHAR</span>(<span class="c-num">50</span>),
+    aggregate_id <span class="c-keyword">VARCHAR</span>(<span class="c-num">100</span>),
+    event_type <span class="c-keyword">VARCHAR</span>(<span class="c-num">100</span>),
+    payload <span class="c-keyword">JSONB</span>,
+    created_at <span class="c-keyword">TIMESTAMP DEFAULT</span> <span class="c-fn">NOW</span>(),
+    published_at <span class="c-keyword">TIMESTAMP</span>
+);
+
+<span class="c-keyword">CREATE INDEX</span> <span class="c-keyword">ON</span> outbox (published_at) <span class="c-keyword">WHERE</span> published_at <span class="c-keyword">IS NULL</span>;</pre>
+
+<pre data-lang="Go"><span class="c-comment">// Service kodida</span>
+<span class="c-keyword">func</span> (s *OrderService) <span class="c-fn">Create</span>(ctx context.Context, req Request) error {
+    <span class="c-keyword">return</span> withTx(ctx, s.db, <span class="c-keyword">func</span>(tx *sql.Tx) error {
+        <span class="c-comment">// 1. Order'ni saqlash</span>
+        order := domain.NewOrder(req)
+        <span class="c-keyword">if</span> _, err := tx.Exec(<span class="c-string">"INSERT INTO orders ..."</span>, ...); err != <span class="c-keyword">nil</span> {
+            <span class="c-keyword">return</span> err
+        }
+
+        <span class="c-comment">// 2. Event'ni outbox'ga yozish — bir tx ichida</span>
+        payload, _ := json.Marshal(domain.OrderCreatedEvent{ID: order.ID})
+        _, err := tx.Exec(`
+            INSERT INTO outbox (aggregate_type, aggregate_id, event_type, payload)
+            VALUES ($1, $2, $3, $4)`,
+            <span class="c-string">"order"</span>, order.ID, <span class="c-string">"OrderCreated"</span>, payload,
+        )
+        <span class="c-keyword">return</span> err
+    })
+}
+
+<span class="c-comment">// Outbox publisher (alohida goroutine yoki worker)</span>
+<span class="c-keyword">func</span> (p *OutboxPublisher) <span class="c-fn">Run</span>(ctx context.Context) {
+    ticker := time.NewTicker(<span class="c-num">500</span> * time.Millisecond)
+    <span class="c-keyword">for</span> {
+        <span class="c-keyword">select</span> {
+        <span class="c-keyword">case</span> &lt;-ctx.Done(): <span class="c-keyword">return</span>
+        <span class="c-keyword">case</span> &lt;-ticker.C:
+            rows, _ := p.db.Query(`
+                SELECT id, event_type, payload FROM outbox
+                WHERE published_at IS NULL
+                ORDER BY id LIMIT 100`)
+
+            <span class="c-keyword">for</span> rows.Next() {
+                <span class="c-keyword">var</span> id <span class="c-keyword">int64</span>; <span class="c-keyword">var</span> et string; <span class="c-keyword">var</span> pl []<span class="c-keyword">byte</span>
+                rows.Scan(&amp;id, &amp;et, &amp;pl)
+
+                <span class="c-keyword">if</span> err := p.kafka.Publish(et, pl); err == <span class="c-keyword">nil</span> {
+                    p.db.Exec(<span class="c-string">"UPDATE outbox SET published_at=NOW() WHERE id=$1"</span>, id)
+                }
+            }
+        }
+    }
+}</pre>
+
+        <h2 class="section-h">Circuit Breaker</h2>
+<pre data-lang="Go"><span class="c-keyword">import</span> <span class="c-string">"github.com/sony/gobreaker"</span>
+
+cb := gobreaker.NewCircuitBreaker(gobreaker.Settings{
+    Name:        <span class="c-string">"payment-service"</span>,
+    MaxRequests: <span class="c-num">3</span>,                    <span class="c-comment">// half-open'da ruxsat</span>
+    Interval:    <span class="c-num">60</span> * time.Second,
+    Timeout:     <span class="c-num">30</span> * time.Second,    <span class="c-comment">// open'da qancha turadi</span>
+    ReadyToTrip: <span class="c-keyword">func</span>(counts gobreaker.Counts) <span class="c-keyword">bool</span> {
+        failureRate := <span class="c-keyword">float64</span>(counts.TotalFailures) / <span class="c-keyword">float64</span>(counts.Requests)
+        <span class="c-keyword">return</span> counts.Requests &gt;= <span class="c-num">10</span> &amp;&amp; failureRate &gt;= <span class="c-num">0.5</span>
+    },
+})
+
+<span class="c-comment">// Ishlatish</span>
+result, err := cb.Execute(<span class="c-keyword">func</span>() (<span class="c-keyword">interface</span>{}, error) {
+    <span class="c-keyword">return</span> paymentClient.Charge(amount)
+})
+
+<span class="c-keyword">if</span> err == gobreaker.ErrOpenState {
+    <span class="c-comment">// Fallback — masalan, queue'ga qo'yish</span>
+    <span class="c-keyword">return</span> deferredPayment(amount)
+}</pre>
+
+        <div class="diagram">  States:
+  CLOSED ──fail&gt;threshold──► OPEN
+     ▲                          │
+     │                          │ timeout
+     │ success                  ▼
+     └────── HALF-OPEN ◄────────┘
+              │
+              ├── success ──► CLOSED
+              └── fail ─────► OPEN</div>
+
+        <h2 class="section-h">Patterns checklist</h2>
+        <ul class="check-list">
+          <li>Clean Architecture / Hexagonal — har servisda</li>
+          <li>DDD — murakkab domain'larda (CRM, ERP)</li>
+          <li>CQRS — read-heavy ish bilan</li>
+          <li>Saga — distributed transaction kerak bo'lsa</li>
+          <li>Outbox — DB + event consistency</li>
+          <li>Circuit Breaker — har external call uchun</li>
+          <li>Retry + backoff — transient errors uchun</li>
+          <li>Bulkhead — bir servis fail bo'lsa, boshqalari ishlasin</li>
+          <li>Event-driven — loose coupling kerak bo'lsa</li>
+        </ul>
+      </div>
+
+      <!-- =================== M30 =================== -->
+      <div class="page" id="m30">
+        <div class="page-header">
+          <div class="page-badges">
+            <span class="badge badge-critical">Critical</span>
+            <span class="badge badge-info">Module 30</span>
+          </div>
+          <h1 class="page-title">Profiling &amp; Performance</h1>
+          <p class="page-subtitle">"API sekin, nima uchun?" — pprof, race detector, memory leak topish.</p>
+        </div>
+
+        <h2 class="section-h">pprof — Go'ning eng kuchli asbobi</h2>
+
+        <h3 class="sub-h">Setup</h3>
+<pre data-lang="Go"><span class="c-keyword">import</span> (
+    <span class="c-string">"net/http"</span>
+    _ <span class="c-string">"net/http/pprof"</span>   <span class="c-comment">// import side-effect qiladi</span>
+)
+
+<span class="c-keyword">func</span> <span class="c-fn">main</span>() {
+    <span class="c-comment">// Profiling alohida port'da (production'da private network)</span>
+    <span class="c-keyword">go func</span>() {
+        log.Println(http.ListenAndServe(<span class="c-string">"localhost:6060"</span>, <span class="c-keyword">nil</span>))
+    }()
+
+    <span class="c-comment">// Asosiy app</span>
+    startServer()
+}
+
+<span class="c-comment">// Endpoints avtomatik:</span>
+<span class="c-comment">// /debug/pprof/profile       — CPU profile (30s)</span>
+<span class="c-comment">// /debug/pprof/heap          — memory snapshot</span>
+<span class="c-comment">// /debug/pprof/goroutine     — goroutine dump</span>
+<span class="c-comment">// /debug/pprof/mutex         — lock contention</span>
+<span class="c-comment">// /debug/pprof/block         — blocking operations</span></pre>
+
+        <h2 class="section-h">CPU profiling</h2>
+<pre data-lang="bash"><span class="c-comment"># 30 sekundlik CPU profile</span>
+go tool pprof http://localhost:6060/debug/pprof/profile?seconds=30
+
+<span class="c-comment"># Interaktiv rejim:</span>
+(pprof) top10            <span class="c-comment"># eng ko'p CPU yegan funksiyalar</span>
+(pprof) list myFunction  <span class="c-comment"># funksiya ichidagi qator-qator</span>
+(pprof) web              <span class="c-comment"># SVG graph (graphviz kerak)</span>
+(pprof) png              <span class="c-comment"># rasm sifatida saqlash</span>
+
+<span class="c-comment"># Yoki to'g'ridan-to'g'ri web UI</span>
+go tool pprof -http=:8081 http://localhost:6060/debug/pprof/profile?seconds=30</pre>
+
+        <h3 class="sub-h">CPU profile o'qish — misol</h3>
+        <div class="diagram">(pprof) top10
+Showing nodes accounting for 28.5s, 71.25% of 40s total
+
+      flat  flat%   sum%        cum   cum%
+    8.40s 21.00% 21.00%      8.40s 21.00%  runtime.mallocgc       ← memory allocation
+    5.20s 13.00% 34.00%     12.30s 30.75%  json.Marshal           ← serialization
+    4.10s 10.25% 44.25%      4.10s 10.25%  syscall.Syscall
+    3.80s  9.50% 53.75%      3.80s  9.50%  runtime.scanobject     ← GC pressure
+    3.50s  8.75% 62.50%      3.50s  8.75%  bytes.(*Buffer).Write
+    ...
+
+Xulosa:
+- 30% vaqt JSON marshalling — protobuf yoki streaming kerak
+- 21% allocation — object pool / sync.Pool ishlatish
+- 9% GC scan — tuple/slice ehtiyotkorroq</div>
+
+        <h2 class="section-h">Memory profiling</h2>
+<pre data-lang="bash">go tool pprof http://localhost:6060/debug/pprof/heap
+
+(pprof) top10 -cum
+      flat  flat%   sum%        cum   cum%
+   124MB  31.0%  31.0%      245MB 61.0%  parseRequest
+    85MB  21.3%  52.3%       85MB 21.3%  bytes.NewBuffer
+    ...
+
+(pprof) list parseRequest
+   ROUTINE ======================== parseRequest
+       0      245MB (flat, cum) 61.25%
+       .          .     45:    data, _ := io.ReadAll(r.Body)        <span class="c-comment"># ⚠</span>
+       .       85MB     46:    buf := bytes.NewBuffer(data)          <span class="c-comment"># 85MB!</span>
+       .          .     47:    var req Request
+       .      124MB     48:    json.NewDecoder(buf).Decode(&amp;req)     <span class="c-comment"># 124MB</span></pre>
+
+        <h2 class="section-h">Memory leak — goroutine leak</h2>
+<pre data-lang="Go"><span class="c-comment">// ❌ LEAK — goroutine hech qachon tugamaydi</span>
+<span class="c-keyword">func</span> <span class="c-fn">handler</span>(w http.ResponseWriter, r *http.Request) {
+    ch := <span class="c-fn">make</span>(<span class="c-keyword">chan</span> Result)
+    <span class="c-keyword">go func</span>() {
+        result := slowOperation()
+        ch &lt;- result  <span class="c-comment">// ⚠ agar request bekor qilinsa, hech kim o'qimaydi</span>
+    }()
+
+    <span class="c-keyword">select</span> {
+    <span class="c-keyword">case</span> result := &lt;-ch:
+        json.NewEncoder(w).Encode(result)
+    <span class="c-keyword">case</span> &lt;-time.After(<span class="c-num">5</span> * time.Second):
+        http.Error(w, <span class="c-string">"timeout"</span>, <span class="c-num">504</span>)
+        <span class="c-comment">// goroutine hali ham ishlamoqda → LEAK</span>
+    }
+}
+
+<span class="c-comment">// ✅ FIX — context bilan boshqarish</span>
+<span class="c-keyword">func</span> <span class="c-fn">handler</span>(w http.ResponseWriter, r *http.Request) {
+    ctx, cancel := context.WithTimeout(r.Context(), <span class="c-num">5</span>*time.Second)
+    <span class="c-keyword">defer</span> cancel()
+
+    result, err := slowOperationCtx(ctx)  <span class="c-comment">// ctx'ni qabul qilsin</span>
+    <span class="c-keyword">if</span> err != <span class="c-keyword">nil</span> {
+        http.Error(w, err.Error(), <span class="c-num">504</span>)
+        <span class="c-keyword">return</span>
+    }
+    json.NewEncoder(w).Encode(result)
+}</pre>
+
+        <h3 class="sub-h">Goroutine leak'ni topish</h3>
+<pre data-lang="bash">curl http://localhost:6060/debug/pprof/goroutine?debug=2
+
+<span class="c-comment"># Output:</span>
+goroutine 50000 [chan send, 5 minutes]:    <span class="c-comment"># ← juda ko'p, 5 daqiqa</span>
+main.handler.func1()
+    /app/main.go:42 +0x...
+
+goroutine 50001 [chan send, 5 minutes]:
+main.handler.func1()
+    /app/main.go:42 +0x...
+
+<span class="c-comment"># Bir xil joyda 50k goroutine kutib turibdi → LEAK</span></pre>
+
+        <h2 class="section-h">Race detector</h2>
+<pre data-lang="Go"><span class="c-comment">// ❌ RACE</span>
+<span class="c-keyword">var</span> counter <span class="c-keyword">int</span>
+
+<span class="c-keyword">func</span> <span class="c-fn">handler</span>(w http.ResponseWriter, r *http.Request) {
+    counter++  <span class="c-comment">// ko'p goroutine bir vaqtda yozadi</span>
+}
+
+<span class="c-comment">// Run with race detector:</span>
+<span class="c-comment">// go test -race ./...</span>
+<span class="c-comment">// go run -race main.go</span>
+
+<span class="c-comment">// Output:</span>
+WARNING: DATA RACE
+Write at 0x000... by goroutine 7:
+  main.handler()
+      /app/main.go:15
+
+Previous write at 0x000... by goroutine 8:
+  main.handler()
+      /app/main.go:15
+
+<span class="c-comment">// ✅ FIX — atomic yoki mutex</span>
+<span class="c-keyword">import</span> <span class="c-string">"sync/atomic"</span>
+
+<span class="c-keyword">var</span> counter atomic.Int64
+
+<span class="c-keyword">func</span> <span class="c-fn">handler</span>(w http.ResponseWriter, r *http.Request) {
+    counter.Add(<span class="c-num">1</span>)
+}</pre>
+
+        <h2 class="section-h">sync.Pool — allocation kamaytirish</h2>
+<pre data-lang="Go"><span class="c-keyword">var</span> bufPool = sync.Pool{
+    New: <span class="c-keyword">func</span>() <span class="c-keyword">interface</span>{} {
+        <span class="c-keyword">return</span> &amp;bytes.Buffer{}
+    },
+}
+
+<span class="c-keyword">func</span> <span class="c-fn">processRequest</span>(data []<span class="c-keyword">byte</span>) string {
+    buf := bufPool.Get().(*bytes.Buffer)
+    buf.Reset()
+    <span class="c-keyword">defer</span> bufPool.Put(buf)
+
+    buf.Write(data)
+    buf.WriteString(<span class="c-string">" processed"</span>)
+    <span class="c-keyword">return</span> buf.String()
+}
+
+<span class="c-comment">// Benchmark natijasi:</span>
+<span class="c-comment">// Without pool: 480 B/op, 8 allocs/op</span>
+<span class="c-comment">// With pool:     16 B/op, 1 allocs/op</span></pre>
+
+        <h2 class="section-h">"API sekin, nima uchun?" — diagnostic flow</h2>
+        <div class="card">
+          <div class="diagram">  1. Metrics ko'rish (Grafana)
+     ├── Faqat ma'lum endpoint sekinmi? → o'sha endpoint'ga focus
+     └── Hammasi sekinmi? → infra muammosi
+
+  2. Trace ko'rish (Jaeger)
+     ├── Qaysi span ko'p vaqt yedi?
+     │   ├── DB query → EXPLAIN ANALYZE, indeks
+     │   ├── External API → circuit breaker, cache
+     │   └── Computation → pprof CPU
+     └── Network → pgbouncer, connection pool
+
+  3. pprof — to'g'ridan-to'g'ri ko'rish
+     ├── CPU: top10, list, web
+     ├── Heap: kim memory yeyapti?
+     ├── Goroutine: leak bormi? (1000+ ?)
+     └── Mutex: lock contention?
+
+  4. DB tomondan
+     ├── pg_stat_statements — eng sekin query'lar
+     ├── pg_stat_activity — hozir nima ishlamoqda
+     └── EXPLAIN ANALYZE har sekin query uchun
+
+  5. Network / Infra
+     ├── kubectl top pods — CPU/memory limit?
+     ├── Connection pool exhausted?
+     └── DNS / cross-zone latency?</div>
+        </div>
+
+        <h2 class="section-h">Benchmark — kod o'zgarishini o'lchash</h2>
+<pre data-lang="Go"><span class="c-keyword">func</span> <span class="c-fn">BenchmarkSerialize</span>(b *testing.B) {
+    data := generateTestData(<span class="c-num">1000</span>)
+    b.ResetTimer()
+    b.ReportAllocs()
+
+    <span class="c-keyword">for</span> i := <span class="c-num">0</span>; i &lt; b.N; i++ {
+        _, _ = json.Marshal(data)
+    }
+}
+
+<span class="c-comment"># Avval:</span>
+<span class="c-comment"># BenchmarkSerialize-8    50000   24500 ns/op   8120 B/op   45 allocs/op</span>
+
+<span class="c-comment"># jsoniter ishlatdik:</span>
+<span class="c-comment"># BenchmarkSerialize-8   120000    9800 ns/op   3200 B/op   12 allocs/op</span>
+
+<span class="c-comment"># 2.5x tezroq, 2.5x kam memory</span>
+
+<span class="c-comment"># Benchstat bilan taqqoslash:</span>
+go install golang.org/x/perf/cmd/benchstat@latest
+benchstat before.txt after.txt</pre>
+
+        <h2 class="section-h">Production'da profiling — ehtiyot choralari</h2>
+        <ul class="check-list">
+          <li>pprof endpoint'ni umumiy internetga ochmang — private network</li>
+          <li>Continuous profiling — Pyroscope / Parca</li>
+          <li>CPU profile production'da ~5% overhead beradi — qisqa muddatda yoqing</li>
+          <li>Heap snapshot xavfsiz, har qachon olsa bo'ladi</li>
+          <li>Goroutine dump kichik, har shubhada ko'ring</li>
+        </ul>
+
+        <h2 class="section-h">Final checklist — senior bo'lish</h2>
+        <ul class="check-list">
+          <li>pprof'dan CPU/heap/goroutine profile o'qish</li>
+          <li>Race detector bilan test</li>
+          <li>Memory leak topish (goroutine, channel, closure)</li>
+          <li>sync.Pool va allocation reduction</li>
+          <li>Benchmark va benchstat</li>
+          <li>GC tuning (GOGC, GOMEMLIMIT)</li>
+          <li>Continuous profiling pipeline</li>
+        </ul>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script>
+  const navItems = document.querySelectorAll('.nav-item');
+  const pages = document.querySelectorAll('.page');
+  const crumb = document.getElementById('crumb');
+
+  navItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const pageId = item.dataset.page;
+
+      navItems.forEach(n => n.classList.remove('active'));
+      item.classList.add('active');
+
+      pages.forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+
+      const title = item.childNodes[1].textContent.trim();
+      crumb.textContent = title;
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      closeSidebar();
+    });
+  });
+
+  // Search filter
+  const searchInput = document.getElementById('searchInput');
+  searchInput.addEventListener('input', (e) => {
+    const q = e.target.value.toLowerCase();
+    navItems.forEach(item => {
+      const txt = item.textContent.toLowerCase();
+      item.style.display = txt.includes(q) ? '' : 'none';
+    });
+  });
+
+  // Mobile sidebar
+  function openSidebar() {
+    document.getElementById('sidebar').classList.add('open');
+    document.querySelector('.overlay').classList.add('active');
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.querySelector('.overlay').classList.remove('active');
+  }
+</script>
+
+</body>
+</html>
