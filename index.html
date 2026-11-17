@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Learning Hub</title>
     <style>
         * {
@@ -13,7 +14,8 @@
         }
 
         body {
-            height: 100vh;
+            min-height: 100vh;
+            padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -32,8 +34,13 @@
 
         .buttons {
             display: flex;
+            flex-wrap: wrap;
             gap: 20px;
             justify-content: center;
+        }
+
+        .buttons + .buttons {
+            margin-top: 20px;
         }
 
         .btn {
@@ -87,6 +94,24 @@
             
             <a href="les/backend-admin.html" target="_blank" class="btn sql">
                 Senior Lev
+            </a>
+        </div>
+
+        <div class="buttons">
+            <a href="new/1-go_1_40.html" target="_blank" class="btn basic">
+                1. Go 1–40
+            </a>
+
+            <a href="new/2-go_concurrency.html" target="_blank" class="btn advanced">
+                2. Go Concurrency
+            </a>
+
+            <a href="new/3-docker_swarm.html" target="_blank" class="btn sql">
+                3. Docker Swarm
+            </a>
+
+            <a href="new/4-uzum.html" target="_blank" class="btn advanced">
+                4. Uzum
             </a>
         </div>
     </div>

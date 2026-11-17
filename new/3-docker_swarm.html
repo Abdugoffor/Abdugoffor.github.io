@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Docker Swarm 0 dan productiongacha: o‘zbekcha, 30 dars (4 ta kirish + 26 ta laboratoriya), kodlar, amaliyot va test. Internet talab qilinmaydi.">
+<title>Docker Swarm 0 dan Productiongacha | Interaktiv O‘zbekcha Kurs</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#18223a;--muted:#59677e;--line:#e2e9f3;--accent:#1669c7;--accent-soft:#eaf3ff;--nav:#101b31;--nav2:#172a48;--green:#098567;--amber:#a96c0d;--red:#b43748;--code:#0d1729;--shadow:0 18px 55px rgba(25,45,85,.055);--font:16px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Segoe UI,Inter,Arial,sans-serif;font-size:var(--font);line-height:1.78}button,input,textarea{font:inherit}a{color:var(--accent);text-underline-offset:3px}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #69baff;outline-offset:2px}
+.layout{min-height:100vh}.sidebar{width:312px;position:fixed;left:0;top:0;bottom:0;background:var(--nav);color:#dfe9fa;z-index:20;display:flex;flex-direction:column;box-shadow:8px 0 25px rgba(8,21,49,.08)}.brand{padding:23px 23px 14px;border-bottom:1px solid #ffffff1a}.brand-top{display:flex;align-items:center;gap:12px}.brand-mark{height:46px;width:46px;display:grid;place-items:center;border:1px solid #ffffff30;background:linear-gradient(135deg,#155bac,#3ba3ff);border-radius:14px;color:white;font-size:23px}.brand-title{font-size:19px;font-weight:800;letter-spacing:-.5px;line-height:1.25}.brand-sub{font-size:11px;color:#afc3e2;letter-spacing:1px;text-transform:uppercase}.brand-desc{font-size:12px;line-height:1.55;margin:15px 0 0;color:#a3b8d5}.sidebar-search{margin:17px 15px 6px;position:relative}.sidebar-search input{width:100%;background:#ffffff10;border:1px solid #ffffff25;border-radius:11px;padding:12px 12px 12px 38px;color:white;font-size:13px;outline:none}.sidebar-search input::placeholder{color:#9aaed0}.search-icon{position:absolute;left:12px;top:9px;color:#b4c9e6;font-size:18px}.search-count{font-size:11px;color:#a8c0dd;padding:0 21px 5px;min-height:20px}.sidebar-nav{overflow-y:auto;padding:4px 11px 25px;flex:1;scrollbar-width:thin;scrollbar-color:#3f5276 transparent}.group-label{display:flex;justify-content:space-between;align-items:center;color:#9cb2d2;font-weight:800;font-size:11px;letter-spacing:.13em;text-transform:uppercase;padding:22px 14px 9px}.group-label small{font-size:10px;letter-spacing:0;text-transform:none;font-weight:500;color:#708dad}.nav-link{width:100%;display:flex;align-items:center;gap:10px;border:1px solid transparent;background:transparent;color:#cfdbec;padding:9px 10px;border-radius:10px;text-align:left;margin:2px 0;line-height:1.35}.nav-link:hover{background:#ffffff10}.nav-link.active{background:linear-gradient(105deg,#1959a5,#206eb6);color:white;border-color:#ffffff22;box-shadow:0 4px 16px #07132350}.nav-num{font-size:11px;font-weight:800;background:#ffffff12;flex:none;width:28px;height:28px;display:grid;place-items:center;border-radius:8px;color:#9fbfe9}.nav-link.active .nav-num{background:#ffffff25;color:#fff}.nav-text{font-size:12.8px;font-weight:540;flex:1}.nav-check{display:none;color:#5be2b4;font-weight:bold}.nav-link.done .nav-check{display:block}.nav-link[hidden]{display:none!important}.nav-group:has(.nav-link:not([hidden])) .group-label{display:flex}.nav-group:not(:has(.nav-link:not([hidden]))){display:none}.sidebar-bottom{border-top:1px solid #ffffff1c;padding:16px 21px 17px;background:#101c31}.progress-head{display:flex;align-items:center;justify-content:space-between;font-size:12px;margin-bottom:9px;color:#c7d9f0}.progress-head strong{font-variant-numeric:tabular-nums;color:white}.progress-track{height:7px;background:#ffffff1e;border-radius:10px;overflow:hidden}.progress-fill{width:0%;height:100%;background:linear-gradient(90deg,#49b5ee,#41e0bb);transition:width .2s}.sidebar-tip{font-size:11px;color:#879ebf;line-height:1.5;margin-top:10px}
+.page{margin-left:312px;min-height:100vh}.topbar{height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.82);backdrop-filter:blur(12px);position:sticky;top:0;z-index:12}.top-breadcrumb{display:flex;gap:10px;align-items:center;color:var(--muted);font-size:13px}.top-breadcrumb b{color:var(--ink);font-weight:650}.top-actions{display:flex;gap:8px;align-items:center}.tool-btn{border:1px solid var(--line);background:#fff;color:#41546e;border-radius:9px;min-width:36px;height:36px;padding:0 10px;font-size:13px;font-weight:700}.tool-btn:hover{background:var(--accent-soft)}.menu-btn{display:none}.content{max-width:1000px;margin:0 auto;padding:36px 52px 70px}.course-hero{background:radial-gradient(circle at 92% 14%,#2473bb99,transparent 35%),linear-gradient(135deg,#102747,#153f75);color:#fff;border-radius:22px;padding:27px 31px;display:flex;justify-content:space-between;align-items:center;gap:22px;margin-bottom:29px;box-shadow:0 18px 40px rgba(27,70,134,.12)}.hero-kicker{text-transform:uppercase;font-size:10px;font-weight:750;letter-spacing:2px;color:#9ad1ff}.course-hero h2{font-size:25px;line-height:1.3;letter-spacing:-.65px;margin:8px 0 8px}.course-hero p{font-size:12px;color:#d4e8ff;line-height:1.65;margin:0}.hero-pill{background:#ffffff1a;border:1px solid #ffffff34;color:#ecf7ff;border-radius:13px;padding:13px 17px;white-space:nowrap;text-align:center}.hero-pill strong{display:block;font-size:24px;line-height:1.2}.hero-pill small{display:block;font-size:10px;color:#c4dafa}
+.lesson{display:none;animation:enter .24s ease-out}.lesson.active{display:block}@keyframes enter{from{opacity:.5;transform:translateY(6px)}to{opacity:1;transform:none}}.lesson-breadcrumb{font-size:11px;letter-spacing:1.5px;font-weight:800;color:var(--accent);text-transform:uppercase;margin-bottom:13px}.lesson-breadcrumb span{padding:0 7px;color:#a4acc0}.lesson h1{font-size:clamp(29px,3.4vw,42px);letter-spacing:-1.4px;line-height:1.18;margin:0 0 21px;font-weight:840}.micro-summary{border:1px solid #bad8f8;background:#eef6ff;border-radius:13px;display:flex;align-items:flex-start;gap:12px;padding:12px 16px;margin-bottom:27px}.micro-summary span{font-size:20px}.micro-summary p{margin:0;color:#205482;font-size:13px}.lesson-body{font-size:15px}.lesson-body .lead{font-size:17px;line-height:1.85;color:#34465e;margin:0 0 29px}.lesson-body h3{font-size:20px;letter-spacing:-.4px;line-height:1.4;margin:31px 0 12px;color:#1c2940}.lesson-body p{margin:10px 0 14px;color:#3c4b63}.lesson-body b,.lesson-body strong{color:var(--ink)}.lesson-body code:not(pre code),.ending-kicker code{font:600 .91em Consolas,Menlo,monospace;color:#a34460;background:#fbeaf0;border:1px solid #f3dce5;border-radius:5px;padding:2px 5px;overflow-wrap:anywhere}.lesson-body li{margin:9px 0;color:#3c4b63}.lesson-body ul{padding-left:25px}.steps{padding-left:30px;counter-reset:step}.steps>li{padding:4px 0 6px 6px}.steps>li::marker{color:var(--accent);font-weight:800}.two-cols,.challenge-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.mini-panel,.challenge-grid>div{padding:17px 19px;border:1px solid var(--line);border-radius:12px;background:white}.mini-panel b,.challenge-grid b{color:var(--ink);font-size:16px}.mini-panel p,.challenge-grid p{font-size:13px;margin:9px 0 0}
+.code-block{position:relative;background:var(--code);border-radius:13px;overflow:hidden;border:1px solid #203653;margin:17px 0 22px;box-shadow:0 12px 25px rgba(10,22,40,.12)}.code-head{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ffffff1c;color:#c4d5ee;font-size:11px;font-weight:750;letter-spacing:.25px;padding:10px 16px;background:#14233c}.code-head .lang{font-size:10px;color:#7c9abf;text-transform:uppercase;letter-spacing:1px}.code-block pre{margin:0;white-space:pre;overflow-x:auto;padding:22px 17px 27px;color:#e1efff;font:13px/1.68 Consolas,'Cascadia Code',Monaco,monospace;tab-size:2;scrollbar-width:thin;scrollbar-color:#456183 transparent}.code-block .copy{position:absolute;right:12px;bottom:10px;background:#ffffff12;border:1px solid #ffffff32;border-radius:7px;padding:5px 11px;font-size:11px;font-weight:800;color:#e7f3ff}.code-block .copy:hover{background:#ffffff30}.code-block .copy.copied{background:#207a67}.file-tree{font:14px/1.85 Consolas,monospace;background:#edf4fd;border:1px dashed #aac7e9;border-radius:11px;padding:17px 22px;color:#245482;white-space:nowrap;overflow-x:auto;margin:14px 0}.call{padding:14px 17px 13px;margin:19px 0;border-left:4px solid;border-radius:0 10px 10px 0}.call strong{font-size:13.5px;display:block}.call p{font-size:13px;line-height:1.72;margin:4px 0 0}.call.info{border-color:#1976bf;background:#ebf6fe}.call.warning{border-color:#cb8b23;background:#fff6e8}.call.danger{border-color:#c84454;background:#fff0f1}.call.info strong{color:#1c5c8b}.call.warning strong{color:#925b0a}.call.danger strong{color:#a82d3b}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:18px 0;box-shadow:0 3px 12px #162d5705}.table-wrap table{width:100%;border-collapse:collapse;font-size:13px;background:white;line-height:1.58}.table-wrap th{background:#edf3fa;color:#374f6d;text-align:left;padding:12px 14px;min-width:110px;border-bottom:1px solid #dae5f1;font-weight:800}.table-wrap td{padding:11px 14px;border-bottom:1px solid #eef1f6;color:#35455f;vertical-align:top}.table-wrap tr:last-child td{border-bottom:none}.table-wrap tr:nth-child(2n){background:#fbfdff}.table-wrap td code{white-space:nowrap}.practice{background:#fff;border:1px solid #b9dacb;border-radius:14px;margin:29px 0;padding:18px 20px;box-shadow:var(--shadow)}.practice-tag{font-size:10px;font-weight:850;letter-spacing:1.4px;color:#0c8461}.practice p{font-size:14px;margin:7px 0 10px}.practice details{margin-top:13px;border-top:1px dashed #bed7d0;padding-top:10px}.practice summary{font-size:12px;font-weight:800;color:#126b57;cursor:pointer}.practice .answer{padding:10px 0 3px;font-size:13px;color:#3a4f4c}.practice .answer code{white-space:normal}
+.visual{border:1px solid #d5e3f4;background:linear-gradient(135deg,#f8fbff,#ecf5ff);border-radius:15px;margin:23px 0;padding:19px 21px;overflow-x:auto}.visual-title{font-size:12px;font-weight:800;color:#456487;margin-bottom:15px}.diagram-cards{display:flex;align-items:stretch;justify-content:space-around;gap:9px;min-width:460px}.diagram-card{min-width:120px;flex:1;padding:18px 9px;background:#fff;border:1px solid #cfdfee;border-radius:11px;text-align:center;display:flex;flex-direction:column;gap:7px;justify-content:center}.diagram-card.selected{border-color:#50a0e3;box-shadow:0 7px 22px #1558a21a}.diagram-card b{font-size:13px;color:#203b64}.diagram-card small{font-size:11px;color:#59718b;line-height:1.5}.di-icon{font-size:25px}.diagram-arrow{align-self:center;color:#6293be;font-weight:900;font-size:20px}.diagram-caption{margin:12px 0 0!important;font-size:12px!important;color:#617c97!important}.chain{display:flex;align-items:center;justify-content:center;gap:9px;min-width:450px;flex-wrap:wrap}.chain>span,.network-diagram span,.pipeline span{background:white;border:1px solid #bad0ea;border-radius:9px;padding:10px 13px;color:#264e7b;font-size:12px;font-weight:800}.chain i,.network-diagram i,.pipeline i{font-style:normal;color:#3b79b4;font-weight:bold;font-size:12px}.node-graph{display:flex;justify-content:center;gap:13px}.node-graph.multi{flex-wrap:wrap}.node{min-width:140px;max-width:260px;flex:1;padding:17px;border-radius:12px;background:#fff;border:2px solid #b9d8ee;display:flex;gap:5px;flex-direction:column}.node.manager{border-color:#4e94e5;background:#eff7ff}.node.worker{border-color:#93c2d1}.node b{font-size:14px;color:#174b7f}.node small{color:#5d7d9d}.node span{font-size:11px;color:#556c85;line-height:1.4}.replica-grid{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.replica-label{font-size:12px;font-weight:800;color:#1d6192;width:100%;margin-bottom:6px}.replica-item{flex:1;min-width:130px;border:1px solid #8ac0e9;background:white;border-radius:10px;text-align:center;padding:18px 10px;color:#256fa5;font-weight:800;font-size:13px}.release-flow,.network-diagram,.pipeline{display:flex;align-items:center;justify-content:center;gap:10px;min-width:420px}.release-flow>div{min-width:120px;border:1px solid #adc6e2;border-radius:10px;background:white;padding:13px;display:flex;flex-direction:column;gap:2px}.release-flow>div.release-new{border-color:#72b89b;background:#f4fffb}.release-flow small{font-size:10px;color:#65829d}.release-flow b{font-size:14px}.release-flow span{font-size:11px;color:#5b7790}.release-flow i{font-size:12px;font-style:normal;color:#477eaf}.roll-grid{min-width:450px;max-width:620px;margin:auto}.roll-r{display:flex;align-items:center;gap:6px;margin:7px 0}.roll-r span{width:88px;font-size:11px;color:#5c7490}.roll-r i{flex:1;text-align:center;font:700 11px Arial;font-style:normal;border-radius:6px;padding:8px}.roll-r .old{background:#dce9f8;color:#5279a3}.roll-r .new{background:#b9efdc;color:#1d8467}.network-diagram .net-node{border-color:#7ab3e9}.arch{max-width:750px;margin:auto;text-align:center}.arch-top{background:#224f85;color:#fff;border-radius:10px;padding:10px;font-size:13px;font-weight:750}.arch-down{font-size:20px;color:#4688bb}.arch-mid,.arch-bot{display:flex;gap:10px;justify-content:space-around}.arch-mid>div,.arch-bot>div{flex:1;border:1px solid #a7c8e8;background:#fff;border-radius:10px;padding:12px 7px;font-size:12px;font-weight:800;color:#275989}.arch-bot>div{border-color:#afd8cd;background:#fafffd;color:#2b7163}.arch small{font-size:10px;display:block;font-weight:500;color:#647b8a;line-height:1.5}.pipeline{flex-wrap:wrap;min-width:540px}.checklist{list-style:none;padding:0!important}.checklist li{position:relative;padding-left:31px}.checklist li::before{content:'✓';position:absolute;top:1px;left:2px;color:#0b9d77;font-weight:900}
+.lesson-ending{display:flex;justify-content:space-between;align-items:center;gap:20px;border:1px solid #d6e4f1;background:white;border-radius:13px;padding:18px 19px;margin-top:36px}.ending-kicker{font-size:10px;color:#4e7aa3;font-weight:850;letter-spacing:1.4px}.lesson-ending p{font-size:12px;line-height:1.65;color:#687b92;margin:5px 0 0}.complete-btn,.primary-action{background:#166abc;border:1px solid #1262b3;border-radius:10px;padding:10px 17px;font-size:12px;font-weight:800;color:white;white-space:nowrap}.complete-btn.completed{background:#138263;border-color:#138263}.complete-btn:hover,.primary-action:hover{filter:brightness(1.1)}.notes-zone{background:#f8fbff;border:1px solid var(--line);border-radius:12px;padding:17px 20px;margin:17px 0 22px}.notes-zone label{display:block;font-size:13px;font-weight:800;color:#3f5c7d;margin-bottom:10px}.notes-zone textarea{width:100%;border:1px solid #cddceb;background:#fff;border-radius:8px;padding:12px 14px;outline:none;color:var(--ink);resize:vertical;font-size:13px}.notes-zone small{display:block;color:#8795a6;font-size:11px;margin-top:5px}.lesson-nav{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:27px 0 30px}.ghost-action{background:white;color:#286295;border:1px solid #c8dbec;padding:10px 15px;border-radius:10px;font-size:12px;font-weight:800}.ghost-action:hover{background:#f2f8ff}.lesson-nav button:disabled{opacity:.38;cursor:not-allowed}
+.quiz-question{margin:17px 0;padding:18px 20px;background:#fff;border:1px solid var(--line);border-radius:12px}.quiz-question h4{font-size:15px;margin:0 0 12px;line-height:1.5}.quiz-option{display:flex;align-items:flex-start;gap:10px;margin:7px 0;padding:9px 12px;background:#f6f9fd;border:1px solid #e7eef6;border-radius:8px;cursor:pointer;font-size:13px;color:#40536d;line-height:1.45}.quiz-option:hover{background:#eaf3ff}.quiz-option input{margin-top:3px;accent-color:var(--accent)}.quiz-feedback{font-size:12px;padding:9px 11px;border-radius:8px;margin-top:12px}.quiz-feedback.correct{background:#e8f9f1;color:#126745}.quiz-feedback.wrong{background:#fff0ee;color:#a3343e}.quiz-actions{display:flex;gap:10px;flex-wrap:wrap;margin:17px 0}.quiz-result{background:#f0f7ff;border:1px solid #c5dbf0;border-radius:11px;padding:15px;font-size:15px;margin:14px 0}.challenge-grid{grid-template-columns:repeat(3,minmax(0,1fr));margin:17px 0 22px}
+.footer{max-width:1000px;margin:0 auto 0;padding:12px 52px 50px}.foot-inner{border-top:1px solid var(--line);padding:22px 0 0;color:#76869c;font-size:11px;line-height:1.8}.foot-inner a{color:#557ea5}.foot-inner .foot-links{display:flex;flex-wrap:wrap;gap:8px 18px}.mobile-overlay{display:none}
+body.dark{--bg:#0d1422;--card:#182438;--ink:#e8f1ff;--muted:#a1b3cc;--line:#2c3b51;--accent:#68b1ff;--accent-soft:#1e3654;background:var(--bg);color:var(--ink)}body.dark .topbar{background:#101c2eeb}body.dark .tool-btn,body.dark .mini-panel,body.dark .challenge-grid>div,body.dark .practice,body.dark .lesson-ending,body.dark .table-wrap table,body.dark .table-wrap tr:nth-child(2n),body.dark .notes-zone textarea,body.dark .ghost-action,body.dark .quiz-question{background:#1a2b40;color:#cbd9eb}body.dark .lesson-body p,body.dark .lesson-body li,body.dark .lesson-body .lead,body.dark .table-wrap td,body.dark .quiz-option{color:#b4c7df}body.dark .micro-summary{background:#173351;border-color:#365c83}body.dark .micro-summary p{color:#bfdbfa}body.dark .table-wrap th{background:#253b55;color:#cfdded;border-color:#3c516c}body.dark .table-wrap td{border-color:#2c4057}body.dark .call.info{background:#193651}body.dark .call.warning{background:#3a301c}body.dark .call.danger{background:#3f252c}body.dark .call.info p,body.dark .call.warning p,body.dark .call.danger p{color:#d4e1ed}body.dark .call strong,body.dark .lesson-body strong{color:#eef6ff}body.dark .practice .answer{color:#e3f5ea}body.dark .visual{background:#13283f;border-color:#35526a}body.dark .diagram-card,body.dark .node,body.dark .replica-item,body.dark .release-flow>div,body.dark .chain span,body.dark .arch-mid>div,body.dark .arch-bot>div,body.dark .network-diagram span,body.dark .pipeline span{background:#213c5c;border-color:#42719b;color:#dceaff}body.dark .visual b{color:#e3edff}body.dark .diagram-card small,body.dark .node small,body.dark .node span,body.dark .diagram-caption,body.dark .arch small{color:#acc5e2!important}body.dark .quiz-option{background:#20364f;border-color:#334f6b}body.dark .notes-zone{background:#162337}body.dark .file-tree{background:#1f334e;color:#c0dfff;border-color:#4e708f}body.dark .lesson-body code:not(pre code){background:#3a2b3f;border-color:#604260;color:#ffadc9}body.dark .lesson-ending p{color:#a9bdd6}body.dark .practice p{color:#c6dbf1}
+@media(max-width:1180px){.content{padding-left:35px;padding-right:35px}.footer{padding-left:35px;padding-right:35px}.topbar{padding-left:30px;padding-right:30px}.sidebar{width:275px}.page{margin-left:275px}}
+@media(max-width:820px){.sidebar{transform:translateX(-105%);transition:transform .22s;width:min(330px,88vw)}body.mobile-nav-open .sidebar{transform:translateX(0)}.mobile-overlay{display:none;position:fixed;inset:0;background:#0b1429b8;z-index:15}body.mobile-nav-open .mobile-overlay{display:block}.page{margin-left:0}.menu-btn{display:inline-block}.topbar{padding:0 15px;height:60px}.top-breadcrumb{font-size:11px;gap:6px}.top-actions{gap:5px}.content{padding:24px 18px 40px}.footer{padding:5px 18px 36px}.course-hero{padding:23px 19px;border-radius:16px}.course-hero h2{font-size:20px}.hero-pill{display:none}.lesson h1{letter-spacing:-.7px}.two-cols,.challenge-grid{grid-template-columns:1fr}.lesson-ending{flex-direction:column;align-items:stretch}.lesson-ending .complete-btn{width:100%}}
+@media(max-width:460px){.top-breadcrumb span:first-child{display:none}.course-hero h2{font-size:19px}.lesson-body{font-size:14px}.lesson-body .lead{font-size:15px}.code-block pre{font-size:11.5px}.lesson-nav button{padding:10px 11px}.visual{padding:13px}.lesson h1{font-size:28px}}
+@media print{body{background:white!important;color:black!important;font-size:11px}.sidebar,.topbar,.mobile-overlay,.course-hero,.lesson-nav,.lesson-ending,.notes-zone,.copy,.quiz-actions{display:none!important}.page{margin-left:0!important}.content{max-width:none!important;padding:0!important}.lesson{display:block!important;break-before:page;animation:none!important}.lesson:first-of-type{break-before:auto}.lesson h1{font-size:26px!important}.lesson-body{font-size:11px!important}.code-block pre{white-space:pre-wrap!important;color:#000!important;background:#f1f3f5!important;font-size:10px}.code-block{box-shadow:none;background:#f5f5f5;border:1px solid #ccc}.code-head{background:#e1e5ea;color:black}.visual,.call,.practice,.table-wrap{break-inside:avoid}.footer{padding:0}.footer,.foot-inner{color:#555}}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar" id="sidebar" aria-label="Darslar navigatsiyasi">
+  <div class="brand"><div class="brand-top"><div class="brand-mark">🐳</div><div><div class="brand-title">Docker Swarm</div><div class="brand-sub">0 dan • Productiongacha</div></div></div><p class="brand-desc">O‘zbek tilida. Kod, real laboratoriyalar, quiz va shaxsiy qaydlar bilan.</p></div>
+  <div class="sidebar-search"><span class="search-icon">⌕</span><input id="lesson-search" type="search" placeholder="Dars yoki mavzu qidiring..." aria-label="Darsni qidirish" autocomplete="off"></div><div class="search-count" id="search-count"></div>
+  <nav class="sidebar-nav" id="course-nav"><div class="nav-group"><div class="group-label">Asoslar <small>0 dan boshlaymiz</small></div><button class="nav-link" type="button" data-jump="boshlash" title="Avval shuni tushunib oling"><span class="nav-num">01</span><span class="nav-text">Avval shuni tushunib oling</span><span class="nav-check" aria-hidden="true">✓</span></button><button class="nav-link" type="button" data-jump="lugat" title="Docker asoslari: 7 ta so‘z"><span class="nav-num">02</span><span class="nav-text">Docker asoslari: 7 ta so‘z</span><span class="nav-check" aria-hidden="true">✓</span></button><button class="nav-link" type="button" data-jump="farq" title="Docker Run, Compose va Swarm"><span class="nav-num">03</span><span class="nav-text">Docker Run, Compose va Swarm</span><span class="nav-check" aria-hidden="true">✓</span></button><button class="nav-link" type="button" data-jump="tayyorgarlik" title="Kompyuterni tayyorlash (Windows/Linux)"><span class="nav-num">04</span><span class="nav-text">Kompyuterni tayyorlash (Windows/Linux)</span><span class="nav-check" aria-hidden="true">✓</span></button><button class="nav-link" type="button" data-jump="html-docker" title="1-laboratoriya: HTML saytni Dockerga joylash"><span class="nav-num">05</span><span class="nav-text">1-laboratoriya: HTML saytni Dockerga joylash</span><span class="nav-check" aria-hidden="true">✓</span></button><button class="nav-link" type="button" data-jump="init" title="2-laboratoriya: Swarm’ni yoqish"><span class="nav-num">06</span><span class="nav-text">2-laboratoriya: Swarm’ni yoqish</span><span class="nav-check" aria-hidden="true">✓</span></button><button class="nav-link" type="button" data-jump="service" title="3-laboratoriya: Birinchi service"><span class="nav-num">07</span><span class="nav-text">3-laboratoriya: Birinchi service</span><span class="nav-check" aria-hidden="true">✓</span></button><button class="nav-link" type="button" data-jump="replicas" title="4-laboratoriya: Replica va scaling"><span class="nav-num">08</span><span class="nav-text">4-laboratoriya: Replica va scaling</span><span class="nav-check" aria-hidden="true">✓</span></button><button class="nav-link" type="button" data-jump="update" title="5-laboratoriya: index.html o‘zgarsa nima qilamiz?"><span class="nav-num">09</span><span class="nav-text">5-laboratoriya: index.html o‘zgarsa nima qilamiz?</span><span class="nav-check" aria-hidden="true">✓</span></button><button class="nav-link" type="button" data-jump="tekshirish" title="6-laboratoriya: Log va xatolarni ko‘rish"><span class="nav-num">10</span><span class="nav-text">6-laboratoriya: Log va xatolarni ko‘rish</span><span class="nav-check" aria-hidden="true">✓</span></button></div><div class="nav-group"><div class="group-label">Oraliq <small>Amaliy boshqaruv</small></div><button class="nav-link" type="button" data-jump="stack" title="7-laboratoriya: stack.yml bilan birinchi deploy"><span class="nav-num">11</span><span class="nav-text">7-laboratoriya: stack.yml bilan birinchi deploy</span><span class="nav-check" aria-hidden="true">✓</span></button><button class="nav-link" type="button" data-jump="yaml" title="8-laboratoriya: YAML’ni o‘qishni o‘rganamiz"><span class="nav-num">12</span><span class="nav-text">8-laboratoriya: YAML’ni o‘qishni o‘rganamiz</span><span class="nav-check" aria-hidden="true">✓</span></button><button class="nav-link" type="button" data-jump="updaterollback" title="9-laboratoriya: Rolling update va rollback"><span class="nav-num">13</span><span class="nav-text">9-laboratoriya: Rolling update va rollback</span><span class="nav-check" aria-hidden="true">✓</span></button><button class="nav-link" type="button" data-jump="registry" title="10-laboratoriya: Registry va boshqa serverdagi image"><span class="nav-num">14</span><span class="nav-text">10-laboratoriya: Registry va boshqa serverdagi image</span><span class="nav-check" aria-hidden="true">✓</span></button><button class="nav-link" type="button" data-jump="multinode" title="11-laboratoriya: 3 ta serverdan Swarm qurish"><span class="nav-num">15</span><span class="nav-text">11-laboratoriya: 3 ta serverdan Swarm qurish</span><span class="nav-check" aria-hidden="true">✓</span></button><button class="nav-link" type="button" data-jump="network" title="12-laboratoriya: Overlay, ingress va DNS"><span class="nav-num">16</span><span class="nav-text">12-laboratoriya: Overlay, ingress va DNS</span><span class="nav-check" aria-hidden="true">✓</span></button><button class="nav-link" type="button" data-jump="go-api" title="13-laboratoriya: Go API’ni Swarm’da ishga tushirish"><span class="nav-num">17</span><span class="nav-text">13-laboratoriya: Go API’ni Swarm’da ishga tushirish</span><span class="nav-check" aria-hidden="true">✓</span></button><button class="nav-link" type="button" data-jump="config" title="14-laboratoriya: Docker Config bilan sozlamalar"><span class="nav-num">18</span><span class="nav-text">14-laboratoriya: Docker Config bilan sozlamalar</span><span class="nav-check" aria-hidden="true">✓</span></button><button class="nav-link" type="button" data-jump="secrets" title="15-laboratoriya: Password va Docker Secret"><span class="nav-num">19</span><span class="nav-text">15-laboratoriya: Password va Docker Secret</span><span class="nav-check" aria-hidden="true">✓</span></button><button class="nav-link" type="button" data-jump="volume" title="16-laboratoriya: Volume va PostgreSQL xavfi"><span class="nav-num">20</span><span class="nav-text">16-laboratoriya: Volume va PostgreSQL xavfi</span><span class="nav-check" aria-hidden="true">✓</span></button></div><div class="nav-group"><div class="group-label">Ilg‘or <small>Production va arxitektura</small></div><button class="nav-link" type="button" data-jump="health" title="17-laboratoriya: Healthcheck va restart"><span class="nav-num">21</span><span class="nav-text">17-laboratoriya: Healthcheck va restart</span><span class="nav-check" aria-hidden="true">✓</span></button><button class="nav-link" type="button" data-jump="resources" title="18-laboratoriya: CPU/RAM va placement"><span class="nav-num">22</span><span class="nav-text">18-laboratoriya: CPU/RAM va placement</span><span class="nav-check" aria-hidden="true">✓</span></button><button class="nav-link" type="button" data-jump="node-maint" title="19-laboratoriya: Node drain va servisni ko‘chirish"><span class="nav-num">23</span><span class="nav-text">19-laboratoriya: Node drain va servisni ko‘chirish</span><span class="nav-check" aria-hidden="true">✓</span></button><button class="nav-link" type="button" data-jump="security" title="20-laboratoriya: Swarm xavfsizligi"><span class="nav-num">24</span><span class="nav-text">20-laboratoriya: Swarm xavfsizligi</span><span class="nav-check" aria-hidden="true">✓</span></button><button class="nav-link" type="button" data-jump="deploy-flow" title="21-laboratoriya: Git push → production release"><span class="nav-num">25</span><span class="nav-text">21-laboratoriya: Git push → production release</span><span class="nav-check" aria-hidden="true">✓</span></button><button class="nav-link" type="button" data-jump="troubleshoot" title="22-laboratoriya: 10 ta real xatolik"><span class="nav-num">26</span><span class="nav-text">22-laboratoriya: 10 ta real xatolik</span><span class="nav-check" aria-hidden="true">✓</span></button><button class="nav-link" type="button" data-jump="prod-plan" title="23-laboratoriya: Production uchun haqiqiy arxitektura"><span class="nav-num">27</span><span class="nav-text">23-laboratoriya: Production uchun haqiqiy arxitektura</span><span class="nav-check" aria-hidden="true">✓</span></button><button class="nav-link" type="button" data-jump="ops" title="24-laboratoriya: Backup, manager quorum va audit"><span class="nav-num">28</span><span class="nav-text">24-laboratoriya: Backup, manager quorum va audit</span><span class="nav-check" aria-hidden="true">✓</span></button></div><div class="nav-group"><div class="group-label">Yakun <small>Takrorlash va test</small></div><button class="nav-link" type="button" data-jump="cheatsheet" title="25-laboratoriya: Buyruqlar va xavfsiz tozalash"><span class="nav-num">29</span><span class="nav-text">25-laboratoriya: Buyruqlar va xavfsiz tozalash</span><span class="nav-check" aria-hidden="true">✓</span></button><button class="nav-link" type="button" data-jump="final-quiz" title="26-laboratoriya: Bilimingizni sinang"><span class="nav-num">30</span><span class="nav-text">26-laboratoriya: Bilimingizni sinang</span><span class="nav-check" aria-hidden="true">✓</span></button></div></nav>
+  <div class="sidebar-bottom"><div class="progress-head"><span>O‘zlashtirilgan darslar</span><strong id="progress-label">0 / 30</strong></div><div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div><div class="sidebar-tip">💾 Natija va qaydlar shu brauzerda saqlanadi. Internet kerak emas.</div></div>
+</aside>
+<div class="mobile-overlay" id="mobile-overlay"></div>
+<div class="page">
+<header class="topbar"><div class="top-breadcrumb"><button class="tool-btn menu-btn" type="button" id="toggle-menu" aria-label="Menyuni ochish">☰</button><span>O‘zbekcha amaliy qo‘llanma</span><span>›</span><b id="current-crumb">Kirish</b></div><div class="top-actions"><button class="tool-btn" id="font-minus" type="button" title="Matnni kichraytirish">A−</button><button class="tool-btn" id="font-plus" type="button" title="Matnni kattalashtirish">A+</button><button class="tool-btn" id="theme-btn" type="button" title="Tungi rejim">◐</button><button class="tool-btn" id="print-btn" type="button" title="Chop etish / PDF">⎙</button></div></header>
+<div class="content">
+<div class="course-hero"><div><div class="hero-kicker">Interaktiv kurs • Mustaqil o‘rganish</div><h2>Docker Swarm’ni <span style="color:#7dd7ff">noldan</span> tushunib oling</h2><p>Bir dona HTML → Docker image → Swarm service → 3 server → production.<br>Har bir qadamni avval tushunasiz, keyin terminalda bajarib ko‘rasiz.</p></div><div class="hero-pill"><strong>30 dars</strong><small>Asosiy tushuncha + mashq</small></div></div>
+<section class="lesson" data-lesson="boshlash" id="lesson-boshlash">
+    <div class="lesson-breadcrumb">DARS 01 / 30 <span>•</span> Asoslar <span>•</span> taxminan 9 daqiqa</div>
+    <h1>Avval shuni tushunib oling</h1>
+    <div class="micro-summary"><span>💡</span><p><b>Esda qoladigan fikr:</b> Swarm — servislar orkestratori; koddagi o‘zgarishni o‘zi aniqlamaydi.</p></div>
+    <div class="lesson-body">
+<p class="lead">Sizda oddiy <code>index.html</code> bor. Uni internetga qo‘ydingiz. Ertaga saytingizga juda ko‘p odam kirsa yoki server o‘chsa nima bo‘ladi? Docker Swarm — konteynerlarni <b>bitta yoki bir nechta serverda boshqarish</b> vositasi.</p>
+<div class="visual"><div class="visual-title">Oddiy taqqoslash</div><div class="diagram-cards"><div class="diagram-card"><span class="di-icon">📦</span><b>Docker</b><small>Bitta konteynerni ishga tushiradi</small></div><div class="diagram-arrow">→</div><div class="diagram-card"><span class="di-icon">🧩</span><b>Compose</b><small>Bir nechta konteynerni birgalikda boshqaradi</small></div><div class="diagram-arrow">→</div><div class="diagram-card selected"><span class="di-icon">🌐</span><b>Swarm</b><small>Xizmatlarni serverlar bo‘ylab boshqaradi</small></div></div></div>
+<h3>Hayotiy misol</h3><p>Internet do‘koningizda <b>web</b> xizmatining 3 ta nusxasi (replica) bor. Bitta konteyner ishlamay qolsa, Swarm kerakli nusxalar sonini qayta tiklashga harakat qiladi. Bir nechta server bo‘lsa, sog‘lom serverga yangi nusxa joylashtira oladi.</p>
+<div class="call info"><strong>Eng muhim farq</strong><p>Swarm — dasturlash tili, nginx yoki ma’lumotlar bazasi emas. U mavjud Docker image’lardan <b>service</b> yaratadi, kuzatadi, yangilaydi va boshqaradi.</p></div>
+<h3>Ushbu qo‘llanmada nima qilamiz?</h3>
+<ol class="steps"><li>Oddiy HTML sahifasini Docker image’ga joylaymiz.</li><li>Swarm’ni ishga tushirib, birinchi <code>service</code> yaratamiz.</li><li>Bir nechta replica, yangilash va rollback qilamiz.</li><li><code>stack.yml</code> orqali deploymentni avtomatlashtiramiz.</li><li>Keyin networking, worker, secret, volume va production mavzulariga o‘tamiz.</li></ol>
+<div class="practice"><div class="practice-tag">✍️ MUSTAQIL MASHQ</div><p>Swarm nimani boshqaradi: HTML faylnimi yoki konteynerlardan tashkil topgan xizmatlarnimi?</p><details><summary>Javobni ko‘rish</summary><div class="answer"><b>Javob:</b> Swarm service va uning task/konteynerlarini boshqaradi; HTML manba kodini o‘zi kuzatib yangilamaydi.</div></details></div>
+</div>
+    <div class="lesson-ending"><div><div class="ending-kicker">DARS YAKUNI</div><p>Misollarni o‘zingiz bajarib ko‘ring. Tushunmaganingizni yozib, keyin darsni yakunlangan deb belgilang.</p></div><button class="complete-btn" type="button" data-complete="boshlash">✓ O‘rgandim</button></div>
+    <div class="notes-zone"><label for="note-boshlash">📝 Mening qaydlarim (shu brauzerda saqlanadi)</label><textarea class="notes" id="note-boshlash" data-note="boshlash" placeholder="Masalan: docker service ps — replica holatini ko‘rish uchun..." rows="3"></textarea><small>Qaydlar faqat shu brauzerda, shu fayl uchun saqlanadi; boshqa qurilmaga avtomatik ko‘chmaydi.</small></div>
+    <div class="lesson-nav"><button type="button" class="lesson-prev ghost-action">← Oldingi dars</button><button type="button" class="lesson-next primary-action">Keyingi dars →</button></div>
+    </section><section class="lesson" data-lesson="lugat" id="lesson-lugat">
+    <div class="lesson-breadcrumb">DARS 02 / 30 <span>•</span> Asoslar <span>•</span> taxminan 12 daqiqa</div>
+    <h1>Docker asoslari: 7 ta so‘z</h1>
+    <div class="micro-summary"><span>💡</span><p><b>Esda qoladigan fikr:</b> Image — paket, container — ishga tushgan nusxa; service — Swarm ta’rifi.</p></div>
+    <div class="lesson-body">
+<p class="lead">Swarmga o‘tishdan avval atamalarni oddiy tilda bilib oling. Ularning hammasini yodlash shart emas — yoningizda ma’lumotnoma bo‘lib tursin.</p>
+<div class="table-wrap"><table><thead><tr><th>Atama</th><th>Juda oddiy ma’nosi</th><th>Misol</th></tr></thead><tbody><tr><td>Docker Engine</td><td>Konteynerlarni ishlatuvchi dastur</td><td>Serverdagi Docker</td></tr><tr><td>Dockerfile</td><td>Image’ni qanday yig‘ish retsepti</td><td><code>FROM nginx:alpine</code></td></tr><tr><td>Image</td><td>Dasturning tayyor, versiyalangan paketi</td><td><code>swarm-web:v1</code></td></tr><tr><td>Container</td><td>Image’dan ishga tushgan nusxa</td><td>Nginx ishlayotgan jarayon</td></tr><tr><td>Registry</td><td>Image’lar saqlanadigan manzil</td><td>Docker Hub / private registry</td></tr><tr><td>Service</td><td>Swarm boshqaradigan xizmat ta’rifi</td><td><code>web</code>: 3 ta replica</td></tr><tr><td>Task</td><td>Service nusxasini ishga tushirish vazifasi</td><td><code>web.1</code></td></tr><tr><td>Node</td><td>Swarmga qo‘shilgan server yoki VM</td><td><code>manager1</code></td></tr></tbody></table></div>
+<div class="visual"><div class="chain"><span>index.html</span><i>+</i><span>Dockerfile</span><i>→</i><span>IMAGE v1</span><i>→</i><span>CONTAINER</span></div><p class="diagram-caption">Swarm oxirgi bosqichni <b>service → task → container</b> tartibida boshqaradi.</p></div>
+<h3>5 ta asosiy buyruq</h3>
+<div class="code-block"><div class="code-head"><span>Docker ishlashini tekshirish</span><span class="lang">bash</span></div><pre><code>docker --version
+docker images
+docker ps
+docker ps -a
+docker info</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<p><code>docker images</code> — image’lar; <code>docker ps</code> — hozir ishlayotgan konteynerlar; <code>docker ps -a</code> — to‘xtaganlari ham; <code>docker info</code> — Engine holati.</p>
+<div class="practice"><div class="practice-tag">✍️ MUSTAQIL MASHQ</div><p><code>image</code> bilan <code>container</code> o‘rtasidagi farqni bir jumla bilan ayting.</p><details><summary>Javobni ko‘rish</summary><div class="answer"><b>Image</b> — tayyor shablon/paket, <b>container</b> — shu paketdan ishga tushgan jarayon.</div></details></div>
+</div>
+    <div class="lesson-ending"><div><div class="ending-kicker">DARS YAKUNI</div><p>Misollarni o‘zingiz bajarib ko‘ring. Tushunmaganingizni yozib, keyin darsni yakunlangan deb belgilang.</p></div><button class="complete-btn" type="button" data-complete="lugat">✓ O‘rgandim</button></div>
+    <div class="notes-zone"><label for="note-lugat">📝 Mening qaydlarim (shu brauzerda saqlanadi)</label><textarea class="notes" id="note-lugat" data-note="lugat" placeholder="Masalan: docker service ps — replica holatini ko‘rish uchun..." rows="3"></textarea><small>Qaydlar faqat shu brauzerda, shu fayl uchun saqlanadi; boshqa qurilmaga avtomatik ko‘chmaydi.</small></div>
+    <div class="lesson-nav"><button type="button" class="lesson-prev ghost-action">← Oldingi dars</button><button type="button" class="lesson-next primary-action">Keyingi dars →</button></div>
+    </section><section class="lesson" data-lesson="farq" id="lesson-farq">
+    <div class="lesson-breadcrumb">DARS 03 / 30 <span>•</span> Asoslar <span>•</span> taxminan 10 daqiqa</div>
+    <h1>Docker Run, Compose va Swarm</h1>
+    <div class="micro-summary"><span>💡</span><p><b>Esda qoladigan fikr:</b> Compose lokal, stack deploy Swarm cluster xizmatlari uchun.</p></div>
+    <div class="lesson-body">
+<p class="lead">Uchalasini bir xil deb o‘ylamang. Turli vazifalar uchun ishlatiladi.</p>
+<div class="table-wrap"><table><thead><tr><th>Buyruq</th><th>Nima qiladi?</th><th>Qachon qulay?</th></tr></thead><tbody><tr><td><code>docker run</code></td><td>Bitta container yaratadi</td><td>Tez sinash</td></tr><tr><td><code>docker compose up -d</code></td><td>Bir hostda bir nechta container</td><td>Lokal development</td></tr><tr><td><code>docker service create</code></td><td>Swarm’da bir service</td><td>Bir xizmatni boshqarish</td></tr><tr><td><code>docker stack deploy</code></td><td>Swarm’da ko‘p service’li stack</td><td>Deployment / production</td></tr></tbody></table></div>
+<div class="code-block"><div class="code-head"><span>Terminalga yozing</span><span class="lang">bash</span></div><pre><code># Bitta container
+docker run -d --name test-nginx -p 8090:80 nginx:alpine
+
+# Sinovdan so‘ng tozalang
+docker rm -f test-nginx</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<p>Compose’da <code>docker compose up</code> desangiz, Docker Swarm mode yoqilgan taqdirda ham bu buyruq service’larni cluster bo‘ylab joylashtirmaydi. Swarm uchun <code>docker stack deploy</code> ishlatiladi.</p>
+<div class="call warning"><strong>Muhim cheklov</strong><p><code>docker stack deploy</code> Compose formatidagi hamma yangi imkoniyatlarni bir xil qo‘llamaydi. Masalan, <code>build:</code> maydoni image yig‘ish uchun ishlatilmaydi. Avval image’ni <code>docker build</code> bilan yig‘ing.</p></div>
+<div class="practice"><div class="practice-tag">✍️ MUSTAQIL MASHQ</div><p>3 ta serverga bir nechta service’ni joylash uchun qaysi buyruq mos?</p><details><summary>Javobni ko‘rish</summary><div class="answer"><code>docker stack deploy -c stack.yml myapp</code>.</div></details></div>
+</div>
+    <div class="lesson-ending"><div><div class="ending-kicker">DARS YAKUNI</div><p>Misollarni o‘zingiz bajarib ko‘ring. Tushunmaganingizni yozib, keyin darsni yakunlangan deb belgilang.</p></div><button class="complete-btn" type="button" data-complete="farq">✓ O‘rgandim</button></div>
+    <div class="notes-zone"><label for="note-farq">📝 Mening qaydlarim (shu brauzerda saqlanadi)</label><textarea class="notes" id="note-farq" data-note="farq" placeholder="Masalan: docker service ps — replica holatini ko‘rish uchun..." rows="3"></textarea><small>Qaydlar faqat shu brauzerda, shu fayl uchun saqlanadi; boshqa qurilmaga avtomatik ko‘chmaydi.</small></div>
+    <div class="lesson-nav"><button type="button" class="lesson-prev ghost-action">← Oldingi dars</button><button type="button" class="lesson-next primary-action">Keyingi dars →</button></div>
+    </section><section class="lesson" data-lesson="tayyorgarlik" id="lesson-tayyorgarlik">
+    <div class="lesson-breadcrumb">DARS 04 / 30 <span>•</span> Asoslar <span>•</span> taxminan 11 daqiqa</div>
+    <h1>Kompyuterni tayyorlash (Windows/Linux)</h1>
+    <div class="micro-summary"><span>💡</span><p><b>Esda qoladigan fikr:</b> 1 host bilan boshlang; 3 host faqat cluster bo‘limida kerak.</p></div>
+    <div class="lesson-body">
+<p class="lead">Birinchi 15 ta laboratoriya uchun <b>1 ta kompyuter</b> yetadi. Haqiqiy multi-node darslari uchun 2–3 ta Linux VM yoki server kerak bo‘ladi.</p>
+<div class="two-cols"><div class="mini-panel"><b>Windows 11</b><p>Docker Desktop’ni o‘rnating, Linux container mode va Docker Engine ishga tushgan bo‘lsin. VS Code terminalida PowerShell orqali buyruqlarni bajara olasiz.</p><p>HTML fayllarni VS Code orqali yarating; Docker CLI esa terminaldan ishlaydi.</p></div><div class="mini-panel"><b>Ubuntu server</b><p>Docker Engine (server) va CLI o‘rnatilgan bo‘lishi kerak. SSH orqali kiring. Multi-node ishda barcha hostlar bir-biriga tarmoq orqali ulana olishi zarur.</p><p>Production’da Docker Engine uchun rasmiy install ko‘rsatmalaridan foydalaning.</p></div></div>
+<div class="code-block"><div class="code-head"><span>Ishga tayyormi?</span><span class="lang">powershell / bash</span></div><pre><code>docker --version
+docker info
+docker run --rm hello-world</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<h3>Natija qanday bo‘lishi kerak?</h3><p><code>hello-world</code> Docker image’ni olib, qisqa xabar chiqarib to‘xtaydi. <code>Cannot connect to the Docker daemon</code> chiqsa, Docker Desktop/Engine ishlamayapti yoki ulanishga ruxsat yo‘q.</p>
+<div class="call info"><strong>Windows haqidagi eslatma</strong><p>Bu darslarda buyruqlar Docker CLI yordamida bajariladi. <code>printf</code>, <code>cat</code> va <code>curl</code> kabi ayrim shell buyruqlari PowerShell’da farq qiladi. Fayl yaratishni VS Code’da qilsangiz, misollar ham Windows, ham Linux’da osonroq bo‘ladi.</p></div>
+<p><b>Rasmiy manba:</b> <a href="https://docs.docker.com/engine/install/" target="_blank" rel="noopener">Docker Engine o‘rnatish</a>.</p>
+<div class="practice"><div class="practice-tag">✍️ MUSTAQIL MASHQ</div><p>Docker Engine ishlashini tekshiruvchi ikkita buyruq yozing.</p><details><summary>Javobni ko‘rish</summary><div class="answer"><code>docker info</code> va <code>docker run --rm hello-world</code>.</div></details></div>
+</div>
+    <div class="lesson-ending"><div><div class="ending-kicker">DARS YAKUNI</div><p>Misollarni o‘zingiz bajarib ko‘ring. Tushunmaganingizni yozib, keyin darsni yakunlangan deb belgilang.</p></div><button class="complete-btn" type="button" data-complete="tayyorgarlik">✓ O‘rgandim</button></div>
+    <div class="notes-zone"><label for="note-tayyorgarlik">📝 Mening qaydlarim (shu brauzerda saqlanadi)</label><textarea class="notes" id="note-tayyorgarlik" data-note="tayyorgarlik" placeholder="Masalan: docker service ps — replica holatini ko‘rish uchun..." rows="3"></textarea><small>Qaydlar faqat shu brauzerda, shu fayl uchun saqlanadi; boshqa qurilmaga avtomatik ko‘chmaydi.</small></div>
+    <div class="lesson-nav"><button type="button" class="lesson-prev ghost-action">← Oldingi dars</button><button type="button" class="lesson-next primary-action">Keyingi dars →</button></div>
+    </section><section class="lesson" data-lesson="html-docker" id="lesson-html-docker">
+    <div class="lesson-breadcrumb">DARS 05 / 30 <span>•</span> Asoslar <span>•</span> taxminan 18 daqiqa</div>
+    <h1>1-laboratoriya: HTML saytni Dockerga joylash</h1>
+    <div class="micro-summary"><span>💡</span><p><b>Esda qoladigan fikr:</b> index.html + Dockerfile → image → browser; keyin eski konteynerni o‘chiring.</p></div>
+    <div class="lesson-body">
+<p class="lead">Bu kursning eng muhim boshlang‘ich amaliyoti: HTML yozamiz, image quramiz va <code>localhost:8080</code> orqali ko‘ramiz. <b>Hozir Swarm shart emas.</b></p>
+<h3>1-qadam. Papka yarating</h3>
+<div class="code-block"><div class="code-head"><span>Loyiha papkasi</span><span class="lang">powershell / bash</span></div><pre><code>mkdir swarm-lab</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<p>VS Code’da <code>swarm-lab</code> papkasini oching. Uning ichida quyidagi 2 ta fayl bo‘lsin:</p>
+<div class="file-tree">📁 swarm-lab<br>├── 📄 index.html<br>└── 📄 Dockerfile</div>
+<h3>2-qadam. index.html</h3>
+<div class="code-block"><div class="code-head"><span>index.html ichiga yozing</span><span class="lang">html</span></div><pre><code>&lt;!doctype html&gt;
+&lt;html lang=&quot;uz&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;utf-8&quot;&gt;
+  &lt;title&gt;Mening Swarm saytim&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Salom, Docker v1!&lt;/h1&gt;
+  &lt;p&gt;Bu oddiy HTML sayt.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<h3>3-qadam. Dockerfile</h3>
+<div class="code-block"><div class="code-head"><span>Dockerfile — kengaytmasiz fayl</span><span class="lang">dockerfile</span></div><pre><code>FROM nginx:alpine
+COPY index.html /usr/share/nginx/html/index.html</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<p><code>FROM</code> — tayyor nginx serveri asos bo‘ladi. <code>COPY</code> — siz yozgan HTML’ni nginx xizmat qiladigan papkaga qo‘yadi.</p>
+<h3>4-qadam. Image yarating va ishga tushiring</h3>
+<div class="code-block"><div class="code-head"><span>Terminalga yozing</span><span class="lang">powershell / bash</span></div><pre><code># Buyruqlarni swarm-lab ichida bajaring
+docker build -t swarm-web:v1 .
+docker run -d --name web-local -p 8080:80 swarm-web:v1
+
+docker ps</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<p>Endi brauzerda <a href="http://localhost:8080" target="_blank" rel="noopener">http://localhost:8080</a> ni oching. <b>Salom, Docker v1!</b> ko‘rinadi.</p>
+<div class="call info"><strong>8080:80 nimani anglatadi?</strong><p>Chapdagi <b>8080</b> — kompyuteringizdagi port, o‘ngdagi <b>80</b> — container ichidagi nginx porti.</p></div>
+<h3>5-qadam. Portni bo‘shating</h3>
+<div class="code-block"><div class="code-head"><span>Keyingi dars uchun kerak</span><span class="lang">powershell / bash</span></div><pre><code>docker stop web-local
+docker rm web-local</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<div class="practice"><div class="practice-tag">✍️ MUSTAQIL MASHQ</div><p>HTMLdagi matnni v2 ga o‘zgartirib, yangi image qurish uchun qanday buyruq kerak?</p><details><summary>Javobni ko‘rish</summary><div class="answer"><code>docker build -t swarm-web:v2 .</code>. Eslab qoling: image yangilangani bilan eski ishlayotgan container avtomatik almashmaydi.</div></details></div>
+</div>
+    <div class="lesson-ending"><div><div class="ending-kicker">DARS YAKUNI</div><p>Misollarni o‘zingiz bajarib ko‘ring. Tushunmaganingizni yozib, keyin darsni yakunlangan deb belgilang.</p></div><button class="complete-btn" type="button" data-complete="html-docker">✓ O‘rgandim</button></div>
+    <div class="notes-zone"><label for="note-html-docker">📝 Mening qaydlarim (shu brauzerda saqlanadi)</label><textarea class="notes" id="note-html-docker" data-note="html-docker" placeholder="Masalan: docker service ps — replica holatini ko‘rish uchun..." rows="3"></textarea><small>Qaydlar faqat shu brauzerda, shu fayl uchun saqlanadi; boshqa qurilmaga avtomatik ko‘chmaydi.</small></div>
+    <div class="lesson-nav"><button type="button" class="lesson-prev ghost-action">← Oldingi dars</button><button type="button" class="lesson-next primary-action">Keyingi dars →</button></div>
+    </section><section class="lesson" data-lesson="init" id="lesson-init">
+    <div class="lesson-breadcrumb">DARS 06 / 30 <span>•</span> Asoslar <span>•</span> taxminan 12 daqiqa</div>
+    <h1>2-laboratoriya: Swarm’ni yoqish</h1>
+    <div class="micro-summary"><span>💡</span><p><b>Esda qoladigan fikr:</b> Bitta host — bitta manager; Swarm’ni o‘rganish uchun yetarli.</p></div>
+    <div class="lesson-body">
+<p class="lead">Endi Docker Engine’ga “menga Swarm boshqaruvi ham kerak” deymiz. Bitta kompyuteringiz <b>manager</b> bo‘ladi.</p>
+<div class="code-block"><div class="code-head"><span>1 ta hostdagi oddiy Swarm</span><span class="lang">powershell / bash</span></div><pre><code>docker swarm init
+
+docker info
+docker node ls</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<h3>Nimani ko‘rasiz?</h3><p>Terminal <code>Swarm initialized</code> deb yozadi. <code>docker node ls</code> chiqishida bitta node va <code>Leader</code> kabi manager holati bo‘ladi. Demak, Swarm ishga tushdi.</p>
+<div class="call warning"><strong>IP bilan bog‘liq xato bo‘lsa</strong><p>Kompyuterda bir nechta tarmoq interfeysi bo‘lsa, <code>docker swarm init --advertise-addr &lt;HOST_IP&gt;</code> kerak bo‘lishi mumkin. Bu IP boshqa node’lardan ham kirish mumkin bo‘lgan host IP bo‘lishi kerak.</p></div>
+<div class="visual"><div class="node-graph"><div class="node manager"><b>🧭 Sizning kompyuteringiz</b><small>Manager • Swarm</small><span>Service’larni qayerda ishga tushirishni hal qiladi</span></div></div></div>
+<p>Manager ham odatda container ishlata oladi. Shuning uchun <b>1 ta manager’da ham 3 ta replica</b> qilishingiz mumkin, ammo bular hali 3 ta alohida server degani emas.</p>
+<div class="practice"><div class="practice-tag">✍️ MUSTAQIL MASHQ</div><p><code>docker swarm init</code> qaytadan bajarilganda “already part of a swarm” desa nima bo‘lgan?</p><details><summary>Javobni ko‘rish</summary><div class="answer">Swarm allaqachon yoqilgan. <code>docker info</code> va <code>docker node ls</code> bilan tekshiring. Oddiy davom etish uchun qayta <code>init</code> shart emas.</div></details></div>
+</div>
+    <div class="lesson-ending"><div><div class="ending-kicker">DARS YAKUNI</div><p>Misollarni o‘zingiz bajarib ko‘ring. Tushunmaganingizni yozib, keyin darsni yakunlangan deb belgilang.</p></div><button class="complete-btn" type="button" data-complete="init">✓ O‘rgandim</button></div>
+    <div class="notes-zone"><label for="note-init">📝 Mening qaydlarim (shu brauzerda saqlanadi)</label><textarea class="notes" id="note-init" data-note="init" placeholder="Masalan: docker service ps — replica holatini ko‘rish uchun..." rows="3"></textarea><small>Qaydlar faqat shu brauzerda, shu fayl uchun saqlanadi; boshqa qurilmaga avtomatik ko‘chmaydi.</small></div>
+    <div class="lesson-nav"><button type="button" class="lesson-prev ghost-action">← Oldingi dars</button><button type="button" class="lesson-next primary-action">Keyingi dars →</button></div>
+    </section><section class="lesson" data-lesson="service" id="lesson-service">
+    <div class="lesson-breadcrumb">DARS 07 / 30 <span>•</span> Asoslar <span>•</span> taxminan 15 daqiqa</div>
+    <h1>3-laboratoriya: Birinchi service</h1>
+    <div class="micro-summary"><span>💡</span><p><b>Esda qoladigan fikr:</b> Service — desired state; Swarm task’lar orqali saqlab turadi.</p></div>
+    <div class="lesson-body">
+<p class="lead">Bizning <code>swarm-web:v1</code> image’ni endi oddiy <code>docker run</code> emas, <b>Swarm service</b> sifatida ishga tushiramiz.</p>
+<div class="code-block"><div class="code-head"><span>Linux bash uchun ko‘p qatorli ko‘rinish</span><span class="lang">powershell / bash</span></div><pre><code>docker service create   --name web   --replicas 1   --publish published=8080,target=80   swarm-web:v1</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<div class="call info"><strong>PowerShell’da bitta qatorda bajaring</strong><p><code>docker service create --name web --replicas 1 --publish published=8080,target=80 swarm-web:v1</code>. Bash’ning <code>\</code> qator davom ettirish belgisi PowerShell’da bir xil ishlamaydi.</p></div>
+<h3>Natijani ko‘ring</h3>
+<div class="code-block"><div class="code-head"><span>Terminalga yozing</span><span class="lang">powershell / bash</span></div><pre><code>docker service ls
+docker service ps web
+docker ps</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<p><code>docker service ls</code> xizmatni ko‘rsatadi, masalan <code>1/1</code>. <code>docker service ps web</code> esa task’larni ko‘rsatadi. Sayt manzili yana <code>http://localhost:8080</code>.</p>
+<div class="visual"><div class="chain"><span>Service: web</span><i>→</i><span>Task: web.1</span><i>→</i><span>Container: nginx</span></div></div>
+<h3>Buyruqni bo‘laklarga ajratamiz</h3>
+<div class="table-wrap"><table><thead><tr><th>Qism</th><th>Ma’nosi</th></tr></thead><tbody><tr><td><code>--name web</code></td><td>Xizmat nomi</td></tr><tr><td><code>--replicas 1</code></td><td>Bitta ishlayotgan nusxa kerak</td></tr><tr><td><code>--publish ...</code></td><td>Tashqaridan 8080, container ichida 80</td></tr><tr><td><code>swarm-web:v1</code></td><td>Image nomi va versiyasi</td></tr></tbody></table></div>
+<div class="practice"><div class="practice-tag">✍️ MUSTAQIL MASHQ</div><p><code>docker run</code> bilan <code>docker service create</code> ning bosh farqi?</p><details><summary>Javobni ko‘rish</summary><div class="answer"><code>docker run</code> bitta container yaratadi; <code>docker service create</code> kerakli holatni belgilaydi va Swarm uni saqlashga harakat qiladi.</div></details></div>
+</div>
+    <div class="lesson-ending"><div><div class="ending-kicker">DARS YAKUNI</div><p>Misollarni o‘zingiz bajarib ko‘ring. Tushunmaganingizni yozib, keyin darsni yakunlangan deb belgilang.</p></div><button class="complete-btn" type="button" data-complete="service">✓ O‘rgandim</button></div>
+    <div class="notes-zone"><label for="note-service">📝 Mening qaydlarim (shu brauzerda saqlanadi)</label><textarea class="notes" id="note-service" data-note="service" placeholder="Masalan: docker service ps — replica holatini ko‘rish uchun..." rows="3"></textarea><small>Qaydlar faqat shu brauzerda, shu fayl uchun saqlanadi; boshqa qurilmaga avtomatik ko‘chmaydi.</small></div>
+    <div class="lesson-nav"><button type="button" class="lesson-prev ghost-action">← Oldingi dars</button><button type="button" class="lesson-next primary-action">Keyingi dars →</button></div>
+    </section><section class="lesson" data-lesson="replicas" id="lesson-replicas">
+    <div class="lesson-breadcrumb">DARS 08 / 30 <span>•</span> Asoslar <span>•</span> taxminan 13 daqiqa</div>
+    <h1>4-laboratoriya: Replica va scaling</h1>
+    <div class="micro-summary"><span>💡</span><p><b>Esda qoladigan fikr:</b> Scaling replica sonini o‘zgartiradi, serverlar sonini emas.</p></div>
+    <div class="lesson-body">
+<p class="lead">Tasavvur qiling, web servisga ko‘p odam kirdi. Bitta o‘rniga 3 ta nusxa ishlatmoqchisiz.</p>
+<div class="code-block"><div class="code-head"><span>Terminalga yozing</span><span class="lang">powershell / bash</span></div><pre><code>docker service scale web=3
+
+docker service ls
+docker service ps web</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<div class="visual"><div class="replica-grid"><div class="replica-label">SERVICE: web</div><div class="replica-item">📦 Replica 1</div><div class="replica-item">📦 Replica 2</div><div class="replica-item">📦 Replica 3</div></div><p class="diagram-caption">Uchtasi ham bitta serverda ishlashi mumkin. Boshqa node’lar qo‘shilsa, Swarm ularni turli node’larga rejalashtirishi mumkin.</p></div>
+<p>Swarm’ning <b>desired state</b> tushunchasi: siz 3 ta kerak deysiz; bittasi yiqilsa, scheduler uni qayta yaratishga harakat qiladi.</p>
+<div class="code-block"><div class="code-head"><span>Terminalga yozing</span><span class="lang">powershell / bash</span></div><pre><code># Endi 2 ta qilib kamaytiring
+docker service scale web=2
+
+docker service ps web</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<div class="call warning"><strong>Nimani kafolatlamaydi?</strong><p>3 ta replica avtomatik ravishda “3 baravar tez” yoki “3 ta mustaqil server” degani emas. Hamma container bitta serverda bo‘lsa, o‘sha server o‘chishi bilan hammasi ishlamay qoladi. Ilova stateless bo‘lishi ham muhim.</p></div>
+<div class="practice"><div class="practice-tag">✍️ MUSTAQIL MASHQ</div><p>Service’ni 5 nusxaga ko‘tarish uchun buyruqni yozing.</p><details><summary>Javobni ko‘rish</summary><div class="answer"><code>docker service scale web=5</code>.</div></details></div>
+</div>
+    <div class="lesson-ending"><div><div class="ending-kicker">DARS YAKUNI</div><p>Misollarni o‘zingiz bajarib ko‘ring. Tushunmaganingizni yozib, keyin darsni yakunlangan deb belgilang.</p></div><button class="complete-btn" type="button" data-complete="replicas">✓ O‘rgandim</button></div>
+    <div class="notes-zone"><label for="note-replicas">📝 Mening qaydlarim (shu brauzerda saqlanadi)</label><textarea class="notes" id="note-replicas" data-note="replicas" placeholder="Masalan: docker service ps — replica holatini ko‘rish uchun..." rows="3"></textarea><small>Qaydlar faqat shu brauzerda, shu fayl uchun saqlanadi; boshqa qurilmaga avtomatik ko‘chmaydi.</small></div>
+    <div class="lesson-nav"><button type="button" class="lesson-prev ghost-action">← Oldingi dars</button><button type="button" class="lesson-next primary-action">Keyingi dars →</button></div>
+    </section><section class="lesson" data-lesson="update" id="lesson-update">
+    <div class="lesson-breadcrumb">DARS 09 / 30 <span>•</span> Asoslar <span>•</span> taxminan 20 daqiqa</div>
+    <h1>5-laboratoriya: index.html o‘zgarsa nima qilamiz?</h1>
+    <div class="micro-summary"><span>💡</span><p><b>Esda qoladigan fikr:</b> Kod o‘zgarsa yangi image va yangi deployment kerak; git push yetarli emas.</p></div>
+    <div class="lesson-body">
+<p class="lead">Siz aynan shuni bilishingiz kerak: <b>ishlayotgan service’ga qo‘lda <code>index.html</code> nusxalash — to‘g‘ri release jarayoni emas.</b> Yangi image qurib, service image’ni yangilang.</p>
+<h3>1-qadam. index.html’dagi sarlavhani yangilang</h3>
+<div class="code-block"><div class="code-head"><span>Faqat h1 misoli; boshqa HTML kod qoladi</span><span class="lang">html</span></div><pre><code>&lt;h1&gt;Salom, Docker v2! Men Swarmni o‘rganyapman.&lt;/h1&gt;</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<h3>2-qadam. Image v2 ni yarating</h3>
+<div class="code-block"><div class="code-head"><span>Terminalga yozing</span><span class="lang">powershell / bash</span></div><pre><code>docker build -t swarm-web:v2 .
+docker images</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<p>Bu bosqich faqat yangi image yaratadi. <code>web</code> servisi hali <code>v1</code> bo‘lishi mumkin.</p>
+<h3>3-qadam. Service versiyasini almashtiring</h3>
+<div class="code-block"><div class="code-head"><span>Terminalga yozing</span><span class="lang">powershell / bash</span></div><pre><code>docker service update --image swarm-web:v2 web
+
+docker service ps web
+docker service inspect web --pretty</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<p>Yangi task’lar <code>v2</code> image’dan boshlanadi. Bir necha soniyadan so‘ng <code>http://localhost:8080</code> da yangi matn chiqadi.</p>
+<div class="visual"><div class="release-flow"><div><small>OLDIN</small><b>Image v1</b><span>Eski sayt</span></div><i>→ build → update →</i><div class="release-new"><small>KEYIN</small><b>Image v2</b><span>Yangi sayt</span></div></div></div>
+<h3>4-qadam. Biror muammo bo‘lsa rollback</h3>
+<div class="code-block"><div class="code-head"><span>Terminalga yozing</span><span class="lang">powershell / bash</span></div><pre><code>docker service update --rollback web
+
+docker service ps web</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<p>Bu service’ning oldingi update konfiguratsiyasiga qaytishga urinadi. Odatda v1 qaytadi. Keyingi darslarda avtomatik rollback sozlaymiz.</p>
+<div class="call danger"><strong>Eng ko‘p xato</strong><p><code>git push</code> yoki lokal <code>index.html</code> ni saqlash Swarm’dagi ishchi container’ni avtomatik yangilamaydi. Ketma-ketlik: <b>kod → build → registry (multi-node bo‘lsa) → service/stack update</b>.</p></div>
+<div class="practice"><div class="practice-tag">✍️ MUSTAQIL MASHQ</div><p>v3 chiqarmoqchisiz. Kamida 2 ta buyruqni ayting.</p><details><summary>Javobni ko‘rish</summary><div class="answer"><code>docker build -t swarm-web:v3 .</code> va <code>docker service update --image swarm-web:v3 web</code>. Multi-node cluster’da avval registry’ga push ham kerak.</div></details></div>
+</div>
+    <div class="lesson-ending"><div><div class="ending-kicker">DARS YAKUNI</div><p>Misollarni o‘zingiz bajarib ko‘ring. Tushunmaganingizni yozib, keyin darsni yakunlangan deb belgilang.</p></div><button class="complete-btn" type="button" data-complete="update">✓ O‘rgandim</button></div>
+    <div class="notes-zone"><label for="note-update">📝 Mening qaydlarim (shu brauzerda saqlanadi)</label><textarea class="notes" id="note-update" data-note="update" placeholder="Masalan: docker service ps — replica holatini ko‘rish uchun..." rows="3"></textarea><small>Qaydlar faqat shu brauzerda, shu fayl uchun saqlanadi; boshqa qurilmaga avtomatik ko‘chmaydi.</small></div>
+    <div class="lesson-nav"><button type="button" class="lesson-prev ghost-action">← Oldingi dars</button><button type="button" class="lesson-next primary-action">Keyingi dars →</button></div>
+    </section><section class="lesson" data-lesson="tekshirish" id="lesson-tekshirish">
+    <div class="lesson-breadcrumb">DARS 10 / 30 <span>•</span> Asoslar <span>•</span> taxminan 13 daqiqa</div>
+    <h1>6-laboratoriya: Log va xatolarni ko‘rish</h1>
+    <div class="micro-summary"><span>💡</span><p><b>Esda qoladigan fikr:</b> Avval service ls → service ps → logs → inspect yo‘li bilan tekshiring.</p></div>
+    <div class="lesson-body">
+<p class="lead">Production’da “service ishlamayapti” deganda qayerdan boshlashni biling.</p>
+<div class="code-block"><div class="code-head"><span>Terminalga yozing</span><span class="lang">powershell / bash</span></div><pre><code>docker service ls
+docker service ps --no-trunc web
+docker service logs --tail 50 web
+docker service inspect web --pretty
+docker node ls</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<div class="table-wrap"><table><thead><tr><th>Muammo</th><th>Birinchi tekshiruv</th></tr></thead><tbody><tr><td>Service 0/3 ko‘rsatadi</td><td><code>docker service ps --no-trunc web</code></td></tr><tr><td>Xato loglarni ko‘rish</td><td><code>docker service logs web</code></td></tr><tr><td>Service sozlamalarini ko‘rish</td><td><code>docker service inspect web --pretty</code></td></tr><tr><td>Container qayerda?</td><td><code>docker service ps web</code> → NODE</td></tr><tr><td>Host konteyneri</td><td>O‘sha hostda <code>docker ps</code></td></tr></tbody></table></div>
+<div class="call info"><strong>docker ps nega yetarli emas?</strong><p><code>docker ps</code> faqat joriy hostdagi konteynerlarni ko‘rsatadi. <code>docker service ps</code> Swarm bo‘yicha task’lar holatini manager’dan ko‘rsatadi.</p></div>
+<p>Loglar ilova <code>stdout/stderr</code> ga yozsa va mos logging driver bo‘lsa ko‘rinadi. Node yo‘qolganida yoki maxsus logging tizimlarida qo‘shimcha observability kerak bo‘ladi.</p>
+<div class="practice"><div class="practice-tag">✍️ MUSTAQIL MASHQ</div><p>Nega 3 worker node bo‘lgan klasterda manager’dagi docker ps faqat 0 ta web konteyner ko‘rsatishi mumkin?</p><details><summary>Javobni ko‘rish</summary><div class="answer">Chunki task’lar boshqa worker node’larda ishlayotgan bo‘lishi mumkin. <code>docker service ps web</code> dan node’ni toping.</div></details></div>
+</div>
+    <div class="lesson-ending"><div><div class="ending-kicker">DARS YAKUNI</div><p>Misollarni o‘zingiz bajarib ko‘ring. Tushunmaganingizni yozib, keyin darsni yakunlangan deb belgilang.</p></div><button class="complete-btn" type="button" data-complete="tekshirish">✓ O‘rgandim</button></div>
+    <div class="notes-zone"><label for="note-tekshirish">📝 Mening qaydlarim (shu brauzerda saqlanadi)</label><textarea class="notes" id="note-tekshirish" data-note="tekshirish" placeholder="Masalan: docker service ps — replica holatini ko‘rish uchun..." rows="3"></textarea><small>Qaydlar faqat shu brauzerda, shu fayl uchun saqlanadi; boshqa qurilmaga avtomatik ko‘chmaydi.</small></div>
+    <div class="lesson-nav"><button type="button" class="lesson-prev ghost-action">← Oldingi dars</button><button type="button" class="lesson-next primary-action">Keyingi dars →</button></div>
+    </section><section class="lesson" data-lesson="stack" id="lesson-stack">
+    <div class="lesson-breadcrumb">DARS 11 / 30 <span>•</span> Oraliq <span>•</span> taxminan 19 daqiqa</div>
+    <h1>7-laboratoriya: stack.yml bilan birinchi deploy</h1>
+    <div class="micro-summary"><span>💡</span><p><b>Esda qoladigan fikr:</b> YAML + stack deploy — takrorlanadigan deployment; stack servislarga prefix qo‘shadi.</p></div>
+    <div class="lesson-body">
+<p class="lead">Har safar uzun <code>docker service create</code> yozish o‘rniga barcha sozlamalarni YAML faylida saqlaymiz.</p>
+<div class="call warning"><strong>Avval 8080 portini bo‘shating</strong><p>Oldingi <code>web</code> service hali 8080 portni ishlatayotgan bo‘lishi mumkin. <code>docker service rm web</code> ni bajaring, keyin stack’ni deploy qiling.</p></div>
+<h3>1-qadam. stack.yml faylini yarating</h3>
+<div class="code-block"><div class="code-head"><span>stack.yml</span><span class="lang">yaml</span></div><pre><code>version: &quot;3.8&quot;
+services:
+  web:
+    image: swarm-web:v2
+    ports:
+      - &quot;8080:80&quot;
+    deploy:
+      replicas: 3
+      update_config:
+        parallelism: 1
+        delay: 5s
+        order: start-first
+      restart_policy:
+        condition: any</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<h3>2-qadam. Deploy qiling</h3>
+<div class="code-block"><div class="code-head"><span>Terminalga yozing</span><span class="lang">powershell / bash</span></div><pre><code>docker service rm web
+docker stack deploy -c stack.yml demo
+
+docker stack ls
+docker stack services demo
+docker stack ps demo</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<p>Swarm stack nomini prefix sifatida qo‘shadi: <code>demo_web</code>. Sayt <code>http://localhost:8080</code> da ishlaydi.</p>
+<h3>3-qadam. Replica sonini o‘zgartiring</h3><p><code>replicas: 3</code> ni <code>replicas: 4</code> ga almashtirib, shu buyruqni takrorlang:</p>
+<div class="code-block"><div class="code-head"><span>Terminalga yozing</span><span class="lang">powershell / bash</span></div><pre><code>docker stack deploy -c stack.yml demo
+docker stack services demo</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<h3>4-qadam. Yangi image uchun</h3><p>Yangi image yaratib, <code>image: swarm-web:v3</code> deb yozing va <code>docker stack deploy</code> ni qayta bajaring. <b>Build</b> va <b>deploy</b> alohida bosqichlar.</p>
+<div class="call info"><strong>Compose format cheklovi</strong><p>Swarm <code>docker stack deploy</code> Compose faylining legacy v3 imkoniyatlarini ishlatadi; barcha zamonaviy Compose kalitlari qo‘llanmaydi. <code>build:</code> stack deployment paytida image yig‘maydi.</p></div>
+<div class="practice"><div class="practice-tag">✍️ MUSTAQIL MASHQ</div><p>Nega <code>docker service logs web</code> endi ishlamasligi mumkin?</p><details><summary>Javobni ko‘rish</summary><div class="answer">Stack servisga <code>demo_web</code> nomini beradi. <code>docker service logs demo_web</code> deb yozing.</div></details></div>
+</div>
+    <div class="lesson-ending"><div><div class="ending-kicker">DARS YAKUNI</div><p>Misollarni o‘zingiz bajarib ko‘ring. Tushunmaganingizni yozib, keyin darsni yakunlangan deb belgilang.</p></div><button class="complete-btn" type="button" data-complete="stack">✓ O‘rgandim</button></div>
+    <div class="notes-zone"><label for="note-stack">📝 Mening qaydlarim (shu brauzerda saqlanadi)</label><textarea class="notes" id="note-stack" data-note="stack" placeholder="Masalan: docker service ps — replica holatini ko‘rish uchun..." rows="3"></textarea><small>Qaydlar faqat shu brauzerda, shu fayl uchun saqlanadi; boshqa qurilmaga avtomatik ko‘chmaydi.</small></div>
+    <div class="lesson-nav"><button type="button" class="lesson-prev ghost-action">← Oldingi dars</button><button type="button" class="lesson-next primary-action">Keyingi dars →</button></div>
+    </section><section class="lesson" data-lesson="yaml" id="lesson-yaml">
+    <div class="lesson-breadcrumb">DARS 12 / 30 <span>•</span> Oraliq <span>•</span> taxminan 14 daqiqa</div>
+    <h1>8-laboratoriya: YAML’ni o‘qishni o‘rganamiz</h1>
+    <div class="micro-summary"><span>💡</span><p><b>Esda qoladigan fikr:</b> YAML bo‘shliqlarga sezgir; deploy sozlamalari deploy: ichida.</p></div>
+    <div class="lesson-body">
+<p class="lead"><code>stack.yml</code> — oddiy matn fayl. Eng muhim qoidasi: <b>bo‘sh joy (indentation)</b> tuzilmani bildiradi. Tab emas, space ishlating.</p>
+<div class="code-block"><div class="code-head"><span>Minimal misol</span><span class="lang">yaml</span></div><pre><code>version: &quot;3.8&quot;
+services:
+  web:
+    image: nginx:alpine
+    ports:
+      - &quot;8080:80&quot;
+    environment:
+      APP_ENV: production
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: &quot;0.50&quot;
+          memory: 128M</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<div class="table-wrap"><table><thead><tr><th>Kalit</th><th>Ma’nosi</th></tr></thead><tbody><tr><td><code>services</code></td><td>Qaysi xizmatlar bor?</td></tr><tr><td><code>image</code></td><td>Qaysi tayyor image ishlaydi?</td></tr><tr><td><code>ports</code></td><td>Qaysi port orqali kiramiz?</td></tr><tr><td><code>environment</code></td><td>Oddiy muhit o‘zgaruvchilari</td></tr><tr><td><code>deploy.replicas</code></td><td>Nechta nusxa kerak?</td></tr><tr><td><code>resources.limits</code></td><td>CPU/RAM iste’moli limiti</td></tr></tbody></table></div>
+<div class="code-block"><div class="code-head"><span>Deploy’dan oldin tekshiring</span><span class="lang">powershell / bash</span></div><pre><code># YAML qiymatlarini tekshirib ko‘rish
+docker stack config -c stack.yml</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<p><code>docker stack config</code> faylni parse qilib, yakuniy shaklini ko‘rsatadi. Biroq bu ishga tushishiga 100% kafolat emas: image, port, resurs va node’larni ham tekshirish kerak.</p>
+<div class="call warning"><strong>YAML sintaksisi</strong><p><code>replicas</code> noto‘g‘ri joyga qo‘yilsa yoki <code>ports</code> indentatsiyasi buzilsa, Docker xato qaytaradi. VS Code YAML extension yordam beradi.</p></div>
+<div class="practice"><div class="practice-tag">✍️ MUSTAQIL MASHQ</div><p>YAML orqali web xizmatining nusxasini 5 ta qilish uchun qaysi qator o‘zgaradi?</p><details><summary>Javobni ko‘rish</summary><div class="answer"><code>services.web.deploy.replicas: 5</code>. So‘ng <code>docker stack deploy -c stack.yml demo</code>.</div></details></div>
+</div>
+    <div class="lesson-ending"><div><div class="ending-kicker">DARS YAKUNI</div><p>Misollarni o‘zingiz bajarib ko‘ring. Tushunmaganingizni yozib, keyin darsni yakunlangan deb belgilang.</p></div><button class="complete-btn" type="button" data-complete="yaml">✓ O‘rgandim</button></div>
+    <div class="notes-zone"><label for="note-yaml">📝 Mening qaydlarim (shu brauzerda saqlanadi)</label><textarea class="notes" id="note-yaml" data-note="yaml" placeholder="Masalan: docker service ps — replica holatini ko‘rish uchun..." rows="3"></textarea><small>Qaydlar faqat shu brauzerda, shu fayl uchun saqlanadi; boshqa qurilmaga avtomatik ko‘chmaydi.</small></div>
+    <div class="lesson-nav"><button type="button" class="lesson-prev ghost-action">← Oldingi dars</button><button type="button" class="lesson-next primary-action">Keyingi dars →</button></div>
+    </section><section class="lesson" data-lesson="updaterollback" id="lesson-updaterollback">
+    <div class="lesson-breadcrumb">DARS 13 / 30 <span>•</span> Oraliq <span>•</span> taxminan 17 daqiqa</div>
+    <h1>9-laboratoriya: Rolling update va rollback</h1>
+    <div class="micro-summary"><span>💡</span><p><b>Esda qoladigan fikr:</b> Rolling update xizmatni bosqichma-bosqich almashtiradi; rollback oldingi konfiguratsiyaga qaytadi.</p></div>
+    <div class="lesson-body">
+<p class="lead">5 ta replica ishlayapti deb o‘ylang. Hammasini bir zumda to‘xtatib yangilash o‘rniga ketma-ket almashtirasiz. Bu <b>rolling update</b>.</p>
+<div class="code-block"><div class="code-head"><span>stack.yml ichida web servisining deploy qismi</span><span class="lang">yaml</span></div><pre><code>deploy:
+  replicas: 5
+  update_config:
+    parallelism: 1
+    delay: 10s
+    order: start-first
+    failure_action: rollback
+    monitor: 20s
+  rollback_config:
+    parallelism: 1
+    delay: 5s
+    order: start-first</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<div class="visual"><div class="roll-grid"><div class="roll-r"><span>1-bosqich</span><i class="old">v1</i><i class="old">v1</i><i class="old">v1</i><i class="old">v1</i><i class="new">v2</i></div><div class="roll-r"><span>2-bosqich</span><i class="old">v1</i><i class="old">v1</i><i class="old">v1</i><i class="new">v2</i><i class="new">v2</i></div><div class="roll-r"><span>... yakun</span><i class="new">v2</i><i class="new">v2</i><i class="new">v2</i><i class="new">v2</i><i class="new">v2</i></div></div><p class="diagram-caption">Sxema tushuntirish uchun soddalashtirilgan: task’lar real holatda vaqti-vaqti bilan overlap qilishi mumkin.</p></div>
+<div class="table-wrap"><table><thead><tr><th>Sozlama</th><th>Nima qiladi?</th></tr></thead><tbody><tr><td>parallelism: 1</td><td>Bir paytda bitta task yangilanadi</td></tr><tr><td>delay: 10s</td><td>Partiyalar o‘rtasidagi kutish</td></tr><tr><td>order: start-first</td><td>Yangisini oldin boshlashga harakat qiladi</td></tr><tr><td>failure_action: rollback</td><td>Update muvaffaqiyatsiz bo‘lsa avvalgi konfiguratsiyaga qaytadi</td></tr><tr><td>monitor: 20s</td><td>Task update’idan keyingi xatolarni kuzatish oynasi</td></tr></tbody></table></div>
+<h3>Amalda</h3>
+<div class="code-block"><div class="code-head"><span>Terminalga yozing</span><span class="lang">powershell / bash</span></div><pre><code># stack.yml image tagini v3 ga almashtirgach:
+docker stack deploy -c stack.yml demo
+
+docker service ps demo_web
+
+# Qo‘lda qaytarish kerak bo‘lsa:
+docker service update --rollback demo_web</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<div class="call danger"><strong>Zero downtime haqida</strong><p><code>start-first</code> va replica’lar borligi o‘zi uzluksizlikni kafolatlamaydi. Readiness, healthcheck, yetarli resurs, tarmoq va ilova to‘g‘ri shutdown qilishini ham hisobga oling. Bitta replica + database migration ko‘pincha xavfliroq.</p></div>
+<div class="practice"><div class="practice-tag">✍️ MUSTAQIL MASHQ</div><p>5 replica, parallelism 1 bo‘lsa bir vaqtda nechta task yangilanadi?</p><details><summary>Javobni ko‘rish</summary><div class="answer">Bittadan. <code>start-first</code> holatida yangi va eski task qisqa vaqt birga mavjud bo‘lishi mumkin.</div></details></div>
+</div>
+    <div class="lesson-ending"><div><div class="ending-kicker">DARS YAKUNI</div><p>Misollarni o‘zingiz bajarib ko‘ring. Tushunmaganingizni yozib, keyin darsni yakunlangan deb belgilang.</p></div><button class="complete-btn" type="button" data-complete="updaterollback">✓ O‘rgandim</button></div>
+    <div class="notes-zone"><label for="note-updaterollback">📝 Mening qaydlarim (shu brauzerda saqlanadi)</label><textarea class="notes" id="note-updaterollback" data-note="updaterollback" placeholder="Masalan: docker service ps — replica holatini ko‘rish uchun..." rows="3"></textarea><small>Qaydlar faqat shu brauzerda, shu fayl uchun saqlanadi; boshqa qurilmaga avtomatik ko‘chmaydi.</small></div>
+    <div class="lesson-nav"><button type="button" class="lesson-prev ghost-action">← Oldingi dars</button><button type="button" class="lesson-next primary-action">Keyingi dars →</button></div>
+    </section><section class="lesson" data-lesson="registry" id="lesson-registry">
+    <div class="lesson-breadcrumb">DARS 14 / 30 <span>•</span> Oraliq <span>•</span> taxminan 19 daqiqa</div>
+    <h1>10-laboratoriya: Registry va boshqa serverdagi image</h1>
+    <div class="micro-summary"><span>💡</span><p><b>Esda qoladigan fikr:</b> Multi-node uchun image’ni registry’da saqlang, aniq release tag ishlating.</p></div>
+    <div class="lesson-body">
+<p class="lead">Siz lokal kompyuterda <code>swarm-web:v3</code> yig‘dingiz. Boshqa server bu image’ni <b>ko‘ra olmaydi</b>. Uni umumiy registry’ga joylash kerak.</p>
+<div class="visual"><div class="diagram-cards"><div class="diagram-card"><b>💻 Developer</b><small>docker build</small></div><div class="diagram-arrow">→</div><div class="diagram-card selected"><b>☁️ Registry</b><small>docker push</small></div><div class="diagram-arrow">→</div><div class="diagram-card"><b>🖥️ Worker</b><small>docker pull</small></div></div></div>
+<h3>Docker Hub orqali amaliy misol</h3><p>Quyidagi <code>YOUR_DOCKERHUB_USER</code> o‘rniga o‘z profilingizni yozing. Docker Hub’dagi repository va huquqlarni oldindan sozlang.</p>
+<div class="code-block"><div class="code-head"><span>Linux bash: image push va service update</span><span class="lang">powershell / bash</span></div><pre><code>docker login
+
+docker build -t YOUR_DOCKERHUB_USER/swarm-web:v3 .
+docker push YOUR_DOCKERHUB_USER/swarm-web:v3
+
+docker service update   --image YOUR_DOCKERHUB_USER/swarm-web:v3   demo_web</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<p>PowerShell’da oxirgi buyruqni bir qatorda yozing: <code>docker service update --image YOUR_DOCKERHUB_USER/swarm-web:v3 demo_web</code>.</p>
+<h3>Stack orqali yaxshiroq</h3><p><code>stack.yml</code> dagi image qiymatini to‘liq yozing: <code>YOUR_DOCKERHUB_USER/swarm-web:v3</code>. Keyin:</p>
+<div class="code-block"><div class="code-head"><span>Registry’dan image ishlatadigan stack</span><span class="lang">powershell / bash</span></div><pre><code>docker stack deploy -c stack.yml demo</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<div class="call warning"><strong>Private registry</strong><p>Private repository bo‘lsa har bir node uchun registry credential masalasini hal qiling. <code>docker stack deploy --with-registry-auth -c stack.yml demo</code> credential’ni Swarm agentlariga uzatishi mumkin; token va CI secret’larini xavfsiz boshqaring.</p></div>
+<h3>Versiyalash qoidasi</h3><p><code>v3</code> yoki Git commit SHA kabi <b>o‘zgarmas release tag</b> ishlating. Faqat <code>latest</code> ga suyanish qaysi image release’ga kirganini aniqlashni qiyinlashtiradi. Juda muhim deploy’da digest (<code>@sha256:…</code>) bilan pin qilish ham mumkin.</p>
+<div class="practice"><div class="practice-tag">✍️ MUSTAQIL MASHQ</div><p>Nega <code>docker build -t swarm-web:v3 .</code> boshqa worker’da tayyor image borligini anglatmaydi?</p><details><summary>Javobni ko‘rish</summary><div class="answer">Image faqat o‘sha Docker daemon saqlash joyiga yoziladi. Boshqa node registry’dan pull qilishi uchun image’ni push qilish kerak.</div></details></div>
+</div>
+    <div class="lesson-ending"><div><div class="ending-kicker">DARS YAKUNI</div><p>Misollarni o‘zingiz bajarib ko‘ring. Tushunmaganingizni yozib, keyin darsni yakunlangan deb belgilang.</p></div><button class="complete-btn" type="button" data-complete="registry">✓ O‘rgandim</button></div>
+    <div class="notes-zone"><label for="note-registry">📝 Mening qaydlarim (shu brauzerda saqlanadi)</label><textarea class="notes" id="note-registry" data-note="registry" placeholder="Masalan: docker service ps — replica holatini ko‘rish uchun..." rows="3"></textarea><small>Qaydlar faqat shu brauzerda, shu fayl uchun saqlanadi; boshqa qurilmaga avtomatik ko‘chmaydi.</small></div>
+    <div class="lesson-nav"><button type="button" class="lesson-prev ghost-action">← Oldingi dars</button><button type="button" class="lesson-next primary-action">Keyingi dars →</button></div>
+    </section><section class="lesson" data-lesson="multinode" id="lesson-multinode">
+    <div class="lesson-breadcrumb">DARS 15 / 30 <span>•</span> Oraliq <span>•</span> taxminan 23 daqiqa</div>
+    <h1>11-laboratoriya: 3 ta serverdan Swarm qurish</h1>
+    <div class="micro-summary"><span>💡</span><p><b>Esda qoladigan fikr:</b> Manager rejalashtiradi, worker bajaradi; 2377/7946/4789 portlari node’lar orasida kerak.</p></div>
+    <div class="lesson-body">
+<p class="lead">Endi haqiqiy cluster. Faraz qilamiz: bitta manager va ikkita worker — bular <b>alohida Linux host/VM</b>. Bir-birini IP orqali ko‘ra olishi kerak.</p>
+<div class="visual"><div class="node-graph multi"><div class="node manager"><b>manager1</b><small>10.0.0.10</small><span>Qaror qiladi + container ishlatishi mumkin</span></div><div class="node worker"><b>worker1</b><small>10.0.0.11</small><span>Container’larni ishlatadi</span></div><div class="node worker"><b>worker2</b><small>10.0.0.12</small><span>Container’larni ishlatadi</span></div></div></div>
+<p><i>10.0.0.x</i> — faqat misol IP. O‘zingizning haqiqiy, node’lardan ulanish mumkin bo‘lgan private IP’lardan foydalaning.</p>
+<h3>1. Har bir hostda Docker Engine o‘rnatilgan bo‘lsin</h3>
+<div class="code-block"><div class="code-head"><span>Uchala hostda ham</span><span class="lang">bash</span></div><pre><code>docker version
+docker info</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<h3>2. manager1’da Swarm yarating</h3>
+<div class="code-block"><div class="code-head"><span>FAQAT manager1</span><span class="lang">bash</span></div><pre><code>docker swarm init --advertise-addr 10.0.0.10
+
+docker swarm join-token worker</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<p>Ikkinchi buyruq worker ulanish tokenini va <code>docker swarm join ...</code> buyruqni chiqaradi. <b>Tokenni boshqalarga yubormang.</b></p>
+<h3>3. worker1 va worker2’da ulanish</h3>
+<div class="code-block"><div class="code-head"><span>Har bir WORKER hostida</span><span class="lang">bash</span></div><pre><code># Bu BUYRUQ SHABLON: haqiqiy tokenni manager’dan oling
+docker swarm join --token &amp;lt;WORKER_TOKEN&amp;gt; 10.0.0.10:2377</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<h3>4. manager1’dan tekshiring</h3>
+<div class="code-block"><div class="code-head"><span>Terminalga yozing</span><span class="lang">bash</span></div><pre><code>docker node ls
+
+docker service create --name cluster-web   --replicas 3   --publish published=8081,target=80   nginx:alpine
+
+docker service ps cluster-web</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<p>Uch node orasida task’lar tarqalishi mumkin, lekin teng taqsimlanishi kafolat emas. <code>docker service ps cluster-web</code> qaysi task qaysi node’da ekanini ko‘rsatadi.</p>
+<h3>Swarm node’lar uchun portlar</h3>
+<div class="table-wrap"><table><thead><tr><th>Port</th><th>Protokol</th><th>Maqsad</th></tr></thead><tbody><tr><td>2377</td><td>TCP</td><td>Manager boshqaruvi / node qo‘shish</td></tr><tr><td>7946</td><td>TCP va UDP</td><td>Node/container discovery</td></tr><tr><td>4789</td><td>UDP</td><td>Overlay VXLAN data path</td></tr></tbody></table></div>
+<div class="call danger"><strong>Xavfsizlik</strong><p>Ushbu cluster portlarini internetdagi hamma uchun ochmang. Ayniqsa 4789/UDP faqat ishonchli private/VPN tarmoqqa ruxsat etilsin. Ehtiyoj bo‘lsa shifrlangan overlay tarmoq yarating.</p></div>
+<div class="practice"><div class="practice-tag">✍️ MUSTAQIL MASHQ</div><p>Worker 10.0.0.10:2377 ga ulana olmasa nimani tekshirasiz?</p><details><summary>Javobni ko‘rish</summary><div class="answer">Manager IP, Docker Engine, host/VPC firewall, routing va 2377/TCP. Qo‘shimcha overlay uchun 7946/TCP+UDP hamda 4789/UDP kerak.</div></details></div>
+</div>
+    <div class="lesson-ending"><div><div class="ending-kicker">DARS YAKUNI</div><p>Misollarni o‘zingiz bajarib ko‘ring. Tushunmaganingizni yozib, keyin darsni yakunlangan deb belgilang.</p></div><button class="complete-btn" type="button" data-complete="multinode">✓ O‘rgandim</button></div>
+    <div class="notes-zone"><label for="note-multinode">📝 Mening qaydlarim (shu brauzerda saqlanadi)</label><textarea class="notes" id="note-multinode" data-note="multinode" placeholder="Masalan: docker service ps — replica holatini ko‘rish uchun..." rows="3"></textarea><small>Qaydlar faqat shu brauzerda, shu fayl uchun saqlanadi; boshqa qurilmaga avtomatik ko‘chmaydi.</small></div>
+    <div class="lesson-nav"><button type="button" class="lesson-prev ghost-action">← Oldingi dars</button><button type="button" class="lesson-next primary-action">Keyingi dars →</button></div>
+    </section><section class="lesson" data-lesson="network" id="lesson-network">
+    <div class="lesson-breadcrumb">DARS 16 / 30 <span>•</span> Oraliq <span>•</span> taxminan 20 daqiqa</div>
+    <h1>12-laboratoriya: Overlay, ingress va DNS</h1>
+    <div class="micro-summary"><span>💡</span><p><b>Esda qoladigan fikr:</b> Overlay node’lararo tarmoq; ingress published portlarni yo‘naltiradi; service DNS nomlari ishlaydi.</p></div>
+    <div class="lesson-body">
+<p class="lead">Masalan <code>frontend</code> va <code>api</code> turli serverda ishlaydi. Ular bir-biriga qanday ulanadi? Swarm <b>overlay network</b> va <b>service DNS</b> beradi.</p>
+<div class="code-block"><div class="code-head"><span>Terminalga yozing</span><span class="lang">bash</span></div><pre><code>docker network create --driver overlay appnet
+
+docker network ls</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<p>Bu <code>appnet</code> tarmog‘iga bir nechta service ulanadi. Bir tarmoqdagi service boshqa service’ni <b>nomi orqali</b> topa oladi.</p>
+<div class="code-block"><div class="code-head"><span>Manager terminalida</span><span class="lang">bash</span></div><pre><code>docker service create --name api   --network appnet   nginx:alpine
+
+docker service create --name frontend   --network appnet   --publish published=8082,target=80   nginx:alpine
+
+docker service ls</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<div class="visual"><div class="network-diagram"><span>🌍 Brauzer</span><i>→ :8082 →</i><span class="net-node">Frontend</span><i>↔ appnet ↔</i><span class="net-node">API</span></div><p class="diagram-caption">API’ga public port qo‘ymasangiz ham frontend shu overlay’da <code>http://api:80</code> orqali murojaat qilishi mumkin. Nginx avtomatik proxy qilmaydi; buning uchun frontend konfiguratsiyasi kerak.</p></div>
+<h3>Ingress routing mesh</h3><p>Service portini Swarm’da ingress rejimida publish qilganingizda <b>biror worker’da o‘sha service task’i bo‘lmasa ham</b> uning node IP:port manziliga kelgan trafik mavjud task’ga marshrutlanishi mumkin.</p>
+<div class="call info"><strong>Public va internal farqi</strong><p><code>frontend</code> uchun <code>8082:80</code> publish qilindi. <code>api</code> uchun tashqi port ochilmadi. Bu alohida internal xizmatlarni public internetga chiqarib yubormaslikka yordam beradi.</p></div>
+<h3>Amaliy tozalash</h3>
+<div class="code-block"><div class="code-head"><span>Terminalga yozing</span><span class="lang">bash</span></div><pre><code>docker service rm frontend api
+docker network rm appnet</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<div class="practice"><div class="practice-tag">✍️ MUSTAQIL MASHQ</div><p>Frontend va api bitta overlay network’da bo‘lsa, API IP manzilini hardcode qilish kerakmi?</p><details><summary>Javobni ko‘rish</summary><div class="answer">Yo‘q, service nomi: <code>http://api:80</code>. Stack ichida ko‘pincha <code>http://api:PORT</code> degan DNS ishlaydi.</div></details></div>
+</div>
+    <div class="lesson-ending"><div><div class="ending-kicker">DARS YAKUNI</div><p>Misollarni o‘zingiz bajarib ko‘ring. Tushunmaganingizni yozib, keyin darsni yakunlangan deb belgilang.</p></div><button class="complete-btn" type="button" data-complete="network">✓ O‘rgandim</button></div>
+    <div class="notes-zone"><label for="note-network">📝 Mening qaydlarim (shu brauzerda saqlanadi)</label><textarea class="notes" id="note-network" data-note="network" placeholder="Masalan: docker service ps — replica holatini ko‘rish uchun..." rows="3"></textarea><small>Qaydlar faqat shu brauzerda, shu fayl uchun saqlanadi; boshqa qurilmaga avtomatik ko‘chmaydi.</small></div>
+    <div class="lesson-nav"><button type="button" class="lesson-prev ghost-action">← Oldingi dars</button><button type="button" class="lesson-next primary-action">Keyingi dars →</button></div>
+    </section><section class="lesson" data-lesson="go-api" id="lesson-go-api">
+    <div class="lesson-breadcrumb">DARS 17 / 30 <span>•</span> Oraliq <span>•</span> taxminan 23 daqiqa</div>
+    <h1>13-laboratoriya: Go API’ni Swarm’da ishga tushirish</h1>
+    <div class="micro-summary"><span>💡</span><p><b>Esda qoladigan fikr:</b> Go HTTP serverni ham Docker image → Swarm service tarzida deploy qilasiz.</p></div>
+    <div class="lesson-body">
+<p class="lead">HTML’dan keyingi mantiqiy bosqich: <b>Go backend</b>. Tashqi dependency ishlatmasdan ishlaydigan oddiy HTTP API qilamiz.</p>
+<div class="file-tree">📁 go-swarm-api<br>├── 📄 main.go<br>└── 📄 Dockerfile</div>
+<h3>main.go</h3>
+<div class="code-block"><div class="code-head"><span>Terminalga yozing</span><span class="lang">go</span></div><pre><code>package main
+
+import (
+    &quot;encoding/json&quot;
+    &quot;log&quot;
+    &quot;net/http&quot;
+    &quot;os&quot;
+)
+
+func main() {
+    mux := http.NewServeMux()
+
+    mux.HandleFunc(&quot;/health&quot;, func(w http.ResponseWriter, r *http.Request) {
+        w.WriteHeader(http.StatusOK)
+        w.Write([]byte(&quot;ok&quot;))
+    })
+
+    mux.HandleFunc(&quot;/api/hello&quot;, func(w http.ResponseWriter, r *http.Request) {
+        w.Header().Set(&quot;Content-Type&quot;, &quot;application/json&quot;)
+        host, _ := os.Hostname()
+        json.NewEncoder(w).Encode(map[string]string{
+            &quot;message&quot;: &quot;Salom, Swarm!&quot;,
+            &quot;hostname&quot;: host,
+        })
+    })
+
+    log.Println(&quot;API listening on :8080&quot;)
+    log.Fatal(http.ListenAndServe(&quot;:8080&quot;, mux))
+}</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<h3>Dockerfile</h3>
+<div class="code-block"><div class="code-head"><span>Terminalga yozing</span><span class="lang">dockerfile</span></div><pre><code>FROM golang:1.25-alpine AS builder
+WORKDIR /src
+COPY main.go .
+RUN CGO_ENABLED=0 go build -o /app main.go
+
+FROM alpine:3.22
+COPY --from=builder /app /app
+EXPOSE 8080
+CMD [&quot;/app&quot;]</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<h3>Image, service va test</h3>
+<div class="code-block"><div class="code-head"><span>Terminalga yozing</span><span class="lang">bash</span></div><pre><code>docker build -t go-swarm-api:v1 .
+
+docker service create --name go-api   --replicas 3   --publish published=8090,target=8080   go-swarm-api:v1
+
+docker service ls</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<p><a href="http://localhost:8090/api/hello" target="_blank" rel="noopener">localhost:8090/api/hello</a> ni oching. <code>message</code> va <code>hostname</code> JSON qaytadi. Refresh qilganingizda hostname o‘zgarishi <b>mumkin</b>, lekin har safar almashishi kafolat emas.</p>
+<div class="call warning"><strong>Multi-node holati</strong><p><code>go-swarm-api:v1</code> lokal image bo‘lsa, boshqa node’da image topilmaydi. Multi-node uchun <code>YOUR_USER/go-swarm-api:v1</code> nomi bilan build/push qiling va service image’ni o‘shanga almashtiring.</p></div>
+<div class="code-block"><div class="code-head"><span>Terminalga yozing</span><span class="lang">bash</span></div><pre><code>docker service logs --tail 20 go-api
+
+docker service rm go-api</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<div class="practice"><div class="practice-tag">✍️ MUSTAQIL MASHQ</div><p>Nima uchun API <code>hostname</code> qaytaryapti?</p><details><summary>Javobni ko‘rish</summary><div class="answer">Replica tushunchasini ko‘rish uchun: har bir konteynerning o‘z hostname’i bo‘ladi. Turli so‘rovlarda turli task javob berishi mumkin.</div></details></div>
+</div>
+    <div class="lesson-ending"><div><div class="ending-kicker">DARS YAKUNI</div><p>Misollarni o‘zingiz bajarib ko‘ring. Tushunmaganingizni yozib, keyin darsni yakunlangan deb belgilang.</p></div><button class="complete-btn" type="button" data-complete="go-api">✓ O‘rgandim</button></div>
+    <div class="notes-zone"><label for="note-go-api">📝 Mening qaydlarim (shu brauzerda saqlanadi)</label><textarea class="notes" id="note-go-api" data-note="go-api" placeholder="Masalan: docker service ps — replica holatini ko‘rish uchun..." rows="3"></textarea><small>Qaydlar faqat shu brauzerda, shu fayl uchun saqlanadi; boshqa qurilmaga avtomatik ko‘chmaydi.</small></div>
+    <div class="lesson-nav"><button type="button" class="lesson-prev ghost-action">← Oldingi dars</button><button type="button" class="lesson-next primary-action">Keyingi dars →</button></div>
+    </section><section class="lesson" data-lesson="config" id="lesson-config">
+    <div class="lesson-breadcrumb">DARS 18 / 30 <span>•</span> Oraliq <span>•</span> taxminan 18 daqiqa</div>
+    <h1>14-laboratoriya: Docker Config bilan sozlamalar</h1>
+    <div class="micro-summary"><span>💡</span><p><b>Esda qoladigan fikr:</b> Docker Config — no-secret konfiguratsiya; o‘zgartirish uchun yangi nom/versiya yaratiladi.</p></div>
+    <div class="lesson-body">
+<p class="lead">Yuqorida <code>index.html</code> har safar image ichiga COPY qilindi. Ammo ayrim <b>sezgir bo‘lmagan konfiguratsiya fayllari</b> image’dan alohida saqlansa qulay: masalan nginx config.</p>
+<h3>1. saytim.conf yarating</h3>
+<div class="code-block"><div class="code-head"><span>saytim.conf</span><span class="lang">nginx</span></div><pre><code>server {
+  listen 80;
+  location / {
+    default_type text/plain;
+    return 200 &quot;Nginx Docker Config orqali sozlandi!\n&quot;;
+  }
+}</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<h3>2. Docker Config yarating</h3>
+<div class="code-block"><div class="code-head"><span>Terminalga yozing</span><span class="lang">powershell / bash</span></div><pre><code>docker config create nginx_site_v1 saytim.conf
+
+docker config ls</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<h3>3. Xizmatga ulab ko‘ring</h3>
+<div class="code-block"><div class="code-head"><span>Linux bash; PowerShell’da bitta qator</span><span class="lang">bash</span></div><pre><code>docker service create --name configured-nginx   --config source=nginx_site_v1,target=/etc/nginx/conf.d/default.conf   --publish published=8091,target=80   nginx:alpine</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<p>Brauzer: <code>http://localhost:8091</code> — yangi matn chiqadi.</p>
+<h3>4. Config yangilash</h3><p>Config <b>immutable</b>: eski nom ustidan o‘zgartirib bo‘lmaydi. Yangi <code>nginx_site_v2</code> nomi bilan yarating va service’ni eski config’dan yangisiga ko‘chiring:</p>
+<div class="code-block"><div class="code-head"><span>Terminalga yozing</span><span class="lang">bash</span></div><pre><code># saytim.conf faylini tahrirlagandan keyin
+docker config create nginx_site_v2 saytim.conf
+
+docker service update   --config-rm nginx_site_v1   --config-add source=nginx_site_v2,target=/etc/nginx/conf.d/default.conf   configured-nginx</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<div class="call info"><strong>Config va HTML</strong><p>Static <code>index.html</code> ham config orqali joylashtirilishi mumkin, lekin oddiy sayt uchun image’ga joylash release’ni aniq versiyalashga yordam beradi. Config — ayniqsa nginx, proxy yoki app sozlamalari uchun qulay.</p></div>
+<div class="code-block"><div class="code-head"><span>Lab tozalash</span><span class="lang">powershell / bash</span></div><pre><code>docker service rm configured-nginx
+docker config rm nginx_site_v1 nginx_site_v2</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<div class="practice"><div class="practice-tag">✍️ MUSTAQIL MASHQ</div><p>Nega <code>docker config create nginx_site_v1</code> ni boshqa fayl bilan takrorlash yaramaydi?</p><details><summary>Javobni ko‘rish</summary><div class="answer">Config immutable. Yangi nomdagi config yaratib service mapping’ini yangilang.</div></details></div>
+</div>
+    <div class="lesson-ending"><div><div class="ending-kicker">DARS YAKUNI</div><p>Misollarni o‘zingiz bajarib ko‘ring. Tushunmaganingizni yozib, keyin darsni yakunlangan deb belgilang.</p></div><button class="complete-btn" type="button" data-complete="config">✓ O‘rgandim</button></div>
+    <div class="notes-zone"><label for="note-config">📝 Mening qaydlarim (shu brauzerda saqlanadi)</label><textarea class="notes" id="note-config" data-note="config" placeholder="Masalan: docker service ps — replica holatini ko‘rish uchun..." rows="3"></textarea><small>Qaydlar faqat shu brauzerda, shu fayl uchun saqlanadi; boshqa qurilmaga avtomatik ko‘chmaydi.</small></div>
+    <div class="lesson-nav"><button type="button" class="lesson-prev ghost-action">← Oldingi dars</button><button type="button" class="lesson-next primary-action">Keyingi dars →</button></div>
+    </section><section class="lesson" data-lesson="secrets" id="lesson-secrets">
+    <div class="lesson-breadcrumb">DARS 19 / 30 <span>•</span> Oraliq <span>•</span> taxminan 19 daqiqa</div>
+    <h1>15-laboratoriya: Password va Docker Secret</h1>
+    <div class="micro-summary"><span>💡</span><p><b>Esda qoladigan fikr:</b> Secret maxfiy qiymatni servisga fayl sifatida yetkazadi; Git’ga parol qo‘ymang.</p></div>
+    <div class="lesson-body">
+<p class="lead">Parolni Dockerfile, Git yoki image ichiga yozmang. <b>Docker Secret</b> kerakli service’ga maxfiy ma’lumotni fayl sifatida beradi.</p>
+<h3>1. Lokal fayl yarating</h3><p>VS Code’da <code>password.txt</code> yarating va ichiga <i>faqat laboratoriya uchun</i> sinov parolini yozing. Faylni Git’ga qo‘shmang!</p>
+<h3>2. Secret yarating</h3>
+<div class="code-block"><div class="code-head"><span>Terminalga yozing</span><span class="lang">powershell / bash</span></div><pre><code>docker secret create db_password_v1 password.txt
+
+docker secret ls</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<h3>3. Service’ga biriktiring</h3>
+<div class="code-block"><div class="code-head"><span>Linux bash; Windows uchun YAML variantini tanlang</span><span class="lang">bash</span></div><pre><code>docker service create   --name secret-lab   --secret db_password_v1   alpine:3.22 sh -c &#x27;test -s /run/secrets/db_password_v1 &amp;&amp; sleep 3600&#x27;</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<p>Container ichida secret odatda <code>/run/secrets/db_password_v1</code> faylida joylashadi. Bu buyruq parolni logga chiqarmaydi; faqat fayl borligini tekshiradi va konteynerni ishlatib turadi.</p>
+<h3>Go’da secret’ni o‘qish</h3>
+<div class="code-block"><div class="code-head"><span>Go kod parchasi: import os, log, strings</span><span class="lang">go</span></div><pre><code>password, err := os.ReadFile(&quot;/run/secrets/db_password_v1&quot;)
+if err != nil {
+    log.Fatal(err)
+}
+// Parolni logga chiqarmang!
+dbPassword := strings.TrimSpace(string(password))
+_ = dbPassword</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<div class="call danger"><strong>Secret 100% sehrli qalqon emas</strong><p>Secret Swarm manager’larida shifrlanib saqlanadi va ruxsat berilgan task’ga beriladi. Lekin container ichiga kirish huquqi bor yoki manager’ni egallagan odam undan foydalanishi mumkin. Host security, access control va rotatsiya baribir kerak.</p></div>
+<div class="code-block"><div class="code-head"><span>Lab tugagach</span><span class="lang">powershell / bash</span></div><pre><code>docker service rm secret-lab
+docker secret rm db_password_v1</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<div class="practice"><div class="practice-tag">✍️ MUSTAQIL MASHQ</div><p>DB parolini oddiy <code>environment: DB_PASSWORD=...</code> bilan yoki secret’da saqlash kerakmi?</p><details><summary>Javobni ko‘rish</summary><div class="answer">Production’da Docker Secret yoki tashqi secret manager afzal. Env o‘zgaruvchilar inspection/loglar orqali sizib chiqish xavfini oshiradi.</div></details></div>
+</div>
+    <div class="lesson-ending"><div><div class="ending-kicker">DARS YAKUNI</div><p>Misollarni o‘zingiz bajarib ko‘ring. Tushunmaganingizni yozib, keyin darsni yakunlangan deb belgilang.</p></div><button class="complete-btn" type="button" data-complete="secrets">✓ O‘rgandim</button></div>
+    <div class="notes-zone"><label for="note-secrets">📝 Mening qaydlarim (shu brauzerda saqlanadi)</label><textarea class="notes" id="note-secrets" data-note="secrets" placeholder="Masalan: docker service ps — replica holatini ko‘rish uchun..." rows="3"></textarea><small>Qaydlar faqat shu brauzerda, shu fayl uchun saqlanadi; boshqa qurilmaga avtomatik ko‘chmaydi.</small></div>
+    <div class="lesson-nav"><button type="button" class="lesson-prev ghost-action">← Oldingi dars</button><button type="button" class="lesson-next primary-action">Keyingi dars →</button></div>
+    </section><section class="lesson" data-lesson="volume" id="lesson-volume">
+    <div class="lesson-breadcrumb">DARS 20 / 30 <span>•</span> Oraliq <span>•</span> taxminan 21 daqiqa</div>
+    <h1>16-laboratoriya: Volume va PostgreSQL xavfi</h1>
+    <div class="micro-summary"><span>💡</span><p><b>Esda qoladigan fikr:</b> Local volume node’ga bog‘liq; DB replica soni = DB replikatsiyasi emas.</p></div>
+    <div class="lesson-body">
+<p class="lead">Bitta muhim haqiqat: <b>Swarm stateless app’lar uchun juda qulay; DB’ni replicate qilish ma’lumotni o‘zi replicate qilmaydi.</b></p>
+<div class="code-block"><div class="code-head"><span>Ta’limiy, yagona node’ga biriktirilgan PostgreSQL misoli</span><span class="lang">yaml</span></div><pre><code>version: &quot;3.8&quot;
+services:
+  db:
+    image: postgres:16
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    secrets:
+      - db_password
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_DB: appdb
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.db == true
+volumes:
+  pgdata:
+secrets:
+  db_password:
+    external: true</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<h3>Nega node label kerak?</h3><p>Odatdagi <code>local</code> volume node’ga bog‘langan. DB task boshqa node’ga ko‘chsa, u yerda <b>yangi, bo‘sh local volume</b> yaratilib qolishi mumkin. Shuning uchun label yordamida DB’ni ma’lum node’da ushlab turish mumkin (bu HA emas).</p>
+<div class="code-block"><div class="code-head"><span>Multi-node lab uchun; avval db-stack.yml va password.txt tayyorlang</span><span class="lang">bash</span></div><pre><code>docker node ls
+# &amp;lt;DB_NODE&amp;gt; o‘rniga haqiqiy node nomini yozing
+docker node update --label-add db=true &lt;DB_NODE&gt;
+
+docker secret create db_password password.txt
+
+docker stack deploy -c db-stack.yml database</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<div class="call danger"><strong>Production PostgreSQL</strong><p><b>replicas: 3</b> deb qo‘yish PostgreSQL cluster yaratmaydi! Yagona primary, replication, leader election, backup, failover va storage’ni alohida loyihalash kerak. Ko‘pincha managed PostgreSQL yoki maxsus HA yechim sodda va xavfsizroq.</p></div>
+<h3>Volume qaysi node’da ekanini ko‘rish</h3>
+<div class="code-block"><div class="code-head"><span>Terminalga yozing</span><span class="lang">bash</span></div><pre><code>docker service ps database_db
+# db qaysi node&#x27;da bo‘lsa, o‘sha node&#x27;da:
+docker volume ls</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<p>Stack nomi qo‘shilishi sababli volume ko‘pincha <code>database_pgdata</code> bo‘ladi. Stack’ni olib tashlash volume/backuplarni avtomatik xavfsiz boshqaradi deb o‘ylamang.</p>
+<div class="practice"><div class="practice-tag">✍️ MUSTAQIL MASHQ</div><p>Nega 2 ta node’da 2 ta PostgreSQL container bilan bitta DB hosil bo‘lib qolmaydi?</p><details><summary>Javobni ko‘rish</summary><div class="answer">Har bir container o‘z ma’lumotlarini yozadi; local volume’lar mustaqil. DB replication/consensus alohida yechim talab qiladi.</div></details></div>
+</div>
+    <div class="lesson-ending"><div><div class="ending-kicker">DARS YAKUNI</div><p>Misollarni o‘zingiz bajarib ko‘ring. Tushunmaganingizni yozib, keyin darsni yakunlangan deb belgilang.</p></div><button class="complete-btn" type="button" data-complete="volume">✓ O‘rgandim</button></div>
+    <div class="notes-zone"><label for="note-volume">📝 Mening qaydlarim (shu brauzerda saqlanadi)</label><textarea class="notes" id="note-volume" data-note="volume" placeholder="Masalan: docker service ps — replica holatini ko‘rish uchun..." rows="3"></textarea><small>Qaydlar faqat shu brauzerda, shu fayl uchun saqlanadi; boshqa qurilmaga avtomatik ko‘chmaydi.</small></div>
+    <div class="lesson-nav"><button type="button" class="lesson-prev ghost-action">← Oldingi dars</button><button type="button" class="lesson-next primary-action">Keyingi dars →</button></div>
+    </section><section class="lesson" data-lesson="health" id="lesson-health">
+    <div class="lesson-breadcrumb">DARS 21 / 30 <span>•</span> Ilg‘or <span>•</span> taxminan 18 daqiqa</div>
+    <h1>17-laboratoriya: Healthcheck va restart</h1>
+    <div class="micro-summary"><span>💡</span><p><b>Esda qoladigan fikr:</b> RUNNING va HEALTHY boshqa tushunchalar; healthcheck’ni image ichidagi vositaga moslang.</p></div>
+    <div class="lesson-body">
+<p class="lead">Container <code>RUNNING</code> bo‘lishi ilovangiz sog‘lom ishlayapti degani emas. Masalan, Go API ishlayotgandek ko‘rinsa-da, so‘rovlar <code>500</code> qaytarishi mumkin.</p>
+<h3>Nginx uchun minimal healthcheck</h3>
+<div class="code-block"><div class="code-head"><span>Misol uchun stack.yml ning alohida varianti</span><span class="lang">yaml</span></div><pre><code>version: &quot;3.8&quot;
+services:
+  web:
+    image: nginx:alpine
+    ports:
+      - &quot;8080:80&quot;
+    healthcheck:
+      test: [&quot;CMD&quot;, &quot;wget&quot;, &quot;-q&quot;, &quot;-O&quot;, &quot;/dev/null&quot;, &quot;http://127.0.0.1/&quot;]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: any
+        delay: 5s
+      update_config:
+        parallelism: 1
+        order: start-first
+        failure_action: rollback
+        monitor: 30s</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<div class="table-wrap"><table><thead><tr><th>Sozlama</th><th>Ma’nosi</th></tr></thead><tbody><tr><td>healthcheck.test</td><td>Container ichidan sog‘lomlikni tekshirish</td></tr><tr><td>interval</td><td>Tekshiruvlar oralig‘i</td></tr><tr><td>timeout</td><td>Bitta tekshiruvning vaqti</td></tr><tr><td>retries</td><td>Necha muvaffaqiyatsizlikdan keyin unhealthy</td></tr><tr><td>start_period</td><td>Boshlanishda ilova tayyor bo‘lishiga imkon berish</td></tr><tr><td>restart_policy</td><td>Task to‘xtab qolsa nima qilish</td></tr></tbody></table></div>
+<p><b>Go API</b> uchun oldin yozgan <code>/health</code> endpoint’dan foydalanasiz. Biroq final Docker image’da <code>wget</code> yoki <code>curl</code> yo‘q bo‘lishi mumkin — healthcheck image ichida mavjud vositaga mos yozilishi kerak. Yaxshiroq variant — Go binary’da alohida <code>healthcheck</code> subcommand.</p>
+<div class="call warning"><strong>Readiness ≠ liveness</strong><p>Healthcheck foydali, lekin Swarm barcha so‘rovlarni mukammal readiness nazoratiga asoslanib boshqarishini kafolatlamaydi. Reverse proxy, to‘g‘ri graceful shutdown va ilova tayyorlik mezonini ham sozlang.</p></div>
+<div class="practice"><div class="practice-tag">✍️ MUSTAQIL MASHQ</div><p>Container ishlayotgan bo‘lsa ham 500 qaytarsa qaysi turdagi tekshiruv kerak?</p><details><summary>Javobni ko‘rish</summary><div class="answer">Faqat process mavjudligini emas, ilova haqiqatan so‘rovga javob bera olishini tekshiradigan HTTP healthcheck.</div></details></div>
+</div>
+    <div class="lesson-ending"><div><div class="ending-kicker">DARS YAKUNI</div><p>Misollarni o‘zingiz bajarib ko‘ring. Tushunmaganingizni yozib, keyin darsni yakunlangan deb belgilang.</p></div><button class="complete-btn" type="button" data-complete="health">✓ O‘rgandim</button></div>
+    <div class="notes-zone"><label for="note-health">📝 Mening qaydlarim (shu brauzerda saqlanadi)</label><textarea class="notes" id="note-health" data-note="health" placeholder="Masalan: docker service ps — replica holatini ko‘rish uchun..." rows="3"></textarea><small>Qaydlar faqat shu brauzerda, shu fayl uchun saqlanadi; boshqa qurilmaga avtomatik ko‘chmaydi.</small></div>
+    <div class="lesson-nav"><button type="button" class="lesson-prev ghost-action">← Oldingi dars</button><button type="button" class="lesson-next primary-action">Keyingi dars →</button></div>
+    </section><section class="lesson" data-lesson="resources" id="lesson-resources">
+    <div class="lesson-breadcrumb">DARS 22 / 30 <span>•</span> Ilg‘or <span>•</span> taxminan 17 daqiqa</div>
+    <h1>18-laboratoriya: CPU/RAM va placement</h1>
+    <div class="micro-summary"><span>💡</span><p><b>Esda qoladigan fikr:</b> Reservations scheduler uchun, limits ishlash limitlari uchun; placement task qayerda ishlashini cheklaydi.</p></div>
+    <div class="lesson-body">
+<p class="lead">Cluster cheksiz emas. Bitta service barcha RAM’ni yeb qo‘ysa, boshqalarga zarar qiladi. Swarm’da <b>limits</b> va <b>reservations</b> ni alohida tushuning.</p>
+<div class="code-block"><div class="code-head"><span>service deploy qismi</span><span class="lang">yaml</span></div><pre><code>deploy:
+  replicas: 3
+  resources:
+    reservations:
+      cpus: &quot;0.25&quot;
+      memory: 64M
+    limits:
+      cpus: &quot;1.00&quot;
+      memory: 256M
+  placement:
+    constraints:
+      - node.role == worker</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<div class="table-wrap"><table><thead><tr><th>Atama</th><th>Nima?</th></tr></thead><tbody><tr><td>reservations</td><td>Scheduler rejalashtirganda kamida ajratilishi kerak deb hisoblaydigan resurs</td></tr><tr><td>limits</td><td>Task foydalanishi mumkin bo‘lgan resursning yuqori chegarasi</td></tr><tr><td>node.role == worker</td><td>Service task’larini faqat worker node’da ishga tushirish</td></tr><tr><td>node.labels.zone == east</td><td>Custom label asosidagi joylashuv</td></tr></tbody></table></div>
+<div class="code-block"><div class="code-head"><span>Label va joriy resursni ko‘rish</span><span class="lang">bash</span></div><pre><code>docker node update --label-add zone=east worker1
+
+docker service inspect demo_web --pretty
+
+docker stats</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<div class="call warning"><strong>Pending task</strong><p>Agar node’da bo‘sh joy, RAM yoki kerakli label bo‘lmasa, task <code>Pending</code> qolishi mumkin. <code>docker service ps --no-trunc SERVICE</code> bilan sababini ko‘ring.</p></div>
+<div class="practice"><div class="practice-tag">✍️ MUSTAQIL MASHQ</div><p>Serverda bo‘sh RAM 200MB, lekin container reservation 512MB bo‘lsa nima bo‘lishi mumkin?</p><details><summary>Javobni ko‘rish</summary><div class="answer">Scheduler joylashtirish uchun yetarli rezervatsiya ko‘rmasligi sababli task pending qolishi mumkin.</div></details></div>
+</div>
+    <div class="lesson-ending"><div><div class="ending-kicker">DARS YAKUNI</div><p>Misollarni o‘zingiz bajarib ko‘ring. Tushunmaganingizni yozib, keyin darsni yakunlangan deb belgilang.</p></div><button class="complete-btn" type="button" data-complete="resources">✓ O‘rgandim</button></div>
+    <div class="notes-zone"><label for="note-resources">📝 Mening qaydlarim (shu brauzerda saqlanadi)</label><textarea class="notes" id="note-resources" data-note="resources" placeholder="Masalan: docker service ps — replica holatini ko‘rish uchun..." rows="3"></textarea><small>Qaydlar faqat shu brauzerda, shu fayl uchun saqlanadi; boshqa qurilmaga avtomatik ko‘chmaydi.</small></div>
+    <div class="lesson-nav"><button type="button" class="lesson-prev ghost-action">← Oldingi dars</button><button type="button" class="lesson-next primary-action">Keyingi dars →</button></div>
+    </section><section class="lesson" data-lesson="node-maint" id="lesson-node-maint">
+    <div class="lesson-breadcrumb">DARS 23 / 30 <span>•</span> Ilg‘or <span>•</span> taxminan 16 daqiqa</div>
+    <h1>19-laboratoriya: Node drain va servisni ko‘chirish</h1>
+    <div class="micro-summary"><span>💡</span><p><b>Esda qoladigan fikr:</b> Drain task’larni boshqalarga rejalashtirish uchun; stateful DB’da ehtiyot bo‘ling.</p></div>
+    <div class="lesson-body">
+<p class="lead">Bitta serverni ta’mirlash kerak bo‘ldi. Undagi task’larni boshqalariga ko‘chirish uchun <b>drain</b> ishlatiladi.</p>
+<div class="code-block"><div class="code-head"><span>Terminalga yozing</span><span class="lang">bash</span></div><pre><code>docker node ls
+
+docker node update --availability drain worker1
+
+docker service ps cluster-web
+
+# Ta’mirlash tugagach:
+docker node update --availability active worker1</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<div class="visual"><div class="diagram-cards"><div class="diagram-card"><b>worker1</b><small>Drain: yangi task olmasin</small></div><div class="diagram-arrow">→</div><div class="diagram-card selected"><b>worker2</b><small>Bo‘sh resurs bo‘lsa task ko‘chadi</small></div></div></div>
+<div class="call danger"><strong>DB va local volume bilan ehtiyot</strong><p>Stateless service boshqa hostda qayta yaratilishi mumkin. Ammo lokal diskka bog‘langan DB task’i ko‘chsa, ma’lumotni ko‘rmasligi mumkin. Drain qilishdan oldin storage/backup/HA rejani tekshiring.</p></div>
+<h3>Manager’larni alohida ko‘rib chiqing</h3><p>3 ta manager bo‘lsa, Raft boshqaruvi uchun 2 tasi ishlashi kerak; 5 ta manager bo‘lsa, 3 tasi. Production’da odatda <b>3 yoki 5 ta manager</b> ishlatiladi. Bitta manager ishlamay qolsa, mavjud task’lar ishlashda davom etishi mumkin, lekin cluster boshqaruvi va qayta rejalashtirish imkoniyati cheklanadi.</p>
+<div class="practice"><div class="practice-tag">✍️ MUSTAQIL MASHQ</div><p>Drain holatidagi node avtomatik Swarm’dan chiqib ketadimi?</p><details><summary>Javobni ko‘rish</summary><div class="answer">Yo‘q. U cluster a’zosi qoladi, ammo task joylashtirish uchun ishlatilmaydi; <code>active</code> qilib qaytariladi.</div></details></div>
+</div>
+    <div class="lesson-ending"><div><div class="ending-kicker">DARS YAKUNI</div><p>Misollarni o‘zingiz bajarib ko‘ring. Tushunmaganingizni yozib, keyin darsni yakunlangan deb belgilang.</p></div><button class="complete-btn" type="button" data-complete="node-maint">✓ O‘rgandim</button></div>
+    <div class="notes-zone"><label for="note-node-maint">📝 Mening qaydlarim (shu brauzerda saqlanadi)</label><textarea class="notes" id="note-node-maint" data-note="node-maint" placeholder="Masalan: docker service ps — replica holatini ko‘rish uchun..." rows="3"></textarea><small>Qaydlar faqat shu brauzerda, shu fayl uchun saqlanadi; boshqa qurilmaga avtomatik ko‘chmaydi.</small></div>
+    <div class="lesson-nav"><button type="button" class="lesson-prev ghost-action">← Oldingi dars</button><button type="button" class="lesson-next primary-action">Keyingi dars →</button></div>
+    </section><section class="lesson" data-lesson="security" id="lesson-security">
+    <div class="lesson-breadcrumb">DARS 24 / 30 <span>•</span> Ilg‘or <span>•</span> taxminan 18 daqiqa</div>
+    <h1>20-laboratoriya: Swarm xavfsizligi</h1>
+    <div class="micro-summary"><span>💡</span><p><b>Esda qoladigan fikr:</b> Cluster portlari private, token maxfiy, TLS va access control alohida ta’minlanadi.</p></div>
+    <div class="lesson-body">
+<p class="lead">Production’da xizmat ishga tushishi yetarli emas. Cluster’ni kim boshqaradi, qaysi portlar ochiq, parollar qayerda saqlanadi — muhim savollar.</p>
+<h3>Eng muhim tekshiruvlar</h3>
+<ul class="checklist"><li>2377/TCP, 7946/TCP+UDP, 4789/UDP faqat ishonchli node’lar orasida ochiq.</li><li>Docker daemon’ning TCP API’ini internetga ochmang; SSH va access control ishlating.</li><li>Manager join token’ini maxfiy saqlang va sizib chiqsa aylantiring.</li><li>Parollar uchun Docker Secret yoki tashqi secret manager; image va Git’da parol bo‘lmasin.</li><li>Image’larni tekshirilgan registry’dan oling, versiyalarni pin qiling, yangilab boring.</li><li>Service’ni iloji boricha non-root ishlating; kerakmas Linux capability’larni bermang.</li><li>Reverse proxy’da TLS/HTTPS va ilova autentifikatsiyasini alohida tashkil qiling.</li><li>Monitoring, loglar, backup va restore testlarini joriy qiling.</li></ul>
+<h3>Tokenni yangilash</h3>
+<div class="code-block"><div class="code-head"><span>Manager hostida</span><span class="lang">bash</span></div><pre><code>docker swarm join-token --rotate worker
+# Manager tokeni uchun ham alohida rotate mumkin:
+# docker swarm join-token --rotate manager</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<h3>Shifrlangan overlay</h3>
+<div class="code-block"><div class="code-head"><span>Terminalga yozing</span><span class="lang">bash</span></div><pre><code>docker network create --driver overlay --opt encrypted secure-appnet</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<p>Bu overlay data traffic’ini shifrlashga yordam beradi (mTLS bilan himoyalangan control plane’dan alohida). Tarmoq throughput’iga ta’sir qilishi mumkin; performance’ni sinab ko‘ring.</p>
+<div class="call danger"><strong>443 HTTPS o‘zi kelmaydi</strong><p>Swarm servisga <code>ports: "443:443"</code> deb yozishning o‘zi sertifikat bermaydi. TLS sertifikat, reverse proxy va yangilanish jarayoni alohida sozlanadi.</p></div>
+<div class="practice"><div class="practice-tag">✍️ MUSTAQIL MASHQ</div><p>Worker join token xatolik bilan GitHub’ga joylandi. Birinchi amaliy choralar?</p><details><summary>Javobni ko‘rish</summary><div class="answer">Tokenni darhol rotate qilish, commit/repository history ta’sirini baholash, node access’ni audit qilish, boshqa secret’larni ham tekshirish.</div></details></div>
+</div>
+    <div class="lesson-ending"><div><div class="ending-kicker">DARS YAKUNI</div><p>Misollarni o‘zingiz bajarib ko‘ring. Tushunmaganingizni yozib, keyin darsni yakunlangan deb belgilang.</p></div><button class="complete-btn" type="button" data-complete="security">✓ O‘rgandim</button></div>
+    <div class="notes-zone"><label for="note-security">📝 Mening qaydlarim (shu brauzerda saqlanadi)</label><textarea class="notes" id="note-security" data-note="security" placeholder="Masalan: docker service ps — replica holatini ko‘rish uchun..." rows="3"></textarea><small>Qaydlar faqat shu brauzerda, shu fayl uchun saqlanadi; boshqa qurilmaga avtomatik ko‘chmaydi.</small></div>
+    <div class="lesson-nav"><button type="button" class="lesson-prev ghost-action">← Oldingi dars</button><button type="button" class="lesson-next primary-action">Keyingi dars →</button></div>
+    </section><section class="lesson" data-lesson="deploy-flow" id="lesson-deploy-flow">
+    <div class="lesson-breadcrumb">DARS 25 / 30 <span>•</span> Ilg‘or <span>•</span> taxminan 22 daqiqa</div>
+    <h1>21-laboratoriya: Git push → production release</h1>
+    <div class="micro-summary"><span>💡</span><p><b>Esda qoladigan fikr:</b> Git push ≠ release; build → push → deploy → verify zanjiri kerak.</p></div>
+    <div class="lesson-body">
+<p class="lead">Eng ko‘p so‘raladigan savol: “<code>index.html</code> ni o‘zgartirib Git’ga push qilsam, nima uchun serverdagi sayt eski?” Chunki <b>Git, registry va Swarm boshqa-boshqa tizimlar</b>.</p>
+<div class="visual"><div class="pipeline"><span>👨‍💻 Git push</span><i>→</i><span>🔨 Build</span><i>→</i><span>☁️ Registry push</span><i>→</i><span>🚀 Stack deploy</span><i>→</i><span>🔎 Verify</span></div></div>
+<h3>Manual release uchun minimal tartib</h3>
+<div class="code-block"><div class="code-head"><span>Bosqichlarga ajratilgan production deploy</span><span class="lang">bash</span></div><pre><code># 1. Yangi koddan image yig‘ing
+docker build -t YOUR_DOCKERHUB_USER/swarm-web:v4 .
+
+# 2. Registry&#x27;ga yuboring
+docker push YOUR_DOCKERHUB_USER/swarm-web:v4
+
+# 3. SERVERDA stack.yml dagi image&#x27;ni :v4 qiling
+# image: YOUR_DOCKERHUB_USER/swarm-web:v4
+
+# 4. MANAGERDA qayta deploy
+docker stack deploy -c stack.yml demo
+
+# 5. Holatni tekshiring
+docker stack services demo
+docker service ps demo_web</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<h3>CI/CD qanday ishlaydi?</h3>
+<ol class="steps"><li>Git push bo‘lganda CI job ishlaydi.</li><li>Test va lint muvaffaqiyatli o‘tadi.</li><li>Image Git commit SHA bilan build qilinadi.</li><li>CI registry’ga image push qiladi.</li><li>Himoyalangan deploy bosqichi manager’da yangi tag bilan stack deploy qiladi.</li><li>Healthcheck va monitoring natijalari tekshiriladi; xato bo‘lsa rollback qilinadi.</li></ol>
+<div class="call warning"><strong>Faqat latest tag bilan aldamang</strong><p>Bir xil <code>latest</code> tagni qayta push qilish va faqat YAML o‘zgarmagan holda redeploy qilish kutilgan roll out’ni bermasligi mumkin. Release uchun yangi tag/digest ishlating va deploy holatini tekshiring.</p></div>
+<h3>Multi-node registry eslatmasi</h3><p>Worker’lar registry’dan pull qilishi kerak. Private image uchun tegishli registry authentication zarur. Repo’da login token va parolni yozib qoldirmang.</p>
+<div class="practice"><div class="practice-tag">✍️ MUSTAQIL MASHQ</div><p>Git push yangi image’ni avtomatik build qilib deploy qilishi shartmi?</p><details><summary>Javobni ko‘rish</summary><div class="answer">Yo‘q. CI/CD pipeline ataylab sozlanishi kerak. Git push’ning o‘zi Docker Swarm’ga tegmaydi.</div></details></div>
+</div>
+    <div class="lesson-ending"><div><div class="ending-kicker">DARS YAKUNI</div><p>Misollarni o‘zingiz bajarib ko‘ring. Tushunmaganingizni yozib, keyin darsni yakunlangan deb belgilang.</p></div><button class="complete-btn" type="button" data-complete="deploy-flow">✓ O‘rgandim</button></div>
+    <div class="notes-zone"><label for="note-deploy-flow">📝 Mening qaydlarim (shu brauzerda saqlanadi)</label><textarea class="notes" id="note-deploy-flow" data-note="deploy-flow" placeholder="Masalan: docker service ps — replica holatini ko‘rish uchun..." rows="3"></textarea><small>Qaydlar faqat shu brauzerda, shu fayl uchun saqlanadi; boshqa qurilmaga avtomatik ko‘chmaydi.</small></div>
+    <div class="lesson-nav"><button type="button" class="lesson-prev ghost-action">← Oldingi dars</button><button type="button" class="lesson-next primary-action">Keyingi dars →</button></div>
+    </section><section class="lesson" data-lesson="troubleshoot" id="lesson-troubleshoot">
+    <div class="lesson-breadcrumb">DARS 26 / 30 <span>•</span> Ilg‘or <span>•</span> taxminan 24 daqiqa</div>
+    <h1>22-laboratoriya: 10 ta real xatolik</h1>
+    <div class="micro-summary"><span>💡</span><p><b>Esda qoladigan fikr:</b> Service ls → ps --no-trunc → logs → inspect; old task tarixini yangidan ajrating.</p></div>
+    <div class="lesson-body">
+<p class="lead">Qulay diagnostika jadvali: oldin symptom, keyin eng qisqa tekshiruv.</p>
+<div class="table-wrap"><table><thead><tr><th>Holat</th><th>Sabab / tekshiruv</th></tr></thead><tbody><tr><td><code>Cannot connect to Docker daemon</code></td><td>Docker Engine/Desktop ishlashini tekshiring: <code>docker info</code>.</td></tr><tr><td><code>This node is not a swarm manager</code></td><td><code>docker stack/service/node</code> cluster boshqaruvini manager’dan bajaring.</td></tr><tr><td><code>already part of a swarm</code></td><td>Oldin <code>docker swarm init</code> qilingan; qayta shart emas.</td></tr><tr><td><code>port is already allocated</code></td><td>8080 ishlatilgan: <code>docker ps</code> va <code>docker service ls</code>.</td></tr><tr><td><code>0/3 replicas</code></td><td><code>docker service ps --no-trunc NAME</code>; image/constraint/resource.</td></tr><tr><td><code>No such image</code></td><td>Worker registry’dan image ololmayapti; push/auth/tag tekshiring.</td></tr><tr><td><code>network not found</code></td><td>Overlay network mavjudligi va compose’da nom to‘g‘riligini tekshiring.</td></tr><tr><td><code>Pending</code></td><td>Mos node, label, CPU/RAM, port yoki volume constraint yetishmayapti.</td></tr><tr><td><code>HTML hali eski</code></td><td>Yangi image build/push qilinmagan yoki service/stack tagi yangilanmagan.</td></tr><tr><td><code>DB data yo‘qoldi</code></td><td>Local volume boshqa node’da bo‘lishi mumkin; backup, placement, storage dizaynini tekshiring.</td></tr></tbody></table></div>
+<h3>Muammoni 5 buyruqda toraytirish</h3>
+<div class="code-block"><div class="code-head"><span>Terminalga yozing</span><span class="lang">bash</span></div><pre><code>docker node ls
+docker service ls
+docker service ps --no-trunc demo_web
+docker service logs --tail 100 demo_web
+docker service inspect demo_web --pretty</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<h3>Tarixiy task’larni ko‘ring</h3><p><code>docker service ps</code> avval ishlamay qolgan task’larni ham ko‘rsatishi mumkin. Pastdagi eski <code>Shutdown</code> yozuvi doim hozirgi xato emas. Joriy holat va vaqtni ajrating.</p>
+<div class="call info"><strong>Diagnostika tartibi</strong><p>Birinchi <b>nima ishlamayapti</b> (DNS, port, image, process, DB) ni aniqlang. Hamma narsani o‘chirib qayta tiklash muammoning sababini yashiradi.</p></div>
+<div class="practice"><div class="practice-tag">✍️ MUSTAQIL MASHQ</div><p>Service <code>0/2</code>, task error <code>no suitable node</code>. Nimalarni ko‘rasiz?</p><details><summary>Javobni ko‘rish</summary><div class="answer">Node availability, placement constraints, reservation, ishlayotgan node’lar va platform mosligini tekshiring.</div></details></div>
+</div>
+    <div class="lesson-ending"><div><div class="ending-kicker">DARS YAKUNI</div><p>Misollarni o‘zingiz bajarib ko‘ring. Tushunmaganingizni yozib, keyin darsni yakunlangan deb belgilang.</p></div><button class="complete-btn" type="button" data-complete="troubleshoot">✓ O‘rgandim</button></div>
+    <div class="notes-zone"><label for="note-troubleshoot">📝 Mening qaydlarim (shu brauzerda saqlanadi)</label><textarea class="notes" id="note-troubleshoot" data-note="troubleshoot" placeholder="Masalan: docker service ps — replica holatini ko‘rish uchun..." rows="3"></textarea><small>Qaydlar faqat shu brauzerda, shu fayl uchun saqlanadi; boshqa qurilmaga avtomatik ko‘chmaydi.</small></div>
+    <div class="lesson-nav"><button type="button" class="lesson-prev ghost-action">← Oldingi dars</button><button type="button" class="lesson-next primary-action">Keyingi dars →</button></div>
+    </section><section class="lesson" data-lesson="prod-plan" id="lesson-prod-plan">
+    <div class="lesson-breadcrumb">DARS 27 / 30 <span>•</span> Ilg‘or <span>•</span> taxminan 21 daqiqa</div>
+    <h1>23-laboratoriya: Production uchun haqiqiy arxitektura</h1>
+    <div class="micro-summary"><span>💡</span><p><b>Esda qoladigan fikr:</b> Stateless API’ni scale qiling; DB/files/logs/tls uchun alohida dizayn kerak.</p></div>
+    <div class="lesson-body">
+<p class="lead">Endi o‘rganganlaringizni real tizimda joylashtirishni tasavvur qiling: frontend, Go API, Postgres, Redis. Hamma narsani bir xil replicate qilish mumkin emas.</p>
+<div class="visual"><div class="arch"><div class="arch-top">🌍 Foydalanuvchi → HTTPS / Load Balancer</div><div class="arch-down">↓</div><div class="arch-mid"><div>🌐 Reverse proxy<br><small>Traefik / Nginx</small></div><div>⚙️ Go API<br><small>3+ replica · stateless</small></div></div><div class="arch-down">↓</div><div class="arch-bot"><div>🗃️ PostgreSQL<br><small>Managed/HA DB + backup</small></div><div>⚡ Redis<br><small>Persistence / HA talabiga qarab</small></div><div>📊 Logs/Metrics<br><small>Monitoring + alert</small></div></div></div></div>
+<h3>Har komponentni qayerga qo‘yamiz?</h3>
+<div class="table-wrap"><table><thead><tr><th>Komponent</th><th>Maslahat</th><th>Nega?</th></tr></thead><tbody><tr><td>Frontend / proxy</td><td>2+ replica, TLS, healthcheck</td><td>Tashqi traffic qabul qiladi</td></tr><tr><td>Go REST API</td><td>Bir nechta replica, stateless</td><td>Scaling oson</td></tr><tr><td>PostgreSQL</td><td>Managed HA yoki aniq DB cluster dizayni</td><td>Data integrity, backup, failover</td></tr><tr><td>Redis</td><td>Persistence va availability talablariga qarab</td><td>Cache yo‘qolishiga chidamlilik</td></tr><tr><td>Uploaded files</td><td>S3-compatible object storage yoki shared storage</td><td>Boshqa node’dan ham faylga kirish</td></tr><tr><td>Logs/Metrics</td><td>Markazlashgan tizim</td><td>Worker yo‘qolganda ham diagnostika</td></tr></tbody></table></div>
+<h3>Stateless nima?</h3><p>Go API replica A foydalanuvchi faylini faqat o‘z container diskiga yozsa, replica B bu faylni ko‘rmasligi mumkin. Bu — stateful muammo. Session/metadata uchun Redis yoki DB, fayllar uchun umumiy object storage kabi yechimlardan foydalaning.</p>
+<div class="call warning"><strong>Swarm nimani o‘zi bajarmaydi?</strong><p>Ma’lumotlar bazasi replication, automatic SQL migration safety, TLS certificate olish, murakkab autoscaling, CI/CD va object storage — bular uchun boshqa vositalar yoki o‘zingizning jarayoningiz kerak.</p></div>
+<div class="practice"><div class="practice-tag">✍️ MUSTAQIL MASHQ</div><p>3 replica Go API <code>/uploads/abc.jpg</code> faylini local diskka yozsa qanday muammo bor?</p><details><summary>Javobni ko‘rish</summary><div class="answer">Traffic boshqa replica’ga tushganda fayl topilmaydi; task reschedule bo‘lsa data yo‘qolishi mumkin. Object storage/shared storage kerak.</div></details></div>
+</div>
+    <div class="lesson-ending"><div><div class="ending-kicker">DARS YAKUNI</div><p>Misollarni o‘zingiz bajarib ko‘ring. Tushunmaganingizni yozib, keyin darsni yakunlangan deb belgilang.</p></div><button class="complete-btn" type="button" data-complete="prod-plan">✓ O‘rgandim</button></div>
+    <div class="notes-zone"><label for="note-prod-plan">📝 Mening qaydlarim (shu brauzerda saqlanadi)</label><textarea class="notes" id="note-prod-plan" data-note="prod-plan" placeholder="Masalan: docker service ps — replica holatini ko‘rish uchun..." rows="3"></textarea><small>Qaydlar faqat shu brauzerda, shu fayl uchun saqlanadi; boshqa qurilmaga avtomatik ko‘chmaydi.</small></div>
+    <div class="lesson-nav"><button type="button" class="lesson-prev ghost-action">← Oldingi dars</button><button type="button" class="lesson-next primary-action">Keyingi dars →</button></div>
+    </section><section class="lesson" data-lesson="ops" id="lesson-ops">
+    <div class="lesson-breadcrumb">DARS 28 / 30 <span>•</span> Ilg‘or <span>•</span> taxminan 18 daqiqa</div>
+    <h1>24-laboratoriya: Backup, manager quorum va audit</h1>
+    <div class="micro-summary"><span>💡</span><p><b>Esda qoladigan fikr:</b> 3 yoki 5 manager quorum; Swarm backup DB backup o‘rnini bosmaydi.</p></div>
+    <div class="lesson-body">
+<p class="lead">Production cluster’ni faqat yaratish emas, uni <b>saqlash, tiklash va boshqarish</b> ham muhim.</p>
+<h3>Manager quorum (odd son)</h3>
+<div class="table-wrap"><table><thead><tr><th>Manager soni</th><th>Minimal tirik manager</th><th>Nechta manager yo‘qolishiga chidaydi</th></tr></thead><tbody><tr><td>1</td><td>1</td><td>0</td></tr><tr><td>3</td><td>2</td><td>1</td></tr><tr><td>5</td><td>3</td><td>2</td></tr></tbody></table></div>
+<p>Quorum bo‘lmasa yangi boshqaruv qarorlari va deployment qiyinlashadi. Mavjud container’lar ishlashda davom etishi mumkin, ammo automatic recovery cheklanishi mumkin.</p>
+<h3>Swarm manager state backup</h3><p>Docker hujjatlariga ko‘ra cluster state manager’da <code>/var/lib/docker/swarm/</code> da saqlanadi. Shu katalogni <b>to‘g‘ri consistency</b> bilan zaxiralash, autolock bo‘lsa unlock key’ni alohida saqlash muhim. Manager backup DB ma’lumotlarini to‘liq backup qilmaydi.</p>
+<h3>Minimal amaliy reja</h3><ul class="checklist"><li>Manager state backup va muntazam restore testi.</li><li>PostgreSQL uchun WAL/physical yoki logical backup va tiklash sinovi.</li><li>Registry image retention va aniq release taglar.</li><li>Alert: service replicas, failed tasks, disk, RAM, error rate, latency.</li><li>Node lifecycle: drain → maintenance → active.</li><li>Secret/token rotatsiyasi va access audit.</li></ul>
+<div class="call danger"><strong>Backup ≠ HA</strong><p>3 ta manager — cluster boshqaruvini bardoshli qiladi. Lekin DB uchun mustaqil backup, failover va restore talablarini almashtirmaydi.</p></div>
+<div class="practice"><div class="practice-tag">✍️ MUSTAQIL MASHQ</div><p>3 ta manager’dan bittasi o‘chsa cluster boshqaruvi davom etadimi?</p><details><summary>Javobni ko‘rish</summary><div class="answer">Ha, qolgan 2 tasi quorum tashkil qilsa. 2 ta o‘chsa quorum qolmaydi.</div></details></div>
+</div>
+    <div class="lesson-ending"><div><div class="ending-kicker">DARS YAKUNI</div><p>Misollarni o‘zingiz bajarib ko‘ring. Tushunmaganingizni yozib, keyin darsni yakunlangan deb belgilang.</p></div><button class="complete-btn" type="button" data-complete="ops">✓ O‘rgandim</button></div>
+    <div class="notes-zone"><label for="note-ops">📝 Mening qaydlarim (shu brauzerda saqlanadi)</label><textarea class="notes" id="note-ops" data-note="ops" placeholder="Masalan: docker service ps — replica holatini ko‘rish uchun..." rows="3"></textarea><small>Qaydlar faqat shu brauzerda, shu fayl uchun saqlanadi; boshqa qurilmaga avtomatik ko‘chmaydi.</small></div>
+    <div class="lesson-nav"><button type="button" class="lesson-prev ghost-action">← Oldingi dars</button><button type="button" class="lesson-next primary-action">Keyingi dars →</button></div>
+    </section><section class="lesson" data-lesson="cheatsheet" id="lesson-cheatsheet">
+    <div class="lesson-breadcrumb">DARS 29 / 30 <span>•</span> Yakun <span>•</span> taxminan 16 daqiqa</div>
+    <h1>25-laboratoriya: Buyruqlar va xavfsiz tozalash</h1>
+    <div class="micro-summary"><span>💡</span><p><b>Esda qoladigan fikr:</b> Eng kerakli buyruqlar va faqat lab muhitiga xos ehtiyotkor cleanup.</p></div>
+    <div class="lesson-body">
+<p class="lead">Bu sahifani qayta-qayta ochib ishlatasiz. Eng ko‘p kerak bo‘ladigan Docker Swarm buyruqlari shu yerda.</p>
+<div class="table-wrap"><table><thead><tr><th>Buyruq</th><th>Vazifasi</th></tr></thead><tbody><tr><td><code>docker swarm init</code></td><td>Swarm yaratish</td></tr><tr><td><code>docker swarm join-token worker</code></td><td>Worker ulash buyrug‘i</td></tr><tr><td><code>docker node ls</code></td><td>Node ro‘yxati</td></tr><tr><td><code>docker service ls</code></td><td>Service ro‘yxati</td></tr><tr><td><code>docker service ps NAME</code></td><td>Task’lar holati</td></tr><tr><td><code>docker service logs NAME</code></td><td>Service loglari</td></tr><tr><td><code>docker service scale NAME=3</code></td><td>Replica o‘zgartirish</td></tr><tr><td><code>docker service update --image IMG NAME</code></td><td>Image bilan yangilash</td></tr><tr><td><code>docker service update --rollback NAME</code></td><td>Oldingi update’ga qaytish</td></tr><tr><td><code>docker stack deploy -c stack.yml demo</code></td><td>Stack yaratish/yangilash</td></tr><tr><td><code>docker stack services demo</code></td><td>Stack xizmatlari</td></tr><tr><td><code>docker stack ps demo</code></td><td>Stack task’lari</td></tr><tr><td><code>docker service inspect NAME --pretty</code></td><td>Service konfiguratsiyasi</td></tr><tr><td><code>docker node update --availability drain NODE</code></td><td>Node maintenance</td></tr><tr><td><code>docker secret ls</code></td><td>Secret ro‘yxati</td></tr><tr><td><code>docker network ls</code></td><td>Tarmoqlar ro‘yxati</td></tr></tbody></table></div>
+<h3>Faqat tajriba uchun yaratgan narsalarni o‘chirish</h3>
+<div class="code-block"><div class="code-head"><span>EHTIYOT: ishlab turgan production cluster’da bajarmang!</span><span class="lang">bash</span></div><pre><code># Stack oldin olib tashlansin:
+docker stack rm demo
+
+# Laboratoriya service&#x27;larini faqat mavjud bo‘lsa o‘chiring:
+docker service rm cluster-web
+
+# Endi Swarm’dan chiqish (faqat bir-node lab uchun):
+docker swarm leave --force</code></pre><button class="copy" type="button" aria-label="Kodni nusxalash">Nusxalash</button></div>
+<div class="call danger"><strong>Ma’lumotlarni o‘chirishdan oldin</strong><p><code>docker system prune -a --volumes</code> kabi buyruqlarni bu darsning bir qismi sifatida ishlatmang: boshqa loyihalarning image/volume’larini yo‘qotishingiz mumkin. Ayniqsa real PostgreSQL volume’ni tasodifan o‘chirmang.</p></div>
+<p>Production cluster’dan manager chiqishi va force leave uchun alohida failover/recovery rejasi talab qilinadi. Yuqoridagi <code>--force</code> faqat <b>bitta node’li o‘quv laboratoriyasi</b> uchun.</p>
+<div class="practice"><div class="practice-tag">✍️ MUSTAQIL MASHQ</div><p>Amaldagi service’ning hozir qaysi image bilan ishlayotganini qanday bilasiz?</p><details><summary>Javobni ko‘rish</summary><div class="answer"><code>docker service inspect SERVICE --pretty</code>, yoki aniq qiymat uchun <code>docker service inspect SERVICE</code>.</div></details></div>
+</div>
+    <div class="lesson-ending"><div><div class="ending-kicker">DARS YAKUNI</div><p>Misollarni o‘zingiz bajarib ko‘ring. Tushunmaganingizni yozib, keyin darsni yakunlangan deb belgilang.</p></div><button class="complete-btn" type="button" data-complete="cheatsheet">✓ O‘rgandim</button></div>
+    <div class="notes-zone"><label for="note-cheatsheet">📝 Mening qaydlarim (shu brauzerda saqlanadi)</label><textarea class="notes" id="note-cheatsheet" data-note="cheatsheet" placeholder="Masalan: docker service ps — replica holatini ko‘rish uchun..." rows="3"></textarea><small>Qaydlar faqat shu brauzerda, shu fayl uchun saqlanadi; boshqa qurilmaga avtomatik ko‘chmaydi.</small></div>
+    <div class="lesson-nav"><button type="button" class="lesson-prev ghost-action">← Oldingi dars</button><button type="button" class="lesson-next primary-action">Keyingi dars →</button></div>
+    </section><section class="lesson" data-lesson="final-quiz" id="lesson-final-quiz">
+    <div class="lesson-breadcrumb">DARS 30 / 30 <span>•</span> Yakun <span>•</span> taxminan 15 daqiqa</div>
+    <h1>26-laboratoriya: Bilimingizni sinang</h1>
+    <div class="micro-summary"><span>💡</span><p><b>Esda qoladigan fikr:</b> Testni bajaring; keyin Junior → Middle → Senior mini-loyihalarni sinang.</p></div>
+    <div class="lesson-body">
+<p class="lead">Quyidagi savollarni materialga qaramasdan bajaring. Natija shu sahifaning o‘zida chiqadi. Savollarni istagancha qayta ishlashingiz mumkin.</p>
+<div id="quiz-area"></div>
+<div class="quiz-actions"><button class="primary-action" id="grade-quiz" type="button">Natijani tekshirish</button><button class="ghost-action" id="reset-quiz" type="button">Qayta boshlash</button></div>
+<div id="quiz-result" aria-live="polite"></div>
+<h3>Oxirgi amaliy challenge</h3>
+<div class="challenge-grid"><div><b>Junior</b><p>Bitta HTML saytni image qilib, 2 replica’da ishga tushiring.</p></div><div><b>Middle</b><p><code>stack.yml</code>, 3 replica, rolling update va rollback tayyorlang.</p></div><div><b>Senior</b><p>3-node lab, private registry, Go API, secret, healthcheck, monitoring va data safety rejasini tuzing.</p></div></div>
+</div>
+    <div class="lesson-ending"><div><div class="ending-kicker">DARS YAKUNI</div><p>Misollarni o‘zingiz bajarib ko‘ring. Tushunmaganingizni yozib, keyin darsni yakunlangan deb belgilang.</p></div><button class="complete-btn" type="button" data-complete="final-quiz">✓ O‘rgandim</button></div>
+    <div class="notes-zone"><label for="note-final-quiz">📝 Mening qaydlarim (shu brauzerda saqlanadi)</label><textarea class="notes" id="note-final-quiz" data-note="final-quiz" placeholder="Masalan: docker service ps — replica holatini ko‘rish uchun..." rows="3"></textarea><small>Qaydlar faqat shu brauzerda, shu fayl uchun saqlanadi; boshqa qurilmaga avtomatik ko‘chmaydi.</small></div>
+    <div class="lesson-nav"><button type="button" class="lesson-prev ghost-action">← Oldingi dars</button><button type="button" class="lesson-next primary-action">Keyingi dars →</button></div>
+    </section>
+</div>
+<footer class="footer"><div class="foot-inner"><b>Manbalar va eslatma:</b> Misollar Docker’ning rasmiy hujjatlaridagi Swarm mode, services, stacks, routing mesh, secrets va cluster boshqaruvi bilan solishtirilgan. Amaliy buyruqlarni avval test muhitida sinang.<div class="foot-links"><a href="https://docs.docker.com/engine/swarm/" target="_blank" rel="noopener">Swarm Docs</a><a href="https://docs.docker.com/engine/swarm/swarm-tutorial/" target="_blank" rel="noopener">Tutorial</a><a href="https://docs.docker.com/engine/swarm/stack-deploy/" target="_blank" rel="noopener">Stack deploy</a><a href="https://docs.docker.com/engine/swarm/networking/" target="_blank" rel="noopener">Networking</a><a href="https://docs.docker.com/engine/swarm/secrets/" target="_blank" rel="noopener">Secrets</a><a href="https://docs.docker.com/engine/swarm/admin_guide/" target="_blank" rel="noopener">Admin guide</a></div><p>Mustaqil HTML fayl • Versiya: 2026-11-16 • Brauzerda offline ishlaydi • Docker buyruqlari haqiqiy Docker Engine’ga ulanadi.</p></div></footer>
+</div>
+</div>
+<script>
+'use strict';
+const META=[{"key":"boshlash","title":"Avval shuni tushunib oling","phase":"Asoslar","minutes":9,"summary":"Swarm — servislar orkestratori; koddagi o‘zgarishni o‘zi aniqlamaydi."},{"key":"lugat","title":"Docker asoslari: 7 ta so‘z","phase":"Asoslar","minutes":12,"summary":"Image — paket, container — ishga tushgan nusxa; service — Swarm ta’rifi."},{"key":"farq","title":"Docker Run, Compose va Swarm","phase":"Asoslar","minutes":10,"summary":"Compose lokal, stack deploy Swarm cluster xizmatlari uchun."},{"key":"tayyorgarlik","title":"Kompyuterni tayyorlash (Windows/Linux)","phase":"Asoslar","minutes":11,"summary":"1 host bilan boshlang; 3 host faqat cluster bo‘limida kerak."},{"key":"html-docker","title":"1-laboratoriya: HTML saytni Dockerga joylash","phase":"Asoslar","minutes":18,"summary":"index.html + Dockerfile → image → browser; keyin eski konteynerni o‘chiring."},{"key":"init","title":"2-laboratoriya: Swarm’ni yoqish","phase":"Asoslar","minutes":12,"summary":"Bitta host — bitta manager; Swarm’ni o‘rganish uchun yetarli."},{"key":"service","title":"3-laboratoriya: Birinchi service","phase":"Asoslar","minutes":15,"summary":"Service — desired state; Swarm task’lar orqali saqlab turadi."},{"key":"replicas","title":"4-laboratoriya: Replica va scaling","phase":"Asoslar","minutes":13,"summary":"Scaling replica sonini o‘zgartiradi, serverlar sonini emas."},{"key":"update","title":"5-laboratoriya: index.html o‘zgarsa nima qilamiz?","phase":"Asoslar","minutes":20,"summary":"Kod o‘zgarsa yangi image va yangi deployment kerak; git push yetarli emas."},{"key":"tekshirish","title":"6-laboratoriya: Log va xatolarni ko‘rish","phase":"Asoslar","minutes":13,"summary":"Avval service ls → service ps → logs → inspect yo‘li bilan tekshiring."},{"key":"stack","title":"7-laboratoriya: stack.yml bilan birinchi deploy","phase":"Oraliq","minutes":19,"summary":"YAML + stack deploy — takrorlanadigan deployment; stack servislarga prefix qo‘shadi."},{"key":"yaml","title":"8-laboratoriya: YAML’ni o‘qishni o‘rganamiz","phase":"Oraliq","minutes":14,"summary":"YAML bo‘shliqlarga sezgir; deploy sozlamalari deploy: ichida."},{"key":"updaterollback","title":"9-laboratoriya: Rolling update va rollback","phase":"Oraliq","minutes":17,"summary":"Rolling update xizmatni bosqichma-bosqich almashtiradi; rollback oldingi konfiguratsiyaga qaytadi."},{"key":"registry","title":"10-laboratoriya: Registry va boshqa serverdagi image","phase":"Oraliq","minutes":19,"summary":"Multi-node uchun image’ni registry’da saqlang, aniq release tag ishlating."},{"key":"multinode","title":"11-laboratoriya: 3 ta serverdan Swarm qurish","phase":"Oraliq","minutes":23,"summary":"Manager rejalashtiradi, worker bajaradi; 2377/7946/4789 portlari node’lar orasida kerak."},{"key":"network","title":"12-laboratoriya: Overlay, ingress va DNS","phase":"Oraliq","minutes":20,"summary":"Overlay node’lararo tarmoq; ingress published portlarni yo‘naltiradi; service DNS nomlari ishlaydi."},{"key":"go-api","title":"13-laboratoriya: Go API’ni Swarm’da ishga tushirish","phase":"Oraliq","minutes":23,"summary":"Go HTTP serverni ham Docker image → Swarm service tarzida deploy qilasiz."},{"key":"config","title":"14-laboratoriya: Docker Config bilan sozlamalar","phase":"Oraliq","minutes":18,"summary":"Docker Config — no-secret konfiguratsiya; o‘zgartirish uchun yangi nom/versiya yaratiladi."},{"key":"secrets","title":"15-laboratoriya: Password va Docker Secret","phase":"Oraliq","minutes":19,"summary":"Secret maxfiy qiymatni servisga fayl sifatida yetkazadi; Git’ga parol qo‘ymang."},{"key":"volume","title":"16-laboratoriya: Volume va PostgreSQL xavfi","phase":"Oraliq","minutes":21,"summary":"Local volume node’ga bog‘liq; DB replica soni = DB replikatsiyasi emas."},{"key":"health","title":"17-laboratoriya: Healthcheck va restart","phase":"Ilg‘or","minutes":18,"summary":"RUNNING va HEALTHY boshqa tushunchalar; healthcheck’ni image ichidagi vositaga moslang."},{"key":"resources","title":"18-laboratoriya: CPU/RAM va placement","phase":"Ilg‘or","minutes":17,"summary":"Reservations scheduler uchun, limits ishlash limitlari uchun; placement task qayerda ishlashini cheklaydi."},{"key":"node-maint","title":"19-laboratoriya: Node drain va servisni ko‘chirish","phase":"Ilg‘or","minutes":16,"summary":"Drain task’larni boshqalarga rejalashtirish uchun; stateful DB’da ehtiyot bo‘ling."},{"key":"security","title":"20-laboratoriya: Swarm xavfsizligi","phase":"Ilg‘or","minutes":18,"summary":"Cluster portlari private, token maxfiy, TLS va access control alohida ta’minlanadi."},{"key":"deploy-flow","title":"21-laboratoriya: Git push → production release","phase":"Ilg‘or","minutes":22,"summary":"Git push ≠ release; build → push → deploy → verify zanjiri kerak."},{"key":"troubleshoot","title":"22-laboratoriya: 10 ta real xatolik","phase":"Ilg‘or","minutes":24,"summary":"Service ls → ps --no-trunc → logs → inspect; old task tarixini yangidan ajrating."},{"key":"prod-plan","title":"23-laboratoriya: Production uchun haqiqiy arxitektura","phase":"Ilg‘or","minutes":21,"summary":"Stateless API’ni scale qiling; DB/files/logs/tls uchun alohida dizayn kerak."},{"key":"ops","title":"24-laboratoriya: Backup, manager quorum va audit","phase":"Ilg‘or","minutes":18,"summary":"3 yoki 5 manager quorum; Swarm backup DB backup o‘rnini bosmaydi."},{"key":"cheatsheet","title":"25-laboratoriya: Buyruqlar va xavfsiz tozalash","phase":"Yakun","minutes":16,"summary":"Eng kerakli buyruqlar va faqat lab muhitiga xos ehtiyotkor cleanup."},{"key":"final-quiz","title":"26-laboratoriya: Bilimingizni sinang","phase":"Yakun","minutes":15,"summary":"Testni bajaring; keyin Junior → Middle → Senior mini-loyihalarni sinang."}];
+const QUIZ=[["Docker image nimani anglatadi?",["Ishlayotgan VM","Dasturning tayyor paketi","Faqat tarmoq"],1,"Image — container yaratish uchun tayyor paket."],["Swarm’ni bitta hostda ishga tushirish mumkinmi?",["Ha","Yo‘q","Faqat Kubernetes bilan"],0,"Single-node Swarm o‘rganish uchun yetarli."],["docker service scale web=3 nima qiladi?",["3 ta server sotib oladi","3 ta kerakli replica belgilaydi","Loglarni o‘chiradi"],1,"Replica soni oshadi, node soni emas."],["index.html o‘zgardi. Swarm avtomatik yangilanadimi?",["Ha","Yo‘q, yangi image va deploy kerak","Faqat browser refresh kifoya"],1,"Build, push (kerak bo‘lsa) va service update/stack deploy."],["docker service ps nimani ko‘rsatadi?",["Task’lar","Git commit’lar","Faqat image tarixi"],0,"Service task’lari va ularning holatini ko‘rsatadi."],["docker stack deploy image build qiladimi?",["Ha, har doim","Yo‘q, image avval tayyor bo‘lishi kerak","Faqat Windows’da"],1,"Build’ni alohida bosqichda qiling."],["Multi-node uchun image qayerda bo‘lishi qulay?",["Faqat developer laptopda","Registry’da","HTML ichida"],1,"Worker registry’dan image oladi."],["Docker Secret nimaga kerak?",["Parollar va sensitive qiymatlar","CPU o‘lchash","Public port ochish"],0,"Secret maxfiy qiymatlarni boshqaradi."],["replicas:3 bilan PostgreSQL avtomatik HA bo‘ladimi?",["Ha","Yo‘q","Faqat .env bilan"],1,"DB replication/failover alohida."],["Swarm manager uchun odatiy cluster porti?",["2377/TCP","3306/TCP","25/TCP"],0,"Node boshqaruvi uchun 2377/TCP."],["Rolling update qaysi maqsadga xizmat qiladi?",["Image’ni batchlab almashtirish","DB backup olish","Disk formatlash"],0,"Task’lar bosqichma-bosqich yangilanadi."],["3 manager cluster nechta manager yo‘qolishiga chidaydi?",["0","1","2"],1,"Quorum uchun 2 manager qolishi kerak."],["Drain qilinsa nima bo‘ladi?",["Node zudlik bilan o‘chadi","Task’lar ko‘chirishga harakat qilinadi","DB backup bo‘ladi"],1,"Swarm mos task’larni sog‘lom node’larga rejalashtiradi."],["Git push o‘zi production deploy qiladimi?",["Faqat CI/CD sozlansa","Har doim","Har doim yo‘q, avtomatlashtirib bo‘lmaydi"],0,"Pipeline build/push/deploy ni avtomatlashtirishi mumkin."]];
+const store={get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const readState=()=>store.get('swarmcourse.2026.done',[]);
+let activeIdx=0;
+const sidebar=document.getElementById('sidebar');
+const sidebarButtons=Array.from(document.querySelectorAll('[data-jump]'));
+const sections=Array.from(document.querySelectorAll('.lesson'));
+const lessonSearch=document.getElementById('lesson-search');
+function updateProgress(){const done=readState();document.getElementById('progress-label').textContent=done.length+' / '+META.length;document.getElementById('progress-fill').style.width=(done.length/META.length*100)+'%';sidebarButtons.forEach(b=>b.classList.toggle('done',done.includes(b.dataset.jump)));document.querySelectorAll('[data-complete]').forEach(b=>{let completed=done.includes(b.dataset.complete);b.classList.toggle('completed',completed);b.textContent=completed?'✓ Yakunlangan':'✓ O‘rgandim'})}
+function showLesson(id,updateHash=true){const ix=META.findIndex(x=>x.key===id);if(ix<0)return;activeIdx=ix;sections.forEach((s,i)=>s.classList.toggle('active',i===ix));sidebarButtons.forEach(b=>{const ok=b.dataset.jump===id;b.classList.toggle('active',ok);if(ok){b.scrollIntoView({block:'nearest',behavior:'smooth'})}});document.getElementById('current-crumb').textContent=META[ix].title;document.querySelectorAll('.lesson-prev').forEach(b=>b.disabled=ix===0);document.querySelectorAll('.lesson-next').forEach(b=>b.disabled=ix===META.length-1);document.body.classList.remove('mobile-nav-open');if(updateHash&&location.hash!=='#'+id){history.replaceState(null,'','#'+id)}window.scrollTo({top:0,behavior:'auto'});document.title=META[ix].title+' | Docker Swarm kursi'}
+sidebarButtons.forEach(b=>b.addEventListener('click',()=>showLesson(b.dataset.jump)));
+document.querySelectorAll('.lesson-prev').forEach(b=>b.addEventListener('click',()=>showLesson(META[Math.max(0,activeIdx-1)].key)));
+document.querySelectorAll('.lesson-next').forEach(b=>b.addEventListener('click',()=>showLesson(META[Math.min(META.length-1,activeIdx+1)].key)));
+document.querySelectorAll('[data-complete]').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.complete;let done=readState();done=done.includes(k)?done.filter(i=>i!==k):[...done,k];store.set('swarmcourse.2026.done',done);updateProgress()}));
+document.querySelectorAll('[data-note]').forEach(el=>{const key='swarmcourse.2026.note.'+el.dataset.note;el.value=store.get(key,'');el.addEventListener('input',()=>store.set(key,el.value))});
+function copyText(text){if(navigator.clipboard&&window.isSecureContext){return navigator.clipboard.writeText(text)}const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-10000px';document.body.appendChild(ta);ta.select();const ok=document.execCommand('copy');ta.remove();return ok?Promise.resolve():Promise.reject(new Error('copy failed'))}
+document.querySelectorAll('.copy').forEach(btn=>btn.addEventListener('click',async()=>{try{await copyText(btn.closest('.code-block').querySelector('pre code').textContent);btn.textContent='✓ Nusxalandi';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Nusxalash';btn.classList.remove('copied')},1400)}catch(e){btn.textContent='Ctrl+C bilan oling';setTimeout(()=>btn.textContent='Nusxalash',2200)}}));
+lessonSearch.addEventListener('input',()=>{const q=lessonSearch.value.toLocaleLowerCase('uz').trim();let shown=0;sidebarButtons.forEach(b=>{const sec=document.querySelector('[data-lesson="'+b.dataset.jump+'"]');const match=!q||b.textContent.toLocaleLowerCase('uz').includes(q)||(sec&&sec.textContent.toLocaleLowerCase('uz').includes(q));b.hidden=!match;if(match)shown++});document.getElementById('search-count').textContent=q?shown+' ta dars topildi':''});
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();lessonSearch.focus();document.body.classList.add('mobile-nav-open')}if(e.key==='Escape'){document.body.classList.remove('mobile-nav-open');if(document.activeElement===lessonSearch)lessonSearch.blur()}});
+document.getElementById('toggle-menu').addEventListener('click',()=>document.body.classList.toggle('mobile-nav-open'));
+document.getElementById('mobile-overlay').addEventListener('click',()=>document.body.classList.remove('mobile-nav-open'));
+const themeButton=document.getElementById('theme-btn');function setTheme(mode){document.body.classList.toggle('dark',mode==='dark');themeButton.textContent=mode==='dark'?'☀':'◐';store.set('swarmcourse.2026.theme',mode)}setTheme(store.get('swarmcourse.2026.theme','light'));themeButton.addEventListener('click',()=>setTheme(document.body.classList.contains('dark')?'light':'dark'));
+let fontSize=store.get('swarmcourse.2026.fontSize',16);function applyFont(){document.documentElement.style.setProperty('--font',fontSize+'px')}applyFont();document.getElementById('font-minus').addEventListener('click',()=>{fontSize=Math.max(13,fontSize-1);applyFont();store.set('swarmcourse.2026.fontSize',fontSize)});document.getElementById('font-plus').addEventListener('click',()=>{fontSize=Math.min(21,fontSize+1);applyFont();store.set('swarmcourse.2026.fontSize',fontSize)});
+document.getElementById('print-btn').addEventListener('click',()=>window.print());
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
+function renderQuiz(){const area=document.getElementById('quiz-area');area.innerHTML=QUIZ.map((q,i)=>'<div class="quiz-question" id="q-'+i+'"><h4>'+(i+1)+'. '+escapeHtml(q[0])+'</h4>'+q[1].map((opt,j)=>'<label class="quiz-option"><input type="radio" name="quiz-'+i+'" value="'+j+'"><span>'+escapeHtml(opt)+'</span></label>').join('')+'<div class="quiz-explanation" id="quizexp-'+i+'"></div></div>').join('')}
+renderQuiz();document.getElementById('grade-quiz').addEventListener('click',()=>{let score=0,answered=0;QUIZ.forEach((q,i)=>{const selected=document.querySelector('input[name="quiz-'+i+'"]:checked');const exp=document.getElementById('quizexp-'+i);const correct=selected&&Number(selected.value)===q[2];if(selected)answered++;if(correct)score++;exp.innerHTML='<div class="quiz-feedback '+(correct?'correct':'wrong')+'">'+(correct?'✓ To‘g‘ri!':'✗ '+(!selected?'Javob tanlanmagan. ':'To‘g‘ri javob: '+escapeHtml(q[1][q[2]])+'. '))+escapeHtml(q[3])+'</div>'});document.getElementById('quiz-result').innerHTML='<div class="quiz-result"><strong>'+score+' / '+QUIZ.length+' to‘g‘ri</strong> · '+answered+' ta savolga javob berildi. '+(score>=12?'A’lo! Endi mustaqil deploy qiling.':score>=8?'Yaxshi! Xato savollarga tegishli darsni qayta ko‘ring.':'Asosiy laboratoriyalarni qayta bajaring.')+'</div>';document.getElementById('quiz-result').scrollIntoView({behavior:'smooth',block:'center'})});
+document.getElementById('reset-quiz').addEventListener('click',()=>{renderQuiz();document.getElementById('quiz-result').innerHTML=''});
+window.addEventListener('hashchange',()=>showLesson(location.hash.slice(1),false));updateProgress();showLesson(location.hash.slice(1)||META[0].key,false);
+</script>
+</body>
+</html>
